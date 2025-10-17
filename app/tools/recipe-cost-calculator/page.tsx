@@ -447,7 +447,7 @@ export default function RecipeCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Most bakeries aim for a 50-100% profit margin on baked goods. This means if your cost per serving is $2, you'd charge $3-$4. Adjust based on your market, competition, and target customers.
+                Most bakeries aim for a 50-100% profit margin on baked goods. This means if your cost per serving is $2, you&apos;d charge $3-$4. Adjust based on your market, competition, and target customers.
               </p>
             </CardContent>
           </Card>

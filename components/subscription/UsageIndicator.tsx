@@ -65,7 +65,7 @@ export default function UsageIndicator({ used, limit, label, isPro = false }: Us
       <Progress
         value={Math.min(percentage, 100)}
         className="h-1"
-        indicatorClassName={getProgressColor()}
+        color={getProgressColor()}
       />
       
       

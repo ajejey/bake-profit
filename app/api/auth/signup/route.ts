@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
     const user = await createUser({
       email: email.toLowerCase(),
       password_hash: hashedPassword,
-      name: name || null,
-      business_name: business_name || null,
+      name: name || undefined,
+      business_name: business_name || undefined,
       email_verified: false, // TODO: Implement email verification
     });
 
