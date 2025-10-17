@@ -13,7 +13,9 @@ import {
   ArrowRight,
   Star,
   DollarSign,
-  BarChart3
+  BarChart3,
+  Crown,
+  Gift
 } from "lucide-react";
 
 export default function Home() {
@@ -434,28 +436,31 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Why Home Bakers Love This Tool
+              Why Home Bakers Love BakeProfit
             </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              From free calculators to complete business management—everything you need to run a profitable bakery.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-green-600" />
+                <Gift className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">100% Free Forever</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Free Tier Available</h3>
               <p className="text-gray-600">
-                No hidden fees, no premium tiers. All features are completely free, always.
+                Get started with essential features at no cost. Perfect for beginners and hobbyists.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-8 w-8 text-blue-600" />
+              <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Crown className="h-8 w-8 text-rose-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No Login Required</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Pro Features</h3>
               <p className="text-gray-600">
-                Start using immediately. No account creation, no email verification, no hassle.
+                Unlock advanced tools and unlimited usage with our affordable Pro subscription.
               </p>
             </div>
 
