@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Bakery Profit Calculator',
     description: 'Calculate profit margins and compare to industry benchmarks. Know if your bakery is profitable.',
     type: 'website',
-    url: 'https://bakeprofit.com/tools/bakery-profit-calculator',
+    url: 'https://bakeprofit.vercel.app/tools/bakery-profit-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Calculate your bakery profit margins. Free tool for bakers.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.com/tools/bakery-profit-calculator',
+    canonical: 'https://bakeprofit.vercel.app/tools/bakery-profit-calculator',
   },
 }
 

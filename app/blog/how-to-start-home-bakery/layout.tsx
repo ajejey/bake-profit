@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'How to Start a Home Bakery Business: Complete Guide (2025)',
     description: 'Complete guide to starting a profitable home bakery from legal requirements to pricing and marketing.',
     type: 'article',
-    url: 'https://bakeprofit.com/blog/how-to-start-home-bakery',
+    url: 'https://bakeprofit.vercel.app/blog/how-to-start-home-bakery',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Everything you need to start a profitable home bakery in 2025.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.com/blog/how-to-start-home-bakery',
+    canonical: 'https://bakeprofit.vercel.app/blog/how-to-start-home-bakery',
   },
 }
 
@@ -45,7 +45,7 @@ export default function HomeBakeryGuideBlogLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.com/logo.png',
+                url: 'https://bakeprofit.vercel.app/logo.png',
               },
             },
             datePublished: '2025-01-15',

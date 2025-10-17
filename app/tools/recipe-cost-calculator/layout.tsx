@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Recipe Cost Calculator for Bakers',
     description: 'Calculate recipe costs, ingredient costs, and profit margins instantly. Free tool for home bakers.',
     type: 'website',
-    url: 'https://bakeprofit.com/tools/recipe-cost-calculator',
+    url: 'https://bakeprofit.vercel.app/tools/recipe-cost-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Calculate recipe costs and profit margins instantly. Free tool for home bakers.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.com/tools/recipe-cost-calculator',
+    canonical: 'https://bakeprofit.vercel.app/tools/recipe-cost-calculator',
   },
 }
 

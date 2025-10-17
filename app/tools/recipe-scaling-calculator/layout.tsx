@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Recipe Scaling Calculator for Bakers',
     description: 'Scale recipes up or down instantly. Adjust servings and batch sizes with automatic ingredient conversion.',
     type: 'website',
-    url: 'https://bakeprofit.com/tools/recipe-scaling-calculator',
+    url: 'https://bakeprofit.vercel.app/tools/recipe-scaling-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Scale any recipe up or down. Free tool for bakers and home cooks.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.com/tools/recipe-scaling-calculator',
+    canonical: 'https://bakeprofit.vercel.app/tools/recipe-scaling-calculator',
   },
 }
 

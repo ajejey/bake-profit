@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Cake Pricing Formula: How to Price Cakes for Profit (2025)',
     description: 'Learn the exact formula to price cakes profitably. Includes real examples and free calculator.',
     type: 'article',
-    url: 'https://bakeprofit.com/blog/how-to-price-cakes',
+    url: 'https://bakeprofit.vercel.app/blog/how-to-price-cakes',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Learn the exact formula professional cake decorators use to price profitably.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.com/blog/how-to-price-cakes',
+    canonical: 'https://bakeprofit.vercel.app/blog/how-to-price-cakes',
   },
 }
 
@@ -45,7 +45,7 @@ export default function CakePricingBlogLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.com/logo.png',
+                url: 'https://bakeprofit.vercel.app/logo.png',
               },
             },
             datePublished: '2025-01-15',
