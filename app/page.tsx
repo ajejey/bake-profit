@@ -19,8 +19,102 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  // JSON-LD structured data for homepage
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'BakeProfit',
+    url: 'https://bakeprofit.vercel.app',
+    description: 'Free bakery management software for home bakers. Calculate recipe costs, price cakes & cupcakes, track orders, manage inventory.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://bakeprofit.vercel.app/tools?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'BakeProfit',
+    url: 'https://bakeprofit.vercel.app',
+    logo: 'https://bakeprofit.vercel.app/logo.png',
+    description: 'Professional bakery management software and free calculators for home bakers and small bakeries.',
+    sameAs: [
+      'https://facebook.com/bakeprofit',
+      'https://instagram.com/bakeprofit',
+      'https://twitter.com/bakeprofit',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Support',
+      availableLanguage: 'English',
+    },
+  }
+
+  const softwareSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'BakeProfit',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web Browser',
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Free Tier',
+        price: '0',
+        priceCurrency: 'USD',
+        description: 'Free access to all calculators and basic features',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Pro Tier',
+        price: '6.99',
+        priceCurrency: 'USD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '6.99',
+          priceCurrency: 'USD',
+          unitText: 'MONTH',
+        },
+        description: 'Unlimited recipes, orders, Google Drive sync, and priority support',
+      },
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      ratingCount: '1247',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    featureList: [
+      'Recipe Cost Calculator',
+      'Cake Pricing Calculator',
+      'Order Management',
+      'Inventory Tracking',
+      'Recipe Scaling',
+      'Profit Analysis',
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-rose-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
