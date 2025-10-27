@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Header } from "@/components/layout/Header";
 import { 
-  ChefHat, 
+  ChefHat,
   Calculator, 
   ShoppingCart, 
   Users, 
@@ -115,39 +116,9 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
       />
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-rose-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <ChefHat className="h-8 w-8 text-rose-500" />
-                <h2 className="text-2xl font-bold text-gray-900">BakeProfit</h2>
-              </Link>
-              <div className="hidden md:flex items-center gap-6">
-                <Link href="/tools" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-                  Free Tools
-                </Link>
-                <Link href="/blog" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-                  Blog
-                </Link>
-                <a href="#features" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-                  Features
-                </a>
-                <a href="#pricing" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-                  Pricing
-                </a>
-              </div>
-            </div>
-            <Link 
-              href="/bakery-business-tool"
-              className="bg-rose-500 text-white px-6 py-2 rounded-full font-semibold hover:bg-rose-600 transition-all duration-300"
-            >
-              Launch App Free →
-            </Link>
-          </div>
-        </div>
-      </nav>
+      
+      {/* Header with Mobile Navigation */}
+      <Header showBlog showTools />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
@@ -967,50 +938,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-rose-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+ {/* Footer Links */}
+      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <ChefHat className="h-6 w-6 text-rose-500" />
-                <span className="font-bold text-lg">BakeProfit</span>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Free tools for home bakers and small bakery businesses to manage, price, and grow.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Features</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>Recipe Calculator</li>
-                <li>Order Tracking</li>
-                <li>Inventory Manager</li>
-                <li>Pricing Calculator</li>
-                <li>Business Analytics</li>
+              <h3 className="font-bold text-white mb-4">Product</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/pricing" className="hover:text-rose-400 transition-colors">Pricing</Link></li>
+                <li><Link href="/tools" className="hover:text-rose-400 transition-colors">Free Tools</Link></li>
+                <li><Link href="/blog" className="hover:text-rose-400 transition-colors">Blog</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>How It Works</li>
-                <li>FAQ</li>
-                <li>Privacy Policy</li>
-                <li>Terms of Service</li>
+              <h3 className="font-bold text-white mb-4">Company</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/contact" className="hover:text-rose-400 transition-colors">Contact</Link></li>
+                <li><a href="mailto:ajejey@gmail.com" className="hover:text-rose-400 transition-colors">Email</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4">Get Started</h4>
-              <Link 
-                href="/bakery-business-tool"
-                className="inline-block bg-rose-500 text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-rose-600 transition-all"
-              >
-                Launch App Free →
-              </Link>
+              <h3 className="font-bold text-white mb-4">Legal</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/terms" className="hover:text-rose-400 transition-colors">Terms</Link></li>
+                <li><Link href="/privacy" className="hover:text-rose-400 transition-colors">Privacy</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-white mb-4">Support</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/refund-policy" className="hover:text-rose-400 transition-colors">Refund Policy</Link></li>
+              </ul>
             </div>
           </div>
-          <div className="border-t border-rose-900 pt-8 text-center text-sm text-gray-400">
-            <p>© 2025 BakeProfit. All rights reserved. Made with ❤️ for home bakers.</p>
+          <div className="border-t border-gray-800 pt-8 text-center text-sm">
+            <p>© {new Date().getFullYear()} BakeProfit. All rights reserved. Made with ❤️ for bakers.</p>
           </div>
         </div>
       </footer>

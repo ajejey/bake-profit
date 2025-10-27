@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ChefHat, ArrowRight, Clock, Calendar } from 'lucide-react'
+import { Header } from '@/components/layout/Header'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
+import { ArrowRight, Clock, Calendar } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
@@ -47,36 +49,40 @@ const blogPosts = [
     category: 'Cupcake Pricing',
     featured: false,
   },
+  {
+    title: 'Recipe Cost Calculator: Excel vs Software (Which is Better?)',
+    description: 'Compare Excel spreadsheets vs dedicated recipe cost calculator software. Learn the pros, cons, real cost analysis, and when to switch.',
+    slug: 'recipe-cost-calculator-comparison',
+    date: 'January 20, 2025',
+    readTime: '14 min read',
+    category: 'Tools & Software',
+    featured: true,
+  },
+  {
+    title: '10 Best Recipe Cost Calculators for Home Bakers (2025)',
+    description: 'Research-based review of 10 recipe cost calculators. Compare features, pricing, pros & cons of BakeProfit, meez, CakeCost, and more.',
+    slug: 'best-recipe-calculators',
+    date: 'January 22, 2025',
+    readTime: '18 min read',
+    category: 'Tools Review',
+    featured: true,
+  },
+  {
+    title: 'How to Track Ingredient Costs for Your Home Bakery (2025 Guide)',
+    description: 'Learn how to track ingredient costs, handle price fluctuations, reduce waste, and boost bakery profits. Includes 5 tracking methods and automation tips.',
+    slug: 'track-ingredient-costs',
+    date: 'January 28, 2025',
+    readTime: '12 min read',
+    category: 'Ingredient Tracking',
+    featured: false,
+  },
 ]
 
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
-      {/* Header */}
-      <header className="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <ChefHat className="h-8 w-8 text-rose-500" />
-              <span className="text-xl font-bold text-gray-900">BakeProfit</span>
-            </Link>
-            
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/tools"
-                className="hidden sm:inline-flex text-sm font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              >
-                Free Tools
-              </Link>
-              <Link href="/bakery-business-tool">
-                <Button className="bg-rose-500 hover:bg-rose-600">
-                  Sign Up Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header with Mobile Navigation */}
+      <Header showBlog={false} showTools />
 
       {/* Hero Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">

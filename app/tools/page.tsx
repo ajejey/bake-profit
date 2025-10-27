@@ -1,6 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { Header } from '@/components/layout/Header'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { ChefHat, Calculator, DollarSign, Scale, TrendingUp, Package, PieChart, CheckCircle, Users, ArrowRight } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -308,31 +310,8 @@ export default function ToolsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
-      {/* Header */}
-      <header className="bg-white border-b border-rose-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <ChefHat className="h-8 w-8 text-rose-500" />
-              <span className="text-xl font-bold text-gray-900">BakeProfit</span>
-            </Link>
-            
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/bakery-business-tool"
-                className="hidden sm:inline-flex text-sm font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              >
-                Full App
-              </Link>
-              <Link href="/bakery-business-tool">
-                <Button className="bg-rose-500 hover:bg-rose-600">
-                  Sign Up Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header with Mobile Navigation */}
+      <Header showBlog showTools={false} />
 
       {/* Hero Section */}
       <section className="py-16 sm:py-24">

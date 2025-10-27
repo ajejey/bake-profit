@@ -37,6 +37,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blog/how-to-price-cakes',
     '/blog/how-to-start-home-bakery',
     '/blog/how-to-price-cupcakes',
+    '/blog/track-ingredient-costs',
+    '/blog/recipe-cost-calculator-comparison',
+    '/blog/best-recipe-calculators',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date('2025-01-15'),
