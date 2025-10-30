@@ -10,7 +10,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
       <Header />
-      <main className="flex-grow flex items-center justify-center p-4">
+      <main className="flex-grow flex items-center justify-center p-4 h-full">
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link href="/" className="flex items-center justify-center gap-2 mb-8">
