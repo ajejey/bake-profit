@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -18,10 +18,12 @@ import {
   Store,
   Settings as SettingsIcon,
   LogOut,
+  Download,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useInventory } from '../hooks'
+import { StorageAdapter } from '../utils/indexedDBAdapter'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -34,6 +36,7 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
   const { toast } = useToast()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { hasLowStock, hasOutOfStock, alertCount } = useInventory()
+  const [isSampleDataLoaded, setIsSampleDataLoaded] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -43,6 +46,44 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
     })
     router.push('/')
   }
+
+  const handleLoadSampleData = async () => {
+    try {
+      // Fetch the sample data file
+      const response = await fetch('/sample-bakery-data.json')
+      const data = await response.json()
+      
+      // Load sample data into localStorage
+      await StorageAdapter.setItem('bakery-ingredients', JSON.stringify(data.ingredients))
+      await StorageAdapter.setItem('bakery-recipes', JSON.stringify(data.recipes))
+      await StorageAdapter.setItem('bakery-orders', JSON.stringify(data.orders))
+      await StorageAdapter.setItem('bakery-inventory', JSON.stringify(data.inventory || []))
+      await StorageAdapter.setItem('bakery-customers', JSON.stringify(data.customers))
+
+      localStorage.setItem('sampleDataLoaded', 'true')
+      
+      toast({
+        title: '🎉 Sample data loaded!',
+        description: 'Your bakery now has recipes, orders, and customers. Explore all features!',
+      })
+      
+      setIsSampleDataLoaded(true)
+      setTimeout(() => window.location.reload(), 1000)
+    } catch (error) {
+      toast({
+        title: 'Failed to load sample data',
+        description: 'There was an error loading the sample data.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  useEffect(() => {
+    const sampleDataLoaded = localStorage.getItem('sampleDataLoaded')
+    if (sampleDataLoaded) {
+      setIsSampleDataLoaded(true)
+    }
+  }, [])
 
   // Navigation items for the sidebar
   const navItems = [
@@ -175,6 +216,20 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
               </Link>
             ))}
           </nav>
+
+          {/* Load Sample Data Button */}
+          {isSampleDataLoaded ? null : (
+            <div className="p-4 border-t">
+            <Button
+              variant="default"
+              className="w-full flex items-center justify-center bg-rose-500 text-white hover:text-white hover:bg-rose-600"
+              onClick={handleLoadSampleData}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Load Sample Data
+            </Button>
+          </div>
+          )}
 
           {/* Logout button */}
           <div className="p-4 border-t">
