@@ -2,8 +2,10 @@
 
 import React, { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '../utils/settings'
 import { Button } from '@/components/ui/button'
+import { useCurrencySymbol } from '../hooks'
+
+
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { v4 as uuidv4 } from 'uuid'
@@ -44,6 +46,8 @@ import {
 import { useInventory, useIngredients, useOrders } from '../hooks'
 import { useToast } from '@/hooks/use-toast'
 import type { Ingredient, ShoppingListItem } from '../types'
+import { cn } from '@/lib/utils'
+import jsPDF from 'jspdf'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useForm } from 'react-hook-form'
@@ -63,6 +67,8 @@ const ingredientFormSchema = z.object({
 
 export default function InventoryManager() {
   const { toast } = useToast()
+  const {symbol: currencySymbol} = useCurrencySymbol()
+  console.log("currencySymbol ", currencySymbol)
   const {
     ingredients,
     addIngredient,
@@ -137,6 +143,11 @@ export default function InventoryManager() {
       description: `${data.name} has been added to your ingredients.`,
     })
   }
+
+  // Helper to format currency synchronously
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
 
   // Handle editing an ingredient
   const onEditIngredient = (data: z.infer<typeof ingredientFormSchema>) => {
@@ -285,7 +296,7 @@ export default function InventoryManager() {
     })
   }
 
-  // Handle export shopping list
+  // Handle export shopping list to clipboard
   const handleExportShoppingList = () => {
     const text = shoppingList.map(item =>
       `${item.ingredientName}: ${item.deficit.toFixed(2)} ${item.unit} (currently have: ${item.currentStock.toFixed(2)} ${item.unit}, need: ${item.needed.toFixed(2)} ${item.unit}) - ~${formatCurrency(item.estimatedCost)}`
@@ -300,6 +311,158 @@ export default function InventoryManager() {
     toast({
       title: 'Shopping list copied',
       description: 'Shopping list has been copied to your clipboard.',
+    })
+  }
+  // Handle export shopping list to PDF
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
+
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
+    const margin = 15
+    const contentWidth = pageWidth - (margin * 2)
+    let yPosition = margin
+
+    // Helper to check if we need a new page
+    const checkPageBreak = (requiredSpace: number) => {
+      if (yPosition + requiredSpace > pageHeight - margin) {
+        doc.addPage()
+        yPosition = margin
+        return true
+      }
+      return false
+    }
+
+    // Title
+    doc.setFontSize(20)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Shopping List', margin, yPosition)
+    yPosition += 10
+
+    // Date and order count
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(100, 100, 100)
+    doc.text(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, margin, yPosition)
+    yPosition += 5
+    doc.text(`For ${pendingOrdersCount} pending order${pendingOrdersCount !== 1 ? 's' : ''}`, margin, yPosition)
+    yPosition += 10
+
+    // Separator line
+    doc.setDrawColor(200, 200, 200)
+    doc.line(margin, yPosition, pageWidth - margin, yPosition)
+    yPosition += 8
+
+    // Group items by priority
+    const priorities: Array<'critical' | 'needed' | 'optional'> = ['critical', 'needed', 'optional']
+    const priorityColors = {
+      critical: { r: 220, g: 38, b: 38 },
+      needed: { r: 234, g: 179, b: 8 },
+      optional: { r: 34, g: 197, b: 94 }
+    }
+    const priorityLabels = {
+      critical: 'CRITICAL - Out of Stock',
+      needed: 'NEEDED - Below Minimum',
+      optional: 'OPTIONAL - Additional Stock'
+    }
+
+    priorities.forEach((priority) => {
+      const items = shoppingList.filter(item => item.priority === priority)
+      if (items.length === 0) return
+
+      checkPageBreak(15)
+
+      // Priority header
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      const color = priorityColors[priority]
+      doc.setTextColor(color.r, color.g, color.b)
+      doc.text(priorityLabels[priority], margin, yPosition)
+      yPosition += 7
+
+      // Items in this priority
+      doc.setFontSize(10)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(0, 0, 0)
+
+      items.forEach((item) => {
+        checkPageBreak(20)
+
+        // Item box background
+        doc.setFillColor(250, 250, 250)
+        doc.rect(margin, yPosition - 4, contentWidth, 16, 'F')
+        
+        // Item border
+        doc.setDrawColor(220, 220, 220)
+        doc.rect(margin, yPosition - 4, contentWidth, 16, 'S')
+
+        // Item name (bold)
+        doc.setFont('helvetica', 'bold')
+        doc.text(item.ingredientName, margin + 3, yPosition)
+        
+        // Buy amount (highlighted)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(color.r, color.g, color.b)
+        const buyText = `Buy: ${item.deficit.toFixed(2)} ${item.unit}`
+        doc.text(buyText, margin + 3, yPosition + 5)
+        
+        // Details (normal)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(100, 100, 100)
+        const detailsText = `Have: ${item.currentStock.toFixed(2)} ${item.unit}  •  Need: ${item.needed.toFixed(2)} ${item.unit}`
+        doc.text(detailsText, margin + 3, yPosition + 10)
+        
+        // Cost (right-aligned)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(0, 0, 0)
+        const costText = `${String(currencySymbol)}${item.estimatedCost.toFixed(2)}`
+        const costWidth = doc.getTextWidth(costText)
+        doc.text(costText, pageWidth - margin - costWidth - 3, yPosition + 5)
+
+        yPosition += 18
+      })
+
+      yPosition += 3
+    })
+
+    // Total section
+    checkPageBreak(25)
+    yPosition += 5
+    doc.setDrawColor(200, 200, 200)
+    doc.line(margin, yPosition, pageWidth - margin, yPosition)
+    yPosition += 8
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(0, 0, 0)
+    doc.text('Total Estimated Cost:', margin, yPosition)
+    
+    const totalCost = shoppingList.reduce((sum, item) => sum + item.estimatedCost, 0)
+    const totalText = `${String(currencySymbol)}${totalCost.toFixed(2)}`
+    const totalWidth = doc.getTextWidth(totalText)
+    doc.setTextColor(34, 197, 94)
+    doc.text(totalText, pageWidth - margin - totalWidth, yPosition)
+
+    // Footer
+    yPosition = pageHeight - 15
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'italic')
+    doc.setTextColor(150, 150, 150)
+    const footerText = 'Generated by BakeProfit - Bakery Management Software'
+    const footerWidth = doc.getTextWidth(footerText)
+    doc.text(footerText, (pageWidth - footerWidth) / 2, yPosition)
+
+    // Save the PDF
+    const fileName = `shopping-list-${new Date().toISOString().split('T')[0]}.pdf`
+    doc.save(fileName)
+
+    toast({
+      title: 'PDF downloaded',
+      description: 'Shopping list has been saved as PDF.',
     })
   }
 
@@ -317,7 +480,20 @@ export default function InventoryManager() {
       <Tabs defaultValue="ingredients" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
-          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="inventory" className="relative">
+            Inventory
+            {alertCount > 0 && (
+              <Badge 
+                variant={hasOutOfStock ? 'destructive' : 'default'}
+                className={cn(
+                  'ml-2 h-5 min-w-5 px-1.5',
+                  !hasOutOfStock && 'bg-yellow-500 hover:bg-yellow-600'
+                )}
+              >
+                {alertCount}
+              </Badge>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         {/* Ingredients Tab - Will be moved from RecipeCalculator */}
@@ -349,7 +525,11 @@ export default function InventoryManager() {
                         <FormItem>
                           <FormLabel>Ingredient Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., All-Purpose Flour" {...field} />
+                            <Input 
+                            placeholder="e.g., All-Purpose Flour" 
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -364,7 +544,12 @@ export default function InventoryManager() {
                           <FormItem>
                             <FormLabel>Package Size</FormLabel>
                             <FormControl>
-                              <Input type="number" step="0.01" {...field} />
+                              <Input 
+                                type="number" 
+                                step="0.01" 
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -413,7 +598,12 @@ export default function InventoryManager() {
                         <FormItem>
                           <FormLabel>Package Cost ($)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} />
+                            <Input 
+                              type="number" 
+                              step="0.01" 
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -941,10 +1131,16 @@ export default function InventoryManager() {
                   Close
                 </Button>
                 {shoppingList.length > 0 && (
-                  <Button onClick={handleExportShoppingList}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Copy to Clipboard
-                  </Button>
+                  <>
+                    <Button variant="outline" onClick={handleExportShoppingList}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Copy to Clipboard
+                    </Button>
+                    <Button onClick={handleExportPDF} className="bg-rose-500 hover:bg-rose-600">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export PDF
+                    </Button>
+                  </>
                 )}
               </DialogFooter>
             </DialogContent>

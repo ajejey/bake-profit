@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency, getDefaultOrderStatus, getDefaultLeadTime } from '../utils/settings'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -11,35 +10,54 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Calendar, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check } from 'lucide-react'
+import { Plus, Calendar, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check, Minus, Download, FileText, ChefHat, Truck } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
-import { useOrders, useRecipes, useCustomers } from '../hooks'
-import type { Order, OrderItem } from '../types'
+import { useOrders, useRecipes, useCustomers, useCurrencySymbol } from '../hooks'
+import type { Order, OrderItem, Customer } from '../types'
 import SearchBar from './SearchBar'
 import FilterChips, { type FilterOption } from './FilterChips'
 import SortDropdown, { type SortOption } from './SortDropdown'
 import { useSubscription } from '@/contexts/SubscriptionContext'
 import UsageIndicator from '@/components/subscription/UsageIndicator'
+import { getDefaultOrderStatus } from '../utils/settings'
+import { CustomerSelector } from './CustomerSelector'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  generateOrderConfirmation,
+  generateKitchenSheet,
+  generateDeliveryReceipt,
+  generatePackingSlip,
+  getOrderPDFFilename
+} from '../lib/pdfGenerators/orderPDF'
+
+
 
 export default function OrderTracker() {
   const { toast } = useToast()
-  const { tier, checkLimit } = useSubscription()
+  const { checkLimit } = useSubscription()
+  const { symbol: currencySymbol = '$' } = useCurrencySymbol()
+  console.log("currencySymbol in OrderTracker", currencySymbol)
   
   // Use custom hooks for data access
   const { orders, addOrder, updateOrderStatus, deleteOrder, getNextOrderNumber } = useOrders()
   const { recipes } = useRecipes()
-  const { searchCustomers, saveCustomer } = useCustomers()
+  const { saveCustomer, addCustomer } = useCustomers()
   
   // UI State
   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false)
   const [filterStatus, setFilterStatus] = useState<string>('all')
-  const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'date' | 'total' | 'customer'>('date')
   
   // Form state
-  const [customerName, setCustomerName] = useState('')
-  const [customerPhone, setCustomerPhone] = useState('')
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [deliveryDate, setDeliveryDate] = useState('')
   const [orderNotes, setOrderNotes] = useState('')
   const [selectedRecipeId, setSelectedRecipeId] = useState('')
@@ -47,20 +65,29 @@ export default function OrderTracker() {
   const [sellingPrice, setSellingPrice] = useState(0)
   const [orderItems, setOrderItems] = useState<OrderItem[]>([])
 
-  // Handle customer name input with autocomplete
-  const handleCustomerNameChange = (value: string) => {
-    setCustomerName(value)
-    setShowSuggestions(value.length > 0)
-  }
+  // Helper to format currency synchronously
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
 
-  // Get customer suggestions
-  const customerSuggestions = searchCustomers(customerName)
-
-  // Select customer from suggestions
-  const handleSelectCustomer = (customer: { name: string; phone?: string }) => {
-    setCustomerName(customer.name)
-    setCustomerPhone(customer.phone || '')
-    setShowSuggestions(false)
+  // Handle creating a new customer from selector
+  const handleCreateNewCustomer = (name: string, phone?: string) => {
+    const newCustomer: Customer = {
+      id: uuidv4(),
+      name,
+      phone,
+      orderHistory: [],
+      totalOrders: 0,
+      totalSpent: 0,
+      notes: '',
+      createdAt: new Date().toISOString(),
+    }
+    addCustomer(newCustomer)
+    setSelectedCustomer(newCustomer)
+    toast({
+      title: 'Customer created',
+      description: `${name} has been added to your customers`,
+    })
   }
 
   // Handle Add Order button click with limit check
@@ -130,11 +157,11 @@ export default function OrderTracker() {
   }
 
   // Create new order
-  const handleCreateOrder = () => {
-    if (!customerName.trim()) {
+  const handleCreateOrder = async () => {
+    if (!selectedCustomer) {
       toast({
-        title: 'Customer name required',
-        description: 'Please enter a customer name',
+        title: 'Customer required',
+        description: 'Please select or create a customer',
         variant: 'destructive',
       })
       return
@@ -164,14 +191,15 @@ export default function OrderTracker() {
 
     const orderId = uuidv4()
     const orderNumber = getNextOrderNumber()
+    const defaultStatus = await getDefaultOrderStatus()
 
     const newOrder: Order = {
       id: orderId,
       orderNumber,
-      customerName: customerName.trim(),
-      customerPhone,
+      customerName: selectedCustomer.name,
+      customerPhone: selectedCustomer.phone,
       items: orderItems,
-      status: getDefaultOrderStatus() as Order['status'],
+      status: defaultStatus,
       orderDate: new Date().toISOString(),
       deliveryDate,
       totalCost,
@@ -184,16 +212,14 @@ export default function OrderTracker() {
 
     addOrder(newOrder)
     
-    // Save/update customer using the smart helper
-    saveCustomer(customerName.trim(), customerPhone, orderId, totalRevenue)
+    // Update customer with new order
+    saveCustomer(selectedCustomer.name, selectedCustomer.phone, orderId, totalRevenue)
     
     // Reset form
-    setCustomerName('')
-    setCustomerPhone('')
+    setSelectedCustomer(null)
     setDeliveryDate('')
     setOrderNotes('')
     setOrderItems([])
-    setShowSuggestions(false)
     setIsAddOrderOpen(false)
 
     toast({
@@ -219,6 +245,41 @@ export default function OrderTracker() {
     toast({
       title: 'Order deleted',
       description: 'The order has been removed',
+    })
+  }
+
+  // Handle PDF export
+  const handleExportPDF = (order: Order, type: 'confirmation' | 'kitchen' | 'delivery' | 'packing') => {
+    const customer = null // Could fetch from customers if needed
+    
+    let pdf
+    let typeName = ''
+    
+    switch (type) {
+      case 'confirmation':
+        pdf = generateOrderConfirmation(order, customer, { currencySymbol })
+        typeName = 'Order Confirmation'
+        break
+      case 'kitchen':
+        pdf = generateKitchenSheet(order, customer, { currencySymbol })
+        typeName = 'Kitchen Sheet'
+        break
+      case 'delivery':
+        pdf = generateDeliveryReceipt(order, customer, { currencySymbol })
+        typeName = 'Delivery Receipt'
+        break
+      case 'packing':
+        pdf = generatePackingSlip(order, customer, { currencySymbol })
+        typeName = 'Packing Slip'
+        break
+    }
+    
+    const filename = getOrderPDFFilename(order, type)
+    pdf.save(filename)
+    
+    toast({
+      title: 'PDF Downloaded',
+      description: `${typeName} has been saved as PDF.`,
     })
   }
 
@@ -285,7 +346,7 @@ export default function OrderTracker() {
               New Order
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-[95vw] md:max-w-4xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Order</DialogTitle>
               <DialogDescription>
@@ -294,54 +355,16 @@ export default function OrderTracker() {
             </DialogHeader>
 
             <div className="space-y-4">
-              {/* Customer Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="relative">
-                  <Label htmlFor="customerName">Customer Name *</Label>
-                  <Input
-                    id="customerName"
-                    value={customerName}
-                    onChange={(e) => handleCustomerNameChange(e.target.value)}
-                    onFocus={() => customerName && setShowSuggestions(customerSuggestions.length > 0)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    placeholder="John Doe"
-                    autoComplete="off"
-                  />
-                  {showSuggestions && customerSuggestions.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-                      {customerSuggestions.map(customer => (
-                        <button
-                          key={customer.id}
-                          type="button"
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                          onClick={() => handleSelectCustomer(customer)}
-                        >
-                          <div className="font-medium">{customer.name}</div>
-                          {customer.phone && (
-                            <div className="text-sm text-gray-600">{customer.phone}</div>
-                          )}
-                          <div className="text-xs text-gray-500">
-                            {customer.totalOrders} orders · {formatCurrency(customer.totalSpent)} total
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="customerPhone">Phone Number</Label>
-                  <Input
-                    id="customerPhone"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="+1 234 567 8900"
-                  />
-                </div>
-              </div>
+              {/* Customer Selector */}
+              <CustomerSelector
+                value={selectedCustomer}
+                onChange={setSelectedCustomer}
+                onCreateNew={handleCreateNewCustomer}
+              />
 
               {/* Delivery Date */}
               <div>
-                <Label htmlFor="deliveryDate">Delivery Date *</Label>
+                <Label className="text-sm font-medium mb-1" htmlFor="deliveryDate">Delivery Date *</Label>
                 <Input
                   id="deliveryDate"
                   type="date"
@@ -356,7 +379,7 @@ export default function OrderTracker() {
                 
                 <div className="grid grid-cols-12 gap-2 mb-3">
                   <div className="col-span-5">
-                    <Label>Recipe</Label>
+                    <Label className="text-sm font-medium mb-1">Recipe</Label>
                     <Select value={selectedRecipeId} onValueChange={setSelectedRecipeId}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select recipe" />
@@ -372,17 +395,37 @@ export default function OrderTracker() {
                   </div>
                   
                   <div className="col-span-2">
-                    <Label>Quantity</Label>
-                    <Input
-                      type="number"
-                      min="1"
-                      value={quantity}
-                      onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                    />
+                    <Label className="text-sm font-medium mb-1">Quantity</Label>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <Input
+                        type="text"
+                        value={quantity}
+                        readOnly
+                        className="text-center"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   
                   <div className="col-span-3">
-                    <Label>Selling Price ($)</Label>
+                    <Label className="text-sm font-medium mb-1">Selling Price ($)</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -393,7 +436,7 @@ export default function OrderTracker() {
                   </div>
                   
                   <div className="col-span-2 flex items-end">
-                    <Button onClick={handleAddOrderClick} className="w-full">
+                    <Button onClick={handleSubmit} className="w-full">
                       Add
                     </Button>
                   </div>
@@ -534,13 +577,43 @@ export default function OrderTracker() {
                       )}
                     </CardDescription>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteOrder(order.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Export
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Export as PDF</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleExportPDF(order, 'confirmation')}>
+                          <FileText className="h-4 w-4 mr-2" />
+                          Order Confirmation
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExportPDF(order, 'kitchen')}>
+                          <ChefHat className="h-4 w-4 mr-2" />
+                          Kitchen Sheet
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExportPDF(order, 'delivery')}>
+                          <Truck className="h-4 w-4 mr-2" />
+                          Delivery Receipt
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExportPDF(order, 'packing')}>
+                          <Package className="h-4 w-4 mr-2" />
+                          Packing Slip
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteOrder(order.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>

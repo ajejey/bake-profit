@@ -124,3 +124,139 @@
     font-family: var(--font-lora), serif;
   }
 }
+
+@layer components {
+  /* Enhanced Form Section Styling */
+  .form-section {
+    @apply bg-gradient-to-br from-white to-rose-50/30 rounded-xl p-6 border-2 border-rose-100/50 shadow-sm;
+  }
+  
+  .form-section-header {
+    @apply pb-4 mb-6 border-b-2 border-rose-200/50;
+  }
+  
+  .form-section-title {
+    @apply text-lg font-semibold text-gray-900 flex items-center gap-2;
+  }
+  
+  .form-section-description {
+    @apply text-sm text-gray-600 mt-1;
+  }
+
+  /* Enhanced Input Groups */
+  .input-group {
+    @apply space-y-2;
+  }
+  
+  .input-label {
+    @apply text-sm font-medium text-gray-700 flex items-center gap-2;
+  }
+  
+  .input-required::after {
+    content: "*";
+    @apply text-rose-500 ml-1;
+  }
+
+  /* Visual Separation Utilities */
+  .visual-divider {
+    @apply my-6 border-t-2 border-gray-200;
+  }
+  
+  .section-spacing {
+    @apply space-y-6;
+  }
+  
+  .field-spacing {
+    @apply space-y-4;
+  }
+
+  /* Enhanced Card Variants */
+  .card-elevated {
+    @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .card-interactive {
+    @apply hover:border-rose-300 hover:shadow-md transition-all duration-200 cursor-pointer;
+  }
+  
+  .card-section {
+    @apply bg-gray-50/50 rounded-lg p-4 border border-gray-200;
+  }
+
+  /* Button Hierarchy */
+  .btn-primary-action {
+    @apply bg-rose-500 hover:bg-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200;
+  }
+  
+  .btn-secondary-action {
+    @apply bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 font-medium transition-all duration-200;
+  }
+
+  /* Form Layout Improvements */
+  .form-grid-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  
+  .form-grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+  }
+
+  /* Enhanced Focus States */
+  .input-enhanced:focus-within {
+    @apply ring-2 ring-rose-500/20 border-rose-400;
+  }
+
+  /* Status Badge Improvements */
+  .badge-status {
+    @apply px-3 py-1 rounded-full text-xs font-semibold shadow-sm;
+  }
+
+  /* List Item Separation */
+  .list-item-separated {
+    @apply py-4 border-b border-gray-200 last:border-b-0;
+  }
+  
+  .list-item-hover {
+    @apply hover:bg-rose-50/50 transition-colors duration-150 rounded-lg px-3 -mx-3;
+  }
+
+  /* Modal/Dialog Enhancements */
+  .dialog-header-enhanced {
+    @apply pb-4 border-b-2 border-rose-200/50 bg-gradient-to-r from-rose-50/50 to-transparent;
+  }
+  
+  .dialog-footer-enhanced {
+    @apply pt-6 border-t-2 border-gray-200 bg-gray-50/30 flex gap-3 justify-end;
+  }
+
+  /* Icon Containers */
+  .icon-container {
+    @apply w-10 h-10 rounded-lg flex items-center justify-center;
+  }
+  
+  .icon-container-primary {
+    @apply bg-rose-100 text-rose-600;
+  }
+  
+  .icon-container-secondary {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  /* Empty State Styling */
+  .empty-state {
+    @apply text-center py-12 px-6 bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-300;
+  }
+
+  /* Data Display Cards */
+  .stat-card {
+    @apply bg-white rounded-xl p-6 border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow;
+  }
+  
+  .stat-card-value {
+    @apply text-3xl font-bold text-gray-900;
+  }
+  
+  .stat-card-label {
+    @apply text-sm text-gray-600 mt-1;
+  }
+}

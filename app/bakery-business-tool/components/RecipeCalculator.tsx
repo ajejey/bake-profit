@@ -46,7 +46,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Trash2, Edit, Save, Calculator, Copy, Clock, Thermometer, ChefHat, X, Scale } from 'lucide-react'
+import { Plus, Trash2, Edit, Save, Calculator, Copy, Clock, Thermometer, ChefHat, X, Scale, Package, Download, FileText, DollarSign } from 'lucide-react'
 import SearchBar from './SearchBar'
 import FilterChips, { type FilterOption } from './FilterChips'
 import SortDropdown, { type SortOption } from './SortDropdown'
@@ -54,7 +54,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { v4 as uuidv4 } from 'uuid'
-import { useIngredients, useRecipes } from '../hooks'
+import { useIngredients, useRecipes, useDefaultServings, useDefaultLaborCost, useDefaultOverhead } from '../hooks'
 import { useBakeryData } from '../contexts/BakeryDataContext'
 import type { Ingredient, Recipe, RecipeIngredient, RecipeCategory } from '../types'
 import { Badge } from '@/components/ui/badge'
@@ -62,7 +62,24 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useSubscription } from '@/contexts/SubscriptionContext'
 import UpgradePrompt from '@/components/subscription/UpgradePrompt'
 import UsageIndicator from '@/components/subscription/UsageIndicator'
-import { formatCurrency, getCurrencySymbol, getDefaultServings, getDefaultLaborCost, getDefaultOverhead } from '../utils/settings'
+import { getCurrencySymbol } from '../utils/settings'
+import { useCurrencySymbol } from '../hooks'
+import { Label } from '@/components/ui/label'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  generateRecipeCard,
+  generateCostAnalysis,
+  generateIngredientList,
+  generateFullRecipe,
+  getRecipePDFFilename
+} from '../lib/pdfGenerators/recipePDF'
 
 
 
@@ -119,41 +136,38 @@ const convertUnit = (value: number, fromUnit: string, toUnit: string): number =>
   return valueInBaseUnit / unitConversions[baseUnit][toUnit]
 }
 
+
 export default function RecipeCalculator() {
   const { toast } = useToast()
-  const { tier, checkLimit, usage } = useSubscription()
+  const { checkLimit } = useSubscription()
+  
+  // Load default settings
+  const { servings: defaultServings } = useDefaultServings()
+  const { laborCost: defaultLaborCost } = useDefaultLaborCost()
+  const { overhead: defaultOverhead } = useDefaultOverhead()
+  const { symbol: currencySymbol = '$' } = useCurrencySymbol()
   
   // Use custom hooks for data management
   const { 
     ingredients, 
-    addIngredient, 
-    updateIngredient, 
-    deleteIngredient, 
     safeDeleteIngredient,
-    getIngredientById 
   } = useIngredients()
   
   const { 
     recipes, 
     addRecipe, 
-    updateRecipe, 
     deleteRecipe, 
-    getRecipeById 
   } = useRecipes()
 
   const { recipeCategories, registerCategory } = useBakeryData()
   
   // UI State only
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
-  const [isAddIngredientOpen, setIsAddIngredientOpen] = useState(false)
   const [isAddRecipeOpen, setIsAddRecipeOpen] = useState(false)
-  const [isEditIngredientOpen, setIsEditIngredientOpen] = useState(false)
-  const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null)
   const [recipeIngredients, setRecipeIngredients] = useState<RecipeIngredient[]>([])
   const [selectedIngredientId, setSelectedIngredientId] = useState<string>('')
   const [ingredientQuantity, setIngredientQuantity] = useState<number>(0)
   const [ingredientUnit, setIngredientUnit] = useState<string>('')
-  const [activeTab, setActiveTab] = useState('recipes')
   const [recipeInstructions, setRecipeInstructions] = useState<string[]>([])
   const [currentInstruction, setCurrentInstruction] = useState('')
   const [isScaleDialogOpen, setIsScaleDialogOpen] = useState(false)
@@ -173,13 +187,19 @@ export default function RecipeCalculator() {
     defaultValues: {
       name: '',
       description: '',
-      servings: getDefaultServings(),
-      laborCost: getDefaultLaborCost(),
+      servings: defaultServings,
+      laborCost: defaultLaborCost,
       laborTime: 0,
-      overheadCost: 0,
+      overheadCost: defaultOverhead,
       notes: '',
     },
   })
+
+  
+// Helper to format currency synchronously (uses default $ symbol if not loaded yet)
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
 
   // No localStorage logic needed - handled by hooks!
 
@@ -336,27 +356,23 @@ export default function RecipeCalculator() {
       return;
     }
     
-    const now = new Date().toISOString()
-    
-    const duplicatedRecipe: Recipe = {
+    const duplicatedRecipe = {
       ...recipe,
       id: uuidv4(),
       name: `${recipe.name} (Copy)`,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
-    
-    addRecipe(duplicatedRecipe) // Hook handles everything!
-    
+    addRecipe(duplicatedRecipe)
     toast({
       title: 'Recipe duplicated',
-      description: `A copy of ${recipe.name} has been created.`,
+      description: `${recipe.name} has been copied.`,
     })
   }
 
   // Handle deleting a recipe
   const handleDeleteRecipe = (id: string) => {
-    deleteRecipe(id) // Hook handles everything!
+    deleteRecipe(id)
     
     if (selectedRecipe?.id === id) {
       setSelectedRecipe(null)
@@ -365,6 +381,39 @@ export default function RecipeCalculator() {
     toast({
       title: 'Recipe deleted',
       description: 'The recipe has been removed.',
+    })
+  }
+
+  // Handle PDF export
+  const handleExportPDF = (recipe: Recipe, type: 'card' | 'cost-analysis' | 'ingredient-list' | 'full') => {
+    let pdf
+    let typeName = ''
+    
+    switch (type) {
+      case 'card':
+        pdf = generateRecipeCard(recipe, ingredients, { currencySymbol })
+        typeName = 'Recipe Card'
+        break
+      case 'cost-analysis':
+        pdf = generateCostAnalysis(recipe, ingredients, { currencySymbol })
+        typeName = 'Cost Analysis'
+        break
+      case 'ingredient-list':
+        pdf = generateIngredientList(recipe, ingredients, { currencySymbol })
+        typeName = 'Ingredient List'
+        break
+      case 'full':
+        pdf = generateFullRecipe(recipe, ingredients, { currencySymbol })
+        typeName = 'Full Recipe'
+        break
+    }
+    
+    const filename = getRecipePDFFilename(recipe, type)
+    pdf.save(filename)
+    
+    toast({
+      title: 'PDF Downloaded',
+      description: `${typeName} has been saved as PDF.`,
     })
   }
 
@@ -535,11 +584,20 @@ export default function RecipeCalculator() {
                 Add Recipe
               </Button>
               <DialogContent className="max-w-[95vw] lg:max-w-7xl max-h-[85vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Create New Recipe</DialogTitle>
-                  <DialogDescription>
-                    Create a new recipe with ingredients, labor, and overhead costs.
-                  </DialogDescription>
+                <DialogHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <DialogTitle>Create New Recipe</DialogTitle>
+                    <DialogDescription>
+                      Create a new recipe with ingredients, labor, and overhead costs.
+                    </DialogDescription>
+                  </div>
+                  <Button 
+                    onClick={recipeForm.handleSubmit(onCreateRecipe)}
+                    className="flex items-center gap-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    Create Recipe
+                  </Button>
                 </DialogHeader>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -630,7 +688,11 @@ export default function RecipeCalculator() {
                               <FormItem>
                                 <FormLabel>Labor Time (minutes)</FormLabel>
                                 <FormControl>
-                                  <Input type="number" {...field} />
+                                  <Input 
+                                    type="number" 
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -642,9 +704,14 @@ export default function RecipeCalculator() {
                             name="laborCost"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Labor Cost ($)</FormLabel>
+                                <FormLabel>Labor Cost ({currencySymbol})</FormLabel>
                                 <FormControl>
-                                  <Input type="number" step="0.01" {...field} />
+                                  <Input 
+                                    type="number" 
+                                    step="0.01" 
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -657,9 +724,14 @@ export default function RecipeCalculator() {
                           name="overheadCost"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Overhead Cost ($)</FormLabel>
+                              <FormLabel>Overhead Cost ({currencySymbol})</FormLabel>
                               <FormControl>
-                                <Input type="number" step="0.01" {...field} />
+                                <Input 
+                                  type="number" 
+                                  step="0.01" 
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
                               </FormControl>
                               <FormDescription>
                                 Include costs like electricity, packaging, etc.
@@ -694,7 +766,12 @@ export default function RecipeCalculator() {
                                 <FormItem>
                                   <FormLabel>Prep Time (min)</FormLabel>
                                   <FormControl>
-                                    <Input type="number" placeholder="30" {...field} />
+                                    <Input 
+                                      type="number" 
+                                      placeholder="30" 
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -708,7 +785,12 @@ export default function RecipeCalculator() {
                                 <FormItem>
                                   <FormLabel>Bake Time (min)</FormLabel>
                                   <FormControl>
-                                    <Input type="number" placeholder="45" {...field} />
+                                    <Input 
+                                      type="number" 
+                                      placeholder="45" 
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -722,7 +804,12 @@ export default function RecipeCalculator() {
                                 <FormItem>
                                   <FormLabel>Cool Time (min)</FormLabel>
                                   <FormControl>
-                                    <Input type="number" placeholder="20" {...field} />
+                                    <Input 
+                                      type="number" 
+                                      placeholder="20" 
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -736,7 +823,11 @@ export default function RecipeCalculator() {
                                 <FormItem>
                                   <FormLabel>Temperature</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="350°F or 180°C" {...field} />
+                                    <Input 
+                                      placeholder="350°F or 180°C" 
+                                      {...field}
+                                      onChange={(e) => field.onChange(e.target.value)}
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -805,146 +896,224 @@ export default function RecipeCalculator() {
                     </Form>
                   </div>
                   
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Recipe Ingredients</h3>
+                  <div className="space-y-6">
+                    {/* Section Header */}
+                    <div className="flex items-center gap-2 pb-3 border-b">
+                      <Scale className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Recipe Ingredients</h3>
+                    </div>
                     
-                    <div className="space-y-4 mb-6">
-                      <div className="grid grid-cols-3 gap-2">
-                        <Select
-                          value={selectedIngredientId}
-                          onValueChange={setSelectedIngredientId}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select ingredient" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {ingredients.map((ing) => (
-                              <SelectItem key={ing.id} value={ing.id}>
-                                {ing.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        
-                        <Input
-                          type="number"
-                          step="0.01"
-                          placeholder="Quantity"
-                          value={ingredientQuantity || ''}
-                          onChange={(e) => setIngredientQuantity(parseFloat(e.target.value))}
-                        />
-                        
-                        <Select
-                          value={ingredientUnit}
-                          onValueChange={setIngredientUnit}
-                          disabled={!selectedIngredientId}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {selectedIngredientId && 
-                              getAvailableUnits(selectedIngredientId).map((unit) => (
-                                <SelectItem key={unit} value={unit}>
-                                  {unit}
+                    {/* Add Ingredient Form */}
+                    <Card className="bg-gradient-to-br gap-2 from-blue-50 to-indigo-50 border-blue-200">
+                      <CardHeader>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Plus className="h-4 w-4" />
+                          Add Ingredient
+                        </CardTitle>
+                        {/* <CardDescription className="text-xs">
+                          Select an ingredient, specify quantity, and choose the unit of measurement
+                        </CardDescription> */}
+                      </CardHeader>
+                      <CardContent className="space-y-1">
+                        <div className="space-y-1">
+                          <Label className="text-sm font-medium">Ingredient</Label>
+                          <Select
+                            value={selectedIngredientId}
+                            onValueChange={(value) => {
+                              setSelectedIngredientId(value)
+                              const ingredient = ingredients.find(ing => ing.id === value)
+                              if (ingredient) {
+                                setIngredientUnit(ingredient.unit)
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="bg-white">
+                              <SelectValue placeholder="Choose an ingredient..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ingredients.map((ing) => (
+                                <SelectItem key={ing.id} value={ing.id}>
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{ing.name}</span>
+                                    <span className="text-xs text-gray-500 ml-2">({ing.unit})</span>
+                                  </div>
                                 </SelectItem>
-                              ))
-                            }
-                          </SelectContent>
-                        </Select>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1.5">
+                            <Label className="text-sm font-medium">Quantity</Label>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="0.00"
+                              value={ingredientQuantity || ''}
+                              onChange={(e) => setIngredientQuantity(parseFloat(e.target.value))}
+                              className="bg-white"
+                              disabled={!selectedIngredientId}
+                            />
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <Label className="text-sm font-medium">Unit</Label>
+                            <Select
+                              value={ingredientUnit}
+                              onValueChange={setIngredientUnit}
+                              disabled={!selectedIngredientId}
+                            >
+                              <SelectTrigger className="bg-white">
+                                <SelectValue placeholder="Select unit" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {selectedIngredientId && 
+                                  getAvailableUnits(selectedIngredientId).map((unit) => (
+                                    <SelectItem key={unit} value={unit}>
+                                      {unit}
+                                    </SelectItem>
+                                  ))
+                                }
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        
+                        <Button 
+                          type="button" 
+                          className="w-full"
+                          onClick={handleAddRecipeIngredient}
+                          disabled={!selectedIngredientId || !ingredientQuantity || !ingredientUnit}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add to Recipe
+                        </Button>
+                      </CardContent>
+                    </Card>
+                    
+                    {/* Ingredients List */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-semibold text-gray-700">
+                          Ingredients List
+                          {recipeIngredients.length > 0 && (
+                            <Badge variant="secondary" className="ml-2">
+                              {recipeIngredients.length}
+                            </Badge>
+                          )}
+                        </h4>
                       </div>
                       
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={handleAddRecipeIngredient}
-                        disabled={!selectedIngredientId || !ingredientQuantity || !ingredientUnit}
-                      >
-                        Add Ingredient to Recipe
-                      </Button>
-                    </div>
-                    
-                    <div className="border rounded-md">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Ingredient</TableHead>
-                            <TableHead>Quantity</TableHead>
-                            <TableHead>Cost</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {recipeIngredients.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={4} className="text-center text-gray-500">
-                                No ingredients added yet
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            recipeIngredients.map((ing) => (
-                              <TableRow key={ing.id}>
-                                <TableCell>{getIngredientName(ing.ingredientId)}</TableCell>
-                                <TableCell>{ing.quantity} {ing.unit}</TableCell>
-                                <TableCell>{formatCurrency(ing.cost)}</TableCell>
-                                <TableCell>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleRemoveRecipeIngredient(ing.id)}
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-500" />
-                                  </Button>
-                                </TableCell>
+                      {recipeIngredients.length === 0 ? (
+                        <Card className="border-dashed">
+                          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                            <Package className="h-12 w-12 text-gray-300 mb-3" />
+                            <p className="text-sm text-gray-500 mb-1">No ingredients added yet</p>
+                            <p className="text-xs text-gray-400">Add ingredients above to build your recipe</p>
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        <div className="border rounded-lg overflow-hidden bg-white">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="bg-gray-50">
+                                <TableHead className="font-semibold">Ingredient</TableHead>
+                                <TableHead className="font-semibold">Quantity</TableHead>
+                                <TableHead className="font-semibold">Cost</TableHead>
+                                <TableHead className="w-[50px]"></TableHead>
                               </TableRow>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {recipeIngredients.map((ing) => (
+                                <TableRow key={ing.id} className="hover:bg-gray-50 transition-colors">
+                                  <TableCell className="font-medium">{getIngredientName(ing.ingredientId)}</TableCell>
+                                  <TableCell>
+                                    <span className="text-sm">
+                                      {ing.quantity} <span className="text-gray-500">{ing.unit}</span>
+                                    </span>
+                                  </TableCell>
+                                  <TableCell className="font-mono text-sm">{formatCurrency(ing.cost)}</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => handleRemoveRecipeIngredient(ing.id)}
+                                      className="hover:bg-red-50"
+                                    >
+                                      <Trash2 className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="mt-4 p-4 bg-gray-50 rounded-md">
-                      <div className="flex justify-between mb-2">
-                        <span>Ingredients Cost:</span>
-                        <span>{formatCurrency(recipeIngredients.reduce((sum, ing) => sum + ing.cost, 0))}</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span>Labor Cost:</span>
-                        <span>{formatCurrency(Number(recipeForm.watch('laborCost')) || 0)}</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span>Overhead Cost:</span>
-                        <span>{formatCurrency(Number(recipeForm.watch('overheadCost')) || 0)}</span>
-                      </div>
-                      <div className="flex justify-between font-bold pt-2 border-t">
-                        <span>Total Recipe Cost:</span>
-                        <span>
-                          {formatCurrency(
-                            calculateTotalRecipeCost(
-                              recipeIngredients,
-                              Number(recipeForm.watch('laborCost')) || 0,
-                              Number(recipeForm.watch('overheadCost')) || 0
-                            )
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>Cost per Serving:</span>
-                        <span>
-                          {formatCurrency(
-                            calculateCostPerServing(
-                              calculateTotalRecipeCost(
-                                recipeIngredients,
-                                Number(recipeForm.watch('laborCost')) || 0,
-                                Number(recipeForm.watch('overheadCost')) || 0
-                              ),
-                              Number(recipeForm.watch('servings')) || 1
-                            )
-                          )}
-                        </span>
-                      </div>
-                    </div>
+                    {/* Cost Summary */}
+                    <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Calculator className="h-4 w-4" />
+                          Cost Breakdown
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">Ingredients Cost:</span>
+                            <span className="font-mono font-medium">
+                              {formatCurrency(recipeIngredients.reduce((sum, ing) => sum + ing.cost, 0))}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">Labor Cost:</span>
+                            <span className="font-mono font-medium">
+                              {formatCurrency(Number(recipeForm.watch('laborCost')) || 0)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">Overhead Cost:</span>
+                            <span className="font-mono font-medium">
+                              {formatCurrency(Number(recipeForm.watch('overheadCost')) || 0)}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="pt-3 border-t border-green-200 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-gray-900">Total Recipe Cost:</span>
+                            <span className="font-mono text-lg font-bold text-green-700">
+                              {formatCurrency(
+                                calculateTotalRecipeCost(
+                                  recipeIngredients,
+                                  Number(recipeForm.watch('laborCost')) || 0,
+                                  Number(recipeForm.watch('overheadCost')) || 0
+                                )
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center pt-2 border-t border-green-100">
+                            <span className="text-sm text-gray-600">Cost per Serving:</span>
+                            <span className="font-mono text-sm font-semibold text-green-600">
+                              {formatCurrency(
+                                calculateCostPerServing(
+                                  calculateTotalRecipeCost(
+                                    recipeIngredients,
+                                    Number(recipeForm.watch('laborCost')) || 0,
+                                    Number(recipeForm.watch('overheadCost')) || 0
+                                  ),
+                                  Number(recipeForm.watch('servings')) || 1
+                                )
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
                 
@@ -1026,6 +1195,33 @@ export default function RecipeCalculator() {
                         )}
                       </div>
                       <div className="flex gap-1">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Export as PDF</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleExportPDF(recipe, 'card')}>
+                              <ChefHat className="h-4 w-4 mr-2" />
+                              Recipe Card
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleExportPDF(recipe, 'cost-analysis')}>
+                              <DollarSign className="h-4 w-4 mr-2" />
+                              Cost Analysis
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleExportPDF(recipe, 'ingredient-list')}>
+                              <Package className="h-4 w-4 mr-2" />
+                              Ingredient List
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleExportPDF(recipe, 'full')}>
+                              <FileText className="h-4 w-4 mr-2" />
+                              Full Recipe
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                         <Button
                           variant="ghost"
                           size="icon"

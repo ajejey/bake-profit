@@ -2,8 +2,19 @@
 
 import React, { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency, formatDate } from '../utils/settings'
 import { Button } from '@/components/ui/button'
+import { useCurrencySymbol } from '../hooks'
+
+// Helper to format currency synchronously
+const formatCurrency = (amount: number, symbol: string = '$'): string => {
+  return `${symbol}${amount.toFixed(2)}`
+}
+
+// Helper to format date
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import {

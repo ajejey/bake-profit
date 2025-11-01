@@ -1,26 +1,50 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Bell } from 'lucide-react';
+import { getNotificationSettings, setNotificationSettings } from '@/app/bakery-business-tool/utils/settings';
 
 export default function NotificationsSettings() {
   const { toast } = useToast();
   const [lowStockAlerts, setLowStockAlerts] = useState(true);
   const [upcomingDeliveries, setUpcomingDeliveries] = useState(true);
   const [usageLimitWarnings, setUsageLimitWarnings] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSave = () => {
-    localStorage.setItem('notificationSettings', JSON.stringify({
-      lowStockAlerts,
-      upcomingDeliveries,
-      usageLimitWarnings,
-    }));
-    toast({ title: 'Settings saved', description: 'Notification preferences updated.' });
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getNotificationSettings();
+        setLowStockAlerts(settings.lowStockAlerts);
+        setUpcomingDeliveries(settings.upcomingDeliveries);
+        setUsageLimitWarnings(settings.usageLimitWarnings);
+      } catch (error) {
+        console.error('Error loading notification settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await setNotificationSettings({
+        lowStockAlerts,
+        upcomingDeliveries,
+        usageLimitWarnings,
+      });
+      toast({ title: 'Settings saved', description: 'Notification preferences updated.' });
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to save settings.', variant: 'destructive' });
+    }
   };
 
   return (

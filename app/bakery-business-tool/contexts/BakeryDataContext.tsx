@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import type { Recipe, Order, Customer, Ingredient, InventoryItem, RecipeCategory } from '../types'
 import { DEFAULT_RECIPE_CATEGORIES } from '../types'
+import { StorageAdapter } from '../utils/indexedDBAdapter'
 
 // Context Type
 interface BakeryDataContextType {
@@ -77,122 +78,141 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   const [recipeCategories, setRecipeCategories] = useState<RecipeCategory[]>(DEFAULT_RECIPE_CATEGORIES)
   const [isLoading, setIsLoading] = useState(true)
 
-  const isLocalStorageAvailable = typeof window !== 'undefined' && window.localStorage
-
   // Load all data on mount
   useEffect(() => {
-    if (!isLocalStorageAvailable) {
-      console.warn('localStorage is not available')
-      setIsLoading(false)
-      return
+    const loadData = async () => {
+      try {
+        // Migrate from localStorage on first load
+        // await migrateFromLocalStorage()
+        
+        const loadedRecipes = await StorageAdapter.getItem(STORAGE_KEYS.recipes)
+        const loadedOrders = await StorageAdapter.getItem(STORAGE_KEYS.orders)
+        const loadedCustomers = await StorageAdapter.getItem(STORAGE_KEYS.customers)
+        const loadedIngredients = await StorageAdapter.getItem(STORAGE_KEYS.ingredients)
+        const loadedInventory = await StorageAdapter.getItem(STORAGE_KEYS.inventory)
+        const loadedCategories = await StorageAdapter.getItem(STORAGE_KEYS.categories)
+
+        // Load and migrate recipes if needed
+        if (loadedRecipes) {
+          const parsedRecipes: Recipe[] = JSON.parse(loadedRecipes)
+          // Migrate old recipes without totalCost
+          const migratedRecipes = parsedRecipes.map(recipe => {
+            if (recipe.totalCost === undefined || recipe.costPerServing === undefined) {
+              const ingredientCost = recipe.ingredients.reduce((sum, ing) => sum + (ing.cost || 0), 0)
+              const totalCost = ingredientCost + (recipe.laborCost || 0) + (recipe.overheadCost || 0)
+              const costPerServing = recipe.servings > 0 ? totalCost / recipe.servings : 0
+              console.log(`Migrated recipe: ${recipe.name} - Added totalCost: ${totalCost}`)
+              return { ...recipe, totalCost, costPerServing }
+            }
+            return recipe
+          })
+          setRecipes(migratedRecipes)
+        }
+        
+        if (loadedOrders) setOrders(JSON.parse(loadedOrders))
+        if (loadedCustomers) setCustomers(JSON.parse(loadedCustomers))
+        if (loadedIngredients) setIngredients(JSON.parse(loadedIngredients))
+        if (loadedInventory) setInventory(JSON.parse(loadedInventory))
+        if (loadedCategories) {
+          setRecipeCategories(JSON.parse(loadedCategories))
+        }
+
+        console.log('✅ Bakery data loaded from IndexedDB')
+      } catch (error) {
+        console.error('Error loading data from IndexedDB:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    try {
-      const loadedRecipes = localStorage.getItem(STORAGE_KEYS.recipes)
-      const loadedOrders = localStorage.getItem(STORAGE_KEYS.orders)
-      const loadedCustomers = localStorage.getItem(STORAGE_KEYS.customers)
-      const loadedIngredients = localStorage.getItem(STORAGE_KEYS.ingredients)
-      const loadedInventory = localStorage.getItem(STORAGE_KEYS.inventory)
-      const loadedCategories = localStorage.getItem(STORAGE_KEYS.categories)
+    loadData()
+  }, [])
 
-      // Load and migrate recipes if needed
-      if (loadedRecipes) {
-        const parsedRecipes: Recipe[] = JSON.parse(loadedRecipes)
-        // Migrate old recipes without totalCost
-        const migratedRecipes = parsedRecipes.map(recipe => {
-          if (recipe.totalCost === undefined || recipe.costPerServing === undefined) {
-            const ingredientCost = recipe.ingredients.reduce((sum, ing) => sum + (ing.cost || 0), 0)
-            const totalCost = ingredientCost + (recipe.laborCost || 0) + (recipe.overheadCost || 0)
-            const costPerServing = recipe.servings > 0 ? totalCost / recipe.servings : 0
-            console.log(`Migrated recipe: ${recipe.name} - Added totalCost: ${totalCost}`)
-            return { ...recipe, totalCost, costPerServing }
-          }
-          return recipe
-        })
-        setRecipes(migratedRecipes)
-      }
+  // Listen for Google Drive data download and reload
+  useEffect(() => {
+    const handleGoogleDriveDataLoaded = async () => {
+      console.log('📥 Google Drive data loaded, reloading UI...')
       
-      if (loadedOrders) setOrders(JSON.parse(loadedOrders))
-      if (loadedCustomers) setCustomers(JSON.parse(loadedCustomers))
-      if (loadedIngredients) setIngredients(JSON.parse(loadedIngredients))
-      if (loadedInventory) setInventory(JSON.parse(loadedInventory))
-      if (loadedCategories) {
-        setRecipeCategories(JSON.parse(loadedCategories))
-      }
-
-      console.log('✅ Bakery data loaded from localStorage')
-    } catch (error) {
-      console.error('Error loading data from localStorage:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isLocalStorageAvailable])
-
-  // Auto-save recipes to localStorage
-  useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && recipes.length >= 0) {
       try {
-        localStorage.setItem(STORAGE_KEYS.recipes, JSON.stringify(recipes))
-      } catch (error) {
-        console.error('Error saving recipes:', error)
-      }
-    }
-  }, [recipes, isLoading, isLocalStorageAvailable])
+        const loadedRecipes = await StorageAdapter.getItem(STORAGE_KEYS.recipes)
+        const loadedOrders = await StorageAdapter.getItem(STORAGE_KEYS.orders)
+        const loadedCustomers = await StorageAdapter.getItem(STORAGE_KEYS.customers)
+        const loadedIngredients = await StorageAdapter.getItem(STORAGE_KEYS.ingredients)
+        const loadedInventory = await StorageAdapter.getItem(STORAGE_KEYS.inventory)
+        const loadedCategories = await StorageAdapter.getItem(STORAGE_KEYS.categories)
 
-  // Auto-save orders to localStorage
-  useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && orders.length >= 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(orders))
-      } catch (error) {
-        console.error('Error saving orders:', error)
-      }
-    }
-  }, [orders, isLoading, isLocalStorageAvailable])
+        if (loadedRecipes) setRecipes(JSON.parse(loadedRecipes))
+        if (loadedOrders) setOrders(JSON.parse(loadedOrders))
+        if (loadedCustomers) setCustomers(JSON.parse(loadedCustomers))
+        if (loadedIngredients) setIngredients(JSON.parse(loadedIngredients))
+        if (loadedInventory) setInventory(JSON.parse(loadedInventory))
+        if (loadedCategories) setRecipeCategories(JSON.parse(loadedCategories))
 
-  // Auto-save customers to localStorage
-  useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && customers.length >= 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.customers, JSON.stringify(customers))
+        console.log('✅ UI updated with Google Drive data')
       } catch (error) {
-        console.error('Error saving customers:', error)
+        console.error('Error reloading data from Google Drive:', error)
       }
     }
-  }, [customers, isLoading, isLocalStorageAvailable])
 
-  // Auto-save ingredients to localStorage
-  useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && ingredients.length >= 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.ingredients, JSON.stringify(ingredients))
-      } catch (error) {
-        console.error('Error saving ingredients:', error)
-      }
-    }
-  }, [ingredients, isLoading, isLocalStorageAvailable])
+    window.addEventListener('google-drive-data-loaded', handleGoogleDriveDataLoaded)
+    return () => window.removeEventListener('google-drive-data-loaded', handleGoogleDriveDataLoaded)
+  }, [])
 
-  // Auto-save inventory to localStorage
+  // Auto-save recipes to IndexedDB
   useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && inventory.length >= 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.inventory, JSON.stringify(inventory))
-      } catch (error) {
-        console.error('Error saving inventory:', error)
-      }
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(recipes))
+        .catch(error => console.error('Error saving recipes:', error))
     }
-  }, [inventory, isLoading, isLocalStorageAvailable])
+  }, [recipes, isLoading])
 
-  // Auto-save categories to localStorage
+  // Auto-save orders to IndexedDB
   useEffect(() => {
-    if (!isLoading && isLocalStorageAvailable && recipeCategories.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.categories, JSON.stringify(recipeCategories))
-      } catch (error) {
-        console.error('Error saving categories:', error)
-      }
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(orders))
+        .catch(error => console.error('Error saving orders:', error))
     }
-  }, [recipeCategories, isLoading, isLocalStorageAvailable])
+  }, [orders, isLoading])
+
+  // Auto-save customers to IndexedDB
+  useEffect(() => {
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(customers))
+        .catch(error => console.error('Error saving customers:', error))
+    }
+  }, [customers, isLoading])
+
+  // Auto-save ingredients to IndexedDB
+  useEffect(() => {
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(ingredients))
+        .catch(error => console.error('Error saving ingredients:', error))
+    }
+  }, [ingredients, isLoading])
+
+  // Auto-save inventory to IndexedDB
+  useEffect(() => {
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(inventory))
+        .catch(error => console.error('Error saving inventory:', error))
+    }
+  }, [inventory, isLoading])
+
+  // Auto-save categories to IndexedDB
+  useEffect(() => {
+    if (!isLoading) {
+      StorageAdapter.setItem(STORAGE_KEYS.categories, JSON.stringify(recipeCategories))
+        .catch(error => console.error('Error saving categories:', error))
+    }
+  }, [recipeCategories, isLoading])
+
+  // Trigger Google Drive sync on data changes
+  useEffect(() => {
+    if (!isLoading && typeof window !== 'undefined') {
+      // Dispatch custom event to trigger Google Drive sync
+      window.dispatchEvent(new CustomEvent('bakery-data-changed'))
+    }
+  }, [recipes, orders, customers, ingredients, inventory, recipeCategories, isLoading])
 
   // ========== RECIPE ACTIONS ==========
   const addRecipe = useCallback((recipe: Recipe) => {
@@ -337,17 +357,14 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
 
   // ========== UTILITY ==========
   const clearAllData = useCallback(() => {
-    if (isLocalStorageAvailable) {
-      Object.values(STORAGE_KEYS).forEach(key => {
-        localStorage.removeItem(key)
-      })
-    }
+    StorageAdapter.clear()
+      .catch(error => console.error('Error clearing storage:', error))
     setRecipes([])
     setOrders([])
     setCustomers([])
     setIngredients([])
     setInventory([])
-  }, [isLocalStorageAvailable])
+  }, [])
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(() => ({

@@ -1,21 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Palette } from 'lucide-react';
+import { getAppearanceSettings, setAppearanceSettings } from '@/app/bakery-business-tool/utils/settings';
 
 export default function AppearanceSettings() {
   const { toast } = useToast();
   const [theme, setTheme] = useState('light');
   const [displayDensity, setDisplayDensity] = useState('comfortable');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSave = () => {
-    localStorage.setItem('appearanceSettings', JSON.stringify({ theme, displayDensity }));
-    toast({ title: 'Settings saved', description: 'Appearance preferences updated.' });
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getAppearanceSettings();
+        setTheme(settings.theme);
+        setDisplayDensity(settings.displayDensity);
+      } catch (error) {
+        console.error('Error loading appearance settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await setAppearanceSettings({ 
+        theme: theme as 'light' | 'dark' | 'auto',
+        displayDensity: displayDensity as 'compact' | 'comfortable' | 'spacious'
+      });
+      toast({ title: 'Settings saved', description: 'Appearance preferences updated.' });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to save settings.', variant: 'destructive' });
+    }
   };
 
   return (

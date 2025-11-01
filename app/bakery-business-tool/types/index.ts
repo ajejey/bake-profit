@@ -224,3 +224,111 @@ export const ORDER_STATUSES = [
   { value: 'delivered', label: 'Delivered', color: 'gray' },
   { value: 'cancelled', label: 'Cancelled', color: 'red' },
 ] as const
+
+// Invoice Types
+export interface InvoiceItem {
+  id: string
+  description: string      // Item description (can be recipe name or custom)
+  quantity: number
+  unitPrice: number
+  total: number           // quantity × unitPrice
+  taxable: boolean       // Whether this item is taxable
+}
+
+export interface Invoice {
+  id: string
+  invoiceNumber: string    // e.g., "INV-2025-001"
+  orderId?: string        // Optional link to order
+  
+  // Customer info
+  customerId?: string
+  customerName: string
+  customerEmail?: string
+  customerPhone?: string
+  customerAddress?: string
+  
+  // Invoice details
+  invoiceDate: string     // ISO date string
+  dueDate: string        // ISO date string
+  paymentTerms: 'due-on-receipt' | 'net-7' | 'net-15' | 'net-30' | 'net-60' | 'custom'
+  customPaymentTerms?: string  // If paymentTerms is 'custom'
+  
+  // Items
+  items: InvoiceItem[]
+  
+  // Calculations
+  subtotal: number
+  taxRate: number        // Percentage (e.g., 8 for 8%)
+  taxAmount: number
+  discount: number       // Amount
+  discountPercentage?: number  // Optional percentage
+  total: number          // subtotal + taxAmount - discount
+  
+  // Payment
+  paymentStatus: 'unpaid' | 'partial' | 'paid' | 'overdue'
+  amountPaid: number
+  amountDue: number      // total - amountPaid
+  paymentMethod?: string
+  paymentDate?: string   // ISO date string when paid
+  
+  // Additional info
+  notes?: string         // Internal notes
+  terms?: string         // Terms and conditions
+  footer?: string        // Footer text (e.g., "Thank you for your business!")
+  
+  // Metadata
+  createdAt: string
+  updatedAt: string
+  sentAt?: string        // When invoice was sent to customer
+  emailedTo?: string[]   // Email addresses invoice was sent to
+}
+
+// Payment terms options
+export const PAYMENT_TERMS = [
+  { value: 'due-on-receipt', label: 'Due on Receipt', days: 0 },
+  { value: 'net-7', label: 'Net 7 days', days: 7 },
+  { value: 'net-15', label: 'Net 15 days', days: 15 },
+  { value: 'net-30', label: 'Net 30 days', days: 30 },
+  { value: 'net-60', label: 'Net 60 days', days: 60 },
+  { value: 'custom', label: 'Custom', days: 0 },
+] as const
+
+// Invoice status options
+export const INVOICE_STATUSES = [
+  { value: 'unpaid', label: 'Unpaid', color: 'yellow' },
+  { value: 'partial', label: 'Partially Paid', color: 'blue' },
+  { value: 'paid', label: 'Paid', color: 'green' },
+  { value: 'overdue', label: 'Overdue', color: 'red' },
+] as const
+
+// PDF Customization Settings
+export interface PDFCustomization {
+  // Business Information
+  businessName: string
+  businessAddress?: string
+  businessPhone?: string
+  businessEmail?: string
+  businessWebsite?: string
+  taxId?: string          // Tax ID / EIN / VAT number
+  
+  // Branding
+  logoUrl?: string        // URL or base64 data URL
+  primaryColor?: string   // Hex color (e.g., "#f43f5e")
+  accentColor?: string    // Hex color for accents
+  
+  // Layout preferences
+  showLogo: boolean
+  showBusinessInfo: boolean
+  footerText?: string     // Custom footer text
+  
+  // Invoice specific
+  invoicePrefix: string   // e.g., "INV-"
+  defaultPaymentTerms: Invoice['paymentTerms']
+  defaultTaxRate: number
+  defaultNotes?: string
+  defaultTerms?: string
+  
+  // Metadata
+  createdAt: string
+  updatedAt: string
+}

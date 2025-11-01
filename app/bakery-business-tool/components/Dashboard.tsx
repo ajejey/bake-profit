@@ -4,8 +4,15 @@ import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useOrders, useRecipes, useCustomers, useInventory } from '../hooks'
-import { formatCurrency, formatDate } from '../utils/settings'
+import { useOrders, useRecipes, useCustomers, useInventory, useCurrencySymbol } from '../hooks'
+
+
+
+// Helper to format date
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
 import { 
   Plus, 
   Package, 
@@ -22,6 +29,7 @@ import {
   ShoppingCart
 } from 'lucide-react'
 import type { Order } from '../types'
+import Link from 'next/link'
 
 interface DashboardProps {
   onNavigate: (tab: string) => void
@@ -40,6 +48,8 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   const { recipes } = useRecipes()
   const { customers, topCustomers } = useCustomers()
   const { alerts, hasLowStock, hasOutOfStock, lowStockItems, outOfStockItems } = useInventory()
+  const { symbol: currencySymbol } = useCurrencySymbol()
+  console.log("currencySymbol", currencySymbol)
 
   // Get status color
   const getStatusColor = (status: Order['status']) => {
@@ -67,6 +77,11 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     year: 'numeric'
   })
 
+  // Helper to format currency synchronously
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
+
   return (
     <div className="space-y-6">
 
@@ -78,39 +93,42 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button 
-              className="h-20 flex flex-col gap-2" 
-              size="lg"
-              onClick={() => onNavigate('order-tracker')}
-            >
-              <Plus className="h-5 w-5" />
-              <span>New Order</span>
-            </Button>
-            <Button 
-              className="h-20 flex flex-col gap-2" 
-              variant="outline" 
-              size="lg"
-              onClick={() => onNavigate('recipe-calculator')}
-            >
-              <ChefHat className="h-5 w-5" />
-              <span>View Recipes</span>
-            </Button>
-            <Button 
-              className="h-20 flex flex-col gap-2" 
-              variant="outline" 
-              size="lg"
-              onClick={() => onNavigate('inventory-manager')}
-            >
-              <Package className="h-5 w-5" />
-              {alerts.length > 0 ? (
-                <span className="flex items-center gap-1">
-                  Inventory
-                  <Badge variant="destructive" className="ml-1 text-xs">{alerts.length}</Badge>
-                </span>
-              ) : (
-                <span>Inventory</span>
-              )}
-            </Button>
+            <Link href="/bakery-business-tool/orders">
+              <Button 
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
+                size="lg"
+              >
+                <Plus className="h-5 w-5" />
+                <span>New Order</span>
+              </Button>
+            </Link>
+            <Link href="/bakery-business-tool/recipes">
+              <Button 
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
+                variant="outline" 
+                size="lg"
+              >
+                <ChefHat className="h-5 w-5" />
+                <span>View Recipes</span>
+              </Button>
+            </Link>
+            <Link href="/bakery-business-tool/inventory">
+              <Button 
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
+                variant="outline" 
+                size="lg"
+              >
+                <Package className="h-5 w-5" />
+                {alerts.length > 0 ? (
+                  <span className="flex items-center gap-1">
+                    Inventory
+                    <Badge variant="destructive" className="ml-1 text-xs">{alerts.length}</Badge>
+                  </span>
+                ) : (
+                  <span>Inventory</span>
+                )}
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

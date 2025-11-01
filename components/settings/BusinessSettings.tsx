@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { DollarSign, Calendar, Ruler } from 'lucide-react';
+import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function BusinessSettings() {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Currency & Pricing
   const [currency, setCurrency] = useState('USD');
@@ -29,9 +31,38 @@ export default function BusinessSettings() {
   const [volumeSystem, setVolumeSystem] = useState('imperial');
   const [temperature, setTemperature] = useState('fahrenheit');
 
-  const handleSave = () => {
-    // TODO: Save to localStorage or API
-    localStorage.setItem('businessSettings', JSON.stringify({
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const stored = await StorageAdapter.getItem('businessSettings');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          console.log("Settings loaded:", settings);
+          setCurrency(settings.currency);
+          setCurrencyPosition(settings.currencyPosition);
+          setDefaultMarkup(settings.defaultMarkup);
+          setTaxRate(settings.taxRate);
+          setDateFormat(settings.dateFormat);
+          setTimeFormat(settings.timeFormat);
+          setTimezone(settings.timezone);
+          setWeekStart(settings.weekStart);
+          setWeightSystem(settings.weightSystem);
+          setVolumeSystem(settings.volumeSystem);
+          setTemperature(settings.temperature);
+        } 
+      } catch (error) {
+        console.error('Error loading business settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const handleSave = async() => {
+    await StorageAdapter.setItem('businessSettings', JSON.stringify({
       currency,
       currencyPosition,
       defaultMarkup,
@@ -50,6 +81,67 @@ export default function BusinessSettings() {
       description: 'Your business preferences have been updated.',
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -84,7 +176,7 @@ export default function BusinessSettings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="currencyPosition">Currency Symbol Position</Label>
+              {/* <Label htmlFor="currencyPosition">Currency Symbol Position</Label>
               <Select value={currencyPosition} onValueChange={setCurrencyPosition}>
                 <SelectTrigger id="currencyPosition">
                   <SelectValue />
@@ -93,7 +185,7 @@ export default function BusinessSettings() {
                   <SelectItem value="before">Before amount ($100)</SelectItem>
                   <SelectItem value="after">After amount (100$)</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
             </div>
 
             <div className="space-y-2">
@@ -110,7 +202,7 @@ export default function BusinessSettings() {
               </p>
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="taxRate">Tax Rate (%)</Label>
               <Input
                 id="taxRate"
@@ -122,7 +214,7 @@ export default function BusinessSettings() {
               <p className="text-xs text-gray-500">
                 Automatic tax calculation for orders
               </p>
-            </div>
+            </div> */}
           </div>
         </CardContent>
       </Card>

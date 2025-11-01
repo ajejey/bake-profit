@@ -4,12 +4,15 @@ import Link from 'next/link'
 import { ChefHat, Calculator } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Header } from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
 
 export default function RecipeCostCalculatorComparisonArticle() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <Header />
+      {/* <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
@@ -536,6 +539,9 @@ export default function RecipeCostCalculatorComparisonArticle() {
           </section>
         </div>
       </article>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

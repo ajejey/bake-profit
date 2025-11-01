@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ChefHat } from 'lucide-react';
+import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function RecipeSettings() {
   const { toast } = useToast();
@@ -16,8 +17,8 @@ export default function RecipeSettings() {
   const [overheadPercentage, setOverheadPercentage] = useState('10');
   const [showCostBreakdown, setShowCostBreakdown] = useState(true);
 
-  const handleSave = () => {
-    localStorage.setItem('recipeSettings', JSON.stringify({
+  const handleSave = async () => {
+    await StorageAdapter.setItem('recipeSettings', JSON.stringify({
       defaultServings,
       laborCostPerHour,
       overheadPercentage,

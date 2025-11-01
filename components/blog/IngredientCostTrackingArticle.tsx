@@ -4,12 +4,15 @@ import Link from 'next/link'
 import { ChefHat, Calculator, TrendingUp, AlertCircle, CheckCircle, ClipboardList, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Header } from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
 
 export default function IngredientCostTrackingArticle() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <Header />
+      {/* <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
@@ -25,7 +28,7 @@ export default function IngredientCostTrackingArticle() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
       {/* Article */}
       <article className="max-w-4xl mx-auto px-4 py-12">
@@ -736,11 +739,7 @@ export default function IngredientCostTrackingArticle() {
       </article>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-20">
-        <div className="max-w-7xl mx-auto text-center text-sm">
-          <p>© 2025 BakeProfit. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

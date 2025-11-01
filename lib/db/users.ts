@@ -139,3 +139,50 @@ export async function updateSubscriptionTier(
     subscription_status: status,
   });
 }
+
+/**
+ * Update user's reset token
+ */
+export async function updateUserResetToken(
+  userId: string,
+  resetToken: string,
+  resetTokenExpires: Date
+): Promise<void> {
+  await connectDB();
+  
+  await UserModel.findByIdAndUpdate(userId, {
+    reset_token: resetToken,
+    reset_token_expires: resetTokenExpires,
+  });
+}
+
+/**
+ * Find user by reset token
+ */
+export async function findUserByResetToken(resetToken: string): Promise<(User & { password_hash?: string }) | null> {
+  await connectDB();
+  
+  const user = await UserModel.findOne({
+    reset_token: resetToken,
+    reset_token_expires: { $gt: new Date() },
+  }).lean();
+  
+  if (!user) return null;
+  
+  return {
+    ...toUser(user as IUser),
+    password_hash: user.password_hash,
+  };
+}
+
+/**
+ * Clear user's reset token
+ */
+export async function clearUserResetToken(userId: string): Promise<void> {
+  await connectDB();
+  
+  await UserModel.findByIdAndUpdate(userId, {
+    reset_token: undefined,
+    reset_token_expires: undefined,
+  });
+}

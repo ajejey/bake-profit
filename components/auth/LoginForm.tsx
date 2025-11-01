@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRedirectIfAuthenticated } from '@/hooks/useRedirectIfAuthenticated';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 export default function LoginForm() {
+  useRedirectIfAuthenticated();
   const router = useRouter();
   const { login } = useAuth();
   const { toast } = useToast();
@@ -69,12 +71,12 @@ export default function LoginForm() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Password</Label>
-          <Link
+          {/* <Link
             href="/forgot-password"
-            className="text-sm text-rose-600 hover:text-rose-700"
+            className="text-sm text-yellow-600 hover:text-yellow-700 font-medium"
           >
             Forgot password?
-          </Link>
+          </Link> */}
         </div>
         <Input
           id="password"
@@ -101,7 +103,12 @@ export default function LoginForm() {
           'Log In'
         )}
       </Button>
-
+      <Link
+        href="/forgot-password"
+        className="text-sm text-rose-600 hover:text-rose-700 flex items-center justify-center" 
+      >
+        Forgot password?
+      </Link>
       <p className="text-center text-sm text-gray-600">
         Don&apos;t have an account?{' '}
         <Link href="/signup" className="text-rose-600 hover:text-rose-700 font-semibold">

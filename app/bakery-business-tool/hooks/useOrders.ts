@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useBakeryData } from '../contexts/BakeryDataContext'
 import type { Order } from '../types'
+import { useOrderSettings } from './useSettings'
 
 /**
  * Custom hook for order management
@@ -18,6 +19,9 @@ export function useOrders() {
     updateOrderStatus,
     recipes 
   } = useBakeryData()
+
+  const { settings } = useOrderSettings()
+  console.log("Settings:", settings)
 
   // Get orders by status
   const getOrdersByStatus = useMemo(() => {
@@ -91,7 +95,7 @@ export function useOrders() {
       const num = parseInt(order.orderNumber.split('-')[1])
       return num > max ? num : max
     }, 0)
-    return `ORD-${(maxNumber + 1).toString().padStart(3, '0')}`
+    return `${settings?.orderPrefix}${(maxNumber + 1).toString().padStart(3, '0')}`
   }
 
   return {

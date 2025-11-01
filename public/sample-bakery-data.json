@@ -1,0 +1,610 @@
+{
+  "ingredients": [
+    {
+      "id": "ing-001",
+      "name": "All-Purpose Flour",
+      "cost": 0.02,
+      "unit": "g",
+      "packageSize": 2500,
+      "packageCost": 4.50,
+      "currentStock": 2000,
+      "minStock": 500,
+      "supplierId": "supplier-1"
+    },
+    {
+      "id": "ing-002",
+      "name": "Granulated Sugar",
+      "cost": 0.015,
+      "unit": "g",
+      "packageSize": 2000,
+      "packageCost": 3.00,
+      "currentStock": 1500,
+      "minStock": 400,
+      "supplierId": "supplier-1"
+    },
+    {
+      "id": "ing-003",
+      "name": "Butter",
+      "cost": 0.08,
+      "unit": "g",
+      "packageSize": 454,
+      "packageCost": 4.50,
+      "currentStock": 900,
+      "minStock": 200,
+      "supplierId": "supplier-1"
+    },
+    {
+      "id": "ing-004",
+      "name": "Eggs",
+      "cost": 0.35,
+      "unit": "unit",
+      "packageSize": 12,
+      "packageCost": 4.20,
+      "currentStock": 24,
+      "minStock": 12,
+      "supplierId": "supplier-1"
+    },
+    {
+      "id": "ing-005",
+      "name": "Vanilla Extract",
+      "cost": 0.15,
+      "unit": "ml",
+      "packageSize": 237,
+      "packageCost": 8.99,
+      "currentStock": 150,
+      "minStock": 50,
+      "supplierId": "supplier-2"
+    },
+    {
+      "id": "ing-006",
+      "name": "Baking Powder",
+      "cost": 0.05,
+      "unit": "g",
+      "packageSize": 227,
+      "packageCost": 3.50,
+      "currentStock": 150,
+      "minStock": 50,
+      "supplierId": "supplier-1"
+    },
+    {
+      "id": "ing-007",
+      "name": "Cocoa Powder",
+      "cost": 0.12,
+      "unit": "g",
+      "packageSize": 226,
+      "packageCost": 5.99,
+      "currentStock": 180,
+      "minStock": 50,
+      "supplierId": "supplier-2"
+    },
+    {
+      "id": "ing-008",
+      "name": "Milk",
+      "cost": 0.004,
+      "unit": "ml",
+      "packageSize": 946,
+      "packageCost": 3.50,
+      "currentStock": 500,
+      "minStock": 200,
+      "supplierId": "supplier-1"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "rec-001",
+      "name": "Classic Chocolate Cake",
+      "description": "Rich, moist chocolate cake with deep cocoa flavor",
+      "category": "Cakes",
+      "ingredients": [
+        {
+          "id": "rec-001-ing-001",
+          "ingredientId": "ing-001",
+          "quantity": 300,
+          "unit": "g",
+          "cost": 6.00
+        },
+        {
+          "id": "rec-001-ing-002",
+          "ingredientId": "ing-002",
+          "quantity": 250,
+          "unit": "g",
+          "cost": 3.75
+        },
+        {
+          "id": "rec-001-ing-003",
+          "ingredientId": "ing-003",
+          "quantity": 150,
+          "unit": "g",
+          "cost": 12.00
+        },
+        {
+          "id": "rec-001-ing-004",
+          "ingredientId": "ing-004",
+          "quantity": 3,
+          "unit": "unit",
+          "cost": 1.05
+        },
+        {
+          "id": "rec-001-ing-007",
+          "ingredientId": "ing-007",
+          "quantity": 75,
+          "unit": "g",
+          "cost": 9.00
+        },
+        {
+          "id": "rec-001-ing-008",
+          "ingredientId": "ing-008",
+          "quantity": 240,
+          "unit": "ml",
+          "cost": 0.96
+        }
+      ],
+      "instructions": [
+        "Preheat oven to 350°F (175°C)",
+        "Mix flour, cocoa powder, and baking powder",
+        "Cream butter and sugar until fluffy",
+        "Add eggs one at a time, beating well",
+        "Alternate adding dry ingredients and milk",
+        "Pour into greased 9-inch pan",
+        "Bake for 35-40 minutes until toothpick comes out clean",
+        "Cool in pan for 15 minutes, then turn out onto wire rack"
+      ],
+      "servings": 12,
+      "prepTime": 15,
+      "cookTime": 38,
+      "coolTime": 30,
+      "laborTime": 45,
+      "laborCost": 10.00,
+      "overheadCost": 5.00,
+      "totalCost": 47.76,
+      "costPerServing": 3.98,
+      "temperature": "350°F",
+      "notes": "Best served with frosting. Can be made a day ahead.",
+      "createdAt": "2024-10-15T10:00:00Z",
+      "updatedAt": "2024-10-15T10:00:00Z"
+    },
+    {
+      "id": "rec-002",
+      "name": "Vanilla Cupcakes",
+      "description": "Light and fluffy vanilla cupcakes perfect for any occasion",
+      "category": "Cakes",
+      "ingredients": [
+        {
+          "id": "rec-002-ing-001",
+          "ingredientId": "ing-001",
+          "quantity": 200,
+          "unit": "g",
+          "cost": 4.00
+        },
+        {
+          "id": "rec-002-ing-002",
+          "ingredientId": "ing-002",
+          "quantity": 200,
+          "unit": "g",
+          "cost": 3.00
+        },
+        {
+          "id": "rec-002-ing-003",
+          "ingredientId": "ing-003",
+          "quantity": 100,
+          "unit": "g",
+          "cost": 8.00
+        },
+        {
+          "id": "rec-002-ing-004",
+          "ingredientId": "ing-004",
+          "quantity": 2,
+          "unit": "unit",
+          "cost": 0.70
+        },
+        {
+          "id": "rec-002-ing-005",
+          "ingredientId": "ing-005",
+          "quantity": 10,
+          "unit": "ml",
+          "cost": 1.50
+        },
+        {
+          "id": "rec-002-ing-006",
+          "ingredientId": "ing-006",
+          "quantity": 5,
+          "unit": "g",
+          "cost": 0.25
+        },
+        {
+          "id": "rec-002-ing-008",
+          "ingredientId": "ing-008",
+          "quantity": 120,
+          "unit": "ml",
+          "cost": 0.48
+        }
+      ],
+      "instructions": [
+        "Preheat oven to 350°F (175°C)",
+        "Line muffin tin with cupcake liners",
+        "Mix flour, sugar, and baking powder",
+        "Cream butter and beat in eggs",
+        "Add vanilla extract",
+        "Alternate adding dry ingredients and milk",
+        "Fill liners 2/3 full",
+        "Bake for 18-20 minutes until golden",
+        "Cool completely before frosting"
+      ],
+      "servings": 24,
+      "prepTime": 10,
+      "cookTime": 20,
+      "coolTime": 20,
+      "laborTime": 30,
+      "laborCost": 8.00,
+      "overheadCost": 3.00,
+      "totalCost": 20.93,
+      "costPerServing": 0.87,
+      "temperature": "350°F",
+      "notes": "Makes 24 cupcakes. Pairs well with buttercream frosting.",
+      "createdAt": "2024-10-15T10:30:00Z",
+      "updatedAt": "2024-10-15T10:30:00Z"
+    },
+    {
+      "id": "rec-003",
+      "name": "Chocolate Chip Cookies",
+      "description": "Classic chewy chocolate chip cookies",
+      "category": "Cookies",
+      "ingredients": [
+        {
+          "id": "rec-003-ing-001",
+          "ingredientId": "ing-001",
+          "quantity": 250,
+          "unit": "g",
+          "cost": 5.00
+        },
+        {
+          "id": "rec-003-ing-002",
+          "ingredientId": "ing-002",
+          "quantity": 150,
+          "unit": "g",
+          "cost": 2.25
+        },
+        {
+          "id": "rec-003-ing-003",
+          "ingredientId": "ing-003",
+          "quantity": 120,
+          "unit": "g",
+          "cost": 9.60
+        },
+        {
+          "id": "rec-003-ing-004",
+          "ingredientId": "ing-004",
+          "quantity": 2,
+          "unit": "unit",
+          "cost": 0.70
+        },
+        {
+          "id": "rec-003-ing-005",
+          "ingredientId": "ing-005",
+          "quantity": 5,
+          "unit": "ml",
+          "cost": 0.75
+        }
+      ],
+      "instructions": [
+        "Preheat oven to 375°F (190°C)",
+        "Cream butter and sugars",
+        "Beat in eggs and vanilla",
+        "Mix in flour",
+        "Fold in chocolate chips",
+        "Drop spoonfuls onto baking sheet",
+        "Bake for 9-11 minutes until golden",
+        "Cool on baking sheet for 2 minutes, then transfer to wire rack"
+      ],
+      "servings": 48,
+      "prepTime": 10,
+      "cookTime": 10,
+      "coolTime": 5,
+      "laborTime": 20,
+      "laborCost": 5.00,
+      "overheadCost": 2.00,
+      "totalCost": 25.30,
+      "costPerServing": 0.53,
+      "temperature": "375°F",
+      "notes": "Makes about 48 cookies. Store in airtight container.",
+      "createdAt": "2024-10-15T11:00:00Z",
+      "updatedAt": "2024-10-15T11:00:00Z"
+    },
+    {
+      "id": "rec-004",
+      "name": "Sourdough Bread",
+      "description": "Artisan sourdough with tangy flavor and crispy crust",
+      "category": "Bread",
+      "ingredients": [
+        {
+          "id": "rec-004-ing-001",
+          "ingredientId": "ing-001",
+          "quantity": 500,
+          "unit": "g",
+          "cost": 10.00
+        },
+        {
+          "id": "rec-004-ing-008",
+          "ingredientId": "ing-008",
+          "quantity": 350,
+          "unit": "ml",
+          "cost": 1.40
+        }
+      ],
+      "instructions": [
+        "Mix flour and water",
+        "Let rest for 30 minutes (autolyse)",
+        "Add sourdough starter and salt",
+        "Knead for 10 minutes",
+        "Bulk fermentation for 4-6 hours",
+        "Shape and final proof for 2-4 hours",
+        "Score the top",
+        "Bake at 450°F for 30-35 minutes",
+        "Cool completely before slicing"
+      ],
+      "servings": 8,
+      "prepTime": 20,
+      "cookTime": 33,
+      "coolTime": 30,
+      "laborTime": 60,
+      "laborCost": 12.00,
+      "overheadCost": 4.00,
+      "totalCost": 27.40,
+      "costPerServing": 3.43,
+      "temperature": "450°F",
+      "notes": "Requires sourdough starter. Best made with long fermentation.",
+      "createdAt": "2024-10-15T11:30:00Z",
+      "updatedAt": "2024-10-15T11:30:00Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust-001",
+      "name": "Sarah Johnson",
+      "email": "sarah.johnson@email.com",
+      "phone": "(555) 123-4567",
+      "address": "123 Main St, Springfield, IL 62701",
+      "orderHistory": ["ord-001", "ord-002"],
+      "totalOrders": 2,
+      "totalSpent": 85.50,
+      "notes": "Prefers chocolate cakes. Always pays on time.",
+      "createdAt": "2024-10-10T14:00:00Z"
+    },
+    {
+      "id": "cust-002",
+      "name": "Michael Chen",
+      "email": "m.chen@email.com",
+      "phone": "(555) 234-5678",
+      "address": "456 Oak Ave, Springfield, IL 62702",
+      "orderHistory": ["ord-003"],
+      "totalOrders": 1,
+      "totalSpent": 45.00,
+      "notes": "Corporate orders for office events.",
+      "createdAt": "2024-10-12T10:30:00Z"
+    },
+    {
+      "id": "cust-003",
+      "name": "Emily Rodriguez",
+      "email": "emily.r@email.com",
+      "phone": "(555) 345-6789",
+      "address": "789 Pine Rd, Springfield, IL 62703",
+      "orderHistory": ["ord-004"],
+      "totalOrders": 1,
+      "totalSpent": 120.00,
+      "notes": "Wedding cake inquiry. Interested in custom designs.",
+      "createdAt": "2024-10-14T09:00:00Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-001",
+      "orderNumber": "ORD-001",
+      "customerName": "Sarah Johnson",
+      "customerPhone": "(555) 123-4567",
+      "customerEmail": "sarah.johnson@email.com",
+      "items": [
+        {
+          "id": "ord-001-item-001",
+          "recipeId": "rec-001",
+          "recipeName": "Classic Chocolate Cake",
+          "quantity": 1,
+          "costPerUnit": 47.76,
+          "pricePerUnit": 65.00,
+          "subtotalCost": 47.76,
+          "subtotalRevenue": 65.00,
+          "profit": 17.24
+        }
+      ],
+      "status": "delivered",
+      "orderDate": "2024-10-10T14:30:00Z",
+      "deliveryDate": "2024-10-12T18:00:00Z",
+      "totalCost": 47.76,
+      "totalRevenue": 65.00,
+      "totalProfit": 17.24,
+      "notes": "Birthday cake. Delivered on time.",
+      "deliveryAddress": "123 Main St, Springfield, IL 62701",
+      "paymentStatus": "paid",
+      "paymentMethod": "credit_card",
+      "createdAt": "2024-10-10T14:30:00Z",
+      "updatedAt": "2024-10-12T18:00:00Z"
+    },
+    {
+      "id": "ord-002",
+      "orderNumber": "ORD-002",
+      "customerName": "Sarah Johnson",
+      "customerPhone": "(555) 123-4567",
+      "customerEmail": "sarah.johnson@email.com",
+      "items": [
+        {
+          "id": "ord-002-item-001",
+          "recipeId": "rec-002",
+          "recipeName": "Vanilla Cupcakes",
+          "quantity": 2,
+          "costPerUnit": 20.93,
+          "pricePerUnit": 35.00,
+          "subtotalCost": 41.86,
+          "subtotalRevenue": 70.00,
+          "profit": 28.14
+        }
+      ],
+      "status": "delivered",
+      "orderDate": "2024-10-15T10:00:00Z",
+      "deliveryDate": "2024-10-16T14:00:00Z",
+      "totalCost": 41.86,
+      "totalRevenue": 70.00,
+      "totalProfit": 28.14,
+      "notes": "Office party cupcakes.",
+      "deliveryAddress": "123 Main St, Springfield, IL 62701",
+      "paymentStatus": "paid",
+      "paymentMethod": "cash",
+      "createdAt": "2024-10-15T10:00:00Z",
+      "updatedAt": "2024-10-16T14:00:00Z"
+    },
+    {
+      "id": "ord-003",
+      "orderNumber": "ORD-003",
+      "customerName": "Michael Chen",
+      "customerPhone": "(555) 234-5678",
+      "customerEmail": "m.chen@email.com",
+      "items": [
+        {
+          "id": "ord-003-item-001",
+          "recipeId": "rec-003",
+          "recipeName": "Chocolate Chip Cookies",
+          "quantity": 3,
+          "costPerUnit": 25.30,
+          "pricePerUnit": 15.00,
+          "subtotalCost": 75.90,
+          "subtotalRevenue": 45.00,
+          "profit": -30.90
+        }
+      ],
+      "status": "in-progress",
+      "orderDate": "2024-10-16T09:00:00Z",
+      "deliveryDate": "2024-10-18T10:00:00Z",
+      "totalCost": 75.90,
+      "totalRevenue": 45.00,
+      "totalProfit": -30.90,
+      "notes": "Bulk cookie order. Note: This order is at a loss - review pricing.",
+      "deliveryAddress": "456 Oak Ave, Springfield, IL 62702",
+      "paymentStatus": "unpaid",
+      "paymentMethod": "invoice",
+      "createdAt": "2024-10-16T09:00:00Z",
+      "updatedAt": "2024-10-16T15:00:00Z"
+    },
+    {
+      "id": "ord-004",
+      "orderNumber": "ORD-004",
+      "customerName": "Emily Rodriguez",
+      "customerPhone": "(555) 345-6789",
+      "customerEmail": "emily.r@email.com",
+      "items": [
+        {
+          "id": "ord-004-item-001",
+          "recipeId": "rec-001",
+          "recipeName": "Classic Chocolate Cake",
+          "quantity": 2,
+          "costPerUnit": 47.76,
+          "pricePerUnit": 60.00,
+          "subtotalCost": 95.52,
+          "subtotalRevenue": 120.00,
+          "profit": 24.48
+        }
+      ],
+      "status": "new",
+      "orderDate": "2024-10-17T11:00:00Z",
+      "deliveryDate": "2024-10-20T18:00:00Z",
+      "totalCost": 95.52,
+      "totalRevenue": 120.00,
+      "totalProfit": 24.48,
+      "notes": "Wedding anniversary cakes. Custom decoration requested.",
+      "deliveryAddress": "789 Pine Rd, Springfield, IL 62703",
+      "paymentStatus": "partial",
+      "paymentMethod": "check",
+      "createdAt": "2024-10-17T11:00:00Z",
+      "updatedAt": "2024-10-17T11:00:00Z"
+    }
+  ],
+  "inventory": [
+    {
+      "ingredientId": "ing-001",
+      "currentStock": 2000,
+      "minStock": 500,
+      "maxStock": 3000,
+      "unit": "g",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-15T14:00:00Z",
+      "costPerUnit": 0.02
+    },
+    {
+      "ingredientId": "ing-002",
+      "currentStock": 1500,
+      "minStock": 400,
+      "maxStock": 2500,
+      "unit": "g",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-15T14:00:00Z",
+      "costPerUnit": 0.015
+    },
+    {
+      "ingredientId": "ing-003",
+      "currentStock": 900,
+      "minStock": 200,
+      "maxStock": 1500,
+      "unit": "g",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-16T09:00:00Z",
+      "costPerUnit": 0.08
+    },
+    {
+      "ingredientId": "ing-004",
+      "currentStock": 24,
+      "minStock": 12,
+      "maxStock": 48,
+      "unit": "unit",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-14T10:00:00Z",
+      "costPerUnit": 0.35
+    },
+    {
+      "ingredientId": "ing-005",
+      "currentStock": 150,
+      "minStock": 50,
+      "maxStock": 300,
+      "unit": "ml",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-10T11:00:00Z",
+      "costPerUnit": 0.15
+    },
+    {
+      "ingredientId": "ing-006",
+      "currentStock": 150,
+      "minStock": 50,
+      "maxStock": 300,
+      "unit": "g",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-12T15:00:00Z",
+      "costPerUnit": 0.05
+    },
+    {
+      "ingredientId": "ing-007",
+      "currentStock": 180,
+      "minStock": 50,
+      "maxStock": 400,
+      "unit": "g",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-13T10:00:00Z",
+      "costPerUnit": 0.12
+    },
+    {
+      "ingredientId": "ing-008",
+      "currentStock": 500,
+      "minStock": 200,
+      "maxStock": 1000,
+      "unit": "ml",
+      "lastUpdated": "2024-10-17T10:00:00Z",
+      "lastRestocked": "2024-10-16T14:00:00Z",
+      "costPerUnit": 0.004
+    }
+  ]
+}

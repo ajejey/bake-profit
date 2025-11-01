@@ -11,7 +11,8 @@ import {
   ChefHat, 
   Database, 
   Palette, 
-  Bell
+  Bell,
+  FileText
 } from 'lucide-react';
 import AccountSettings from '@/components/settings/AccountSettings';
 import SubscriptionSettings from '@/components/settings/SubscriptionSettings';
@@ -21,6 +22,9 @@ import RecipeSettings from '@/components/settings/RecipeSettings';
 import DataPrivacySettings from '@/components/settings/DataPrivacySettings';
 import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationsSettings from '@/components/settings/NotificationsSettings';
+import { GoogleDriveSettings } from './GoogleDriveSettings';
+import PDFCustomizationSettings from './PDFCustomizationSettings';
+import { Cloud } from 'lucide-react';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('business');
@@ -29,8 +33,10 @@ export default function Settings() {
     { id: 'business', label: 'Business', icon: Briefcase },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
+    { id: 'pdf', label: 'PDF Settings', icon: FileText },
     { id: 'subscription', label: 'Subscription', icon: Crown },
     { id: 'account', label: 'Account', icon: User },
+    { id: 'backup', label: 'Backup', icon: Cloud },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'data', label: 'Data & Privacy', icon: Database },
@@ -124,6 +130,14 @@ export default function Settings() {
 
             <TabsContent value="notifications" className="mt-0">
               <NotificationsSettings />
+            </TabsContent>
+
+            <TabsContent value="backup" className="mt-0">
+              <GoogleDriveSettings />
+            </TabsContent>
+
+            <TabsContent value="pdf" className="mt-0">
+              <PDFCustomizationSettings />
             </TabsContent>
           </div>
         </div>

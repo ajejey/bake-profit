@@ -76,6 +76,15 @@ const blogPosts = [
     category: 'Ingredient Tracking',
     featured: false,
   },
+  {
+    title: 'Bakery Profit Margins: What\'s Normal and How to Improve Yours (2025)',
+    description: 'Learn what profit margins are normal for bakeries, how to calculate yours, and 10 proven strategies to improve profitability. Includes industry benchmarks and real examples.',
+    slug: 'bakery-profit-margins',
+    date: 'January 28, 2025',
+    readTime: '12 min read',
+    category: 'Profit Margins',
+    featured: false,
+  }
 ]
 
 export default function BlogPage() {

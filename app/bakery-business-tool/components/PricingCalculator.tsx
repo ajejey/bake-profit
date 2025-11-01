@@ -24,10 +24,11 @@ import {
   Target,
   Lightbulb
 } from 'lucide-react'
-import { usePricing, useRecipes } from '../hooks'
+import { usePricing, useRecipes, useDefaultMarkup, useCurrencySymbol } from '../hooks'
 import { useToast } from '@/hooks/use-toast'
 import type { Recipe, PricingComparison } from '../types'
-import { formatCurrency, getDefaultMarkup, getTaxRate } from '../utils/settings'
+
+
 
 export default function PricingCalculator() {
   const { toast } = useToast()
@@ -40,11 +41,14 @@ export default function PricingCalculator() {
     recipePricingAnalysis,
     recipesNeedingPriceReview,
   } = usePricing()
+  
+  const { markup: defaultMarkup = 150 } = useDefaultMarkup()
+  const { symbol: currencySymbol = '$' } = useCurrencySymbol()
 
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>('')
   const [customPrice, setCustomPrice] = useState<number>(0)
   const [competitorPrice, setCompetitorPrice] = useState<number>(0)
-  const [targetMargin, setTargetMargin] = useState<number>(getDefaultMarkup())
+  const [targetMargin, setTargetMargin] = useState<number>(defaultMarkup)
 
   const selectedRecipe = recipes.find(r => r.id === selectedRecipeId)
   const breakdown = selectedRecipe ? getPricingBreakdown(selectedRecipe) : null
@@ -62,6 +66,11 @@ export default function PricingCalculator() {
       return <Badge className="bg-blue-500">Good</Badge>
     }
   }
+
+  // Helper to format currency synchronously
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
 
   return (
     <div className="space-y-6">

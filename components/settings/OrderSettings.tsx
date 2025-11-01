@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, User } from 'lucide-react';
+import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function OrderSettings() {
   const { toast } = useToast();
@@ -19,9 +20,10 @@ export default function OrderSettings() {
   const [leadTime, setLeadTime] = useState('2');
   const [requirePhone, setRequirePhone] = useState(false);
   const [autoSaveCustomers, setAutoSaveCustomers] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSave = () => {
-    localStorage.setItem('orderSettings', JSON.stringify({
+  const handleSave = async () => {
+    await StorageAdapter.setItem('orderSettings', JSON.stringify({
       defaultStatus,
       autoIncrement,
       orderPrefix,
@@ -35,6 +37,74 @@ export default function OrderSettings() {
       description: 'Your order preferences have been updated.',
     });
   };
+
+  // load order settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const stored = await StorageAdapter.getItem('orderSettings');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          console.log("Settings loaded:", settings);
+          setDefaultStatus(settings.defaultStatus);
+          setAutoIncrement(settings.autoIncrement);
+          setOrderPrefix(settings.orderPrefix);
+          setLeadTime(settings.leadTime);
+          setRequirePhone(settings.requirePhone);
+          setAutoSaveCustomers(settings.autoSaveCustomers);
+        }
+      } catch (error) {
+        console.error('Error loading order settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

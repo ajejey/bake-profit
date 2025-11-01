@@ -16,24 +16,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function DataPrivacySettings() {
   const { toast } = useToast();
 
-  const handleExport = () => {
+  const handleExport = async() => {
     try {
       const data = {
-        ingredients: JSON.parse(localStorage.getItem('bakery-ingredients') || '[]'),
-        recipes: JSON.parse(localStorage.getItem('bakery-recipes') || '[]'),
-        orders: JSON.parse(localStorage.getItem('bakery-orders') || '[]'),
-        inventory: JSON.parse(localStorage.getItem('bakery-inventory') || '[]'),
-        customers: JSON.parse(localStorage.getItem('bakery-customers') || '[]'),
+        ingredients: JSON.parse(await StorageAdapter.getItem('bakery-ingredients') || '[]'),
+        recipes: JSON.parse(await StorageAdapter.getItem('bakery-recipes') || '[]'),
+        orders: JSON.parse(await StorageAdapter.getItem('bakery-orders') || '[]'),
+        inventory: JSON.parse(await StorageAdapter.getItem('bakery-inventory') || '[]'),
+        customers: JSON.parse(await StorageAdapter.getItem('bakery-customers') || '[]'),
         settings: {
-          business: JSON.parse(localStorage.getItem('businessSettings') || '{}'),
-          orders: JSON.parse(localStorage.getItem('orderSettings') || '{}'),
-          recipes: JSON.parse(localStorage.getItem('recipeSettings') || '{}'),
-          appearance: JSON.parse(localStorage.getItem('appearanceSettings') || '{}'),
-          notifications: JSON.parse(localStorage.getItem('notificationSettings') || '{}'),
+          business: JSON.parse(await StorageAdapter.getItem('businessSettings') || '{}'),
+          orders: JSON.parse(await StorageAdapter.getItem('orderSettings') || '{}'),
+          recipes: JSON.parse(await StorageAdapter.getItem('recipeSettings') || '{}'),
+          appearance: JSON.parse(await StorageAdapter.getItem('appearanceSettings') || '{}'),
+          notifications: JSON.parse(await StorageAdapter.getItem('notificationSettings') || '{}'),
         }
       };
 
@@ -60,28 +61,28 @@ export default function DataPrivacySettings() {
     }
   };
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = JSON.parse(e.target?.result as string);
         
         // Import data
-        if (data.ingredients) localStorage.setItem('bakery-ingredients', JSON.stringify(data.ingredients));
-        if (data.recipes) localStorage.setItem('bakery-recipes', JSON.stringify(data.recipes));
-        if (data.orders) localStorage.setItem('bakery-orders', JSON.stringify(data.orders));
-        if (data.inventory) localStorage.setItem('bakery-inventory', JSON.stringify(data.inventory));
-        if (data.customers) localStorage.setItem('bakery-customers', JSON.stringify(data.customers));
+        if (data.ingredients) await StorageAdapter.setItem('bakery-ingredients', JSON.stringify(data.ingredients));
+        if (data.recipes) await StorageAdapter.setItem('bakery-recipes', JSON.stringify(data.recipes));
+        if (data.orders) await StorageAdapter.setItem('bakery-orders', JSON.stringify(data.orders));
+        if (data.inventory) await StorageAdapter.setItem('bakery-inventory', JSON.stringify(data.inventory));
+        if (data.customers) await StorageAdapter.setItem('bakery-customers', JSON.stringify(data.customers));
         
         // Import settings
-        if (data.settings?.business) localStorage.setItem('businessSettings', JSON.stringify(data.settings.business));
-        if (data.settings?.orders) localStorage.setItem('orderSettings', JSON.stringify(data.settings.orders));
-        if (data.settings?.recipes) localStorage.setItem('recipeSettings', JSON.stringify(data.settings.recipes));
-        if (data.settings?.appearance) localStorage.setItem('appearanceSettings', JSON.stringify(data.settings.appearance));
-        if (data.settings?.notifications) localStorage.setItem('notificationSettings', JSON.stringify(data.settings.notifications));
+        if (data.settings?.business) await StorageAdapter.setItem('businessSettings', JSON.stringify(data.settings.business));
+        if (data.settings?.orders) await StorageAdapter.setItem('orderSettings', JSON.stringify(data.settings.orders));
+        if (data.settings?.recipes) await StorageAdapter.setItem('recipeSettings', JSON.stringify(data.settings.recipes));
+        if (data.settings?.appearance) await StorageAdapter.setItem('appearanceSettings', JSON.stringify(data.settings.appearance));
+        if (data.settings?.notifications) await StorageAdapter.setItem('notificationSettings', JSON.stringify(data.settings.notifications));
         
         toast({ 
           title: 'Import successful', 
@@ -101,14 +102,14 @@ export default function DataPrivacySettings() {
     reader.readAsText(file);
   };
 
-  const handleClearAllData = () => {
+  const handleClearAllData = async () => {
     // Clear all bakery data
-    localStorage.removeItem('bakery-ingredients');
-    localStorage.removeItem('bakery-recipes');
-    localStorage.removeItem('bakery-orders');
-    localStorage.removeItem('bakery-inventory');
-    localStorage.removeItem('bakery-customers');
-    localStorage.removeItem('bakery-recipe-categories');
+    await StorageAdapter.removeItem('bakery-ingredients');
+    await StorageAdapter.removeItem('bakery-recipes');
+    await StorageAdapter.removeItem('bakery-orders');
+    await StorageAdapter.removeItem('bakery-inventory');
+    await StorageAdapter.removeItem('bakery-customers');
+    await StorageAdapter.removeItem('bakery-recipe-categories');
     
     toast({ 
       title: 'Data cleared', 

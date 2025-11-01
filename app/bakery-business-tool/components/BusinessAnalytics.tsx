@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '../utils/settings'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useAnalytics, useCurrencySymbol } from '../hooks'
 import {
   Select,
   SelectContent,
@@ -25,9 +25,9 @@ import {
   ArrowUp,
   ArrowDown
 } from 'lucide-react'
-import { useAnalytics } from '../hooks'
 
 export default function BusinessAnalytics() {
+  const { symbol: currencySymbol = '$' } = useCurrencySymbol()
   const {
     revenueByWeek,
     revenueByMonth,
@@ -57,6 +57,11 @@ export default function BusinessAnalytics() {
     if (trend === 'down') return <ArrowDown className="h-4 w-4 text-red-500" />
     return <Minus className="h-4 w-4 text-gray-400" />
   }
+
+  // Helper to format currency synchronously
+const formatCurrency = (amount: number): string => {
+  return `${currencySymbol}${amount.toFixed(2)}`
+}
 
   return (
     <div className="space-y-6">

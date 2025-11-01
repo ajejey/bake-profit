@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function DangerZoneSettings() {
   const { toast } = useToast();
@@ -27,8 +28,9 @@ export default function DangerZoneSettings() {
     toast({ title: 'Logged out', description: 'You have been logged out from all devices.' });
   };
 
-  const handleDeleteAllData = () => {
+  const handleDeleteAllData = async () => {
     localStorage.clear();
+    await StorageAdapter.clear();
     toast({ title: 'Data deleted', description: 'All your data has been permanently deleted.' });
   };
 

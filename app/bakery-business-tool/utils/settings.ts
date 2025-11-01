@@ -1,4 +1,5 @@
 // Settings utility functions for the bakery business tool
+import { StorageAdapter } from './indexedDBAdapter'
 
 export interface BusinessSettings {
   currency: string;
@@ -15,7 +16,7 @@ export interface BusinessSettings {
 }
 
 export interface OrderSettings {
-  defaultStatus: string;
+  defaultStatus: 'new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled';
   autoIncrement: boolean;
   orderPrefix: string;
   leadTime: string;
@@ -40,13 +41,25 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   AUD: 'A$',
 };
 
+export interface AppearanceSettings {
+  theme: 'light' | 'dark' | 'auto';
+  displayDensity: 'compact' | 'comfortable' | 'spacious';
+}
+
+export interface NotificationSettings {
+  lowStockAlerts: boolean;
+  upcomingDeliveries: boolean;
+  usageLimitWarnings: boolean;
+}
+
+
 // Get business settings
-export function getBusinessSettings(): BusinessSettings {
+export async function getBusinessSettings(): Promise<BusinessSettings> {
   if (typeof window === 'undefined') {
     return getDefaultBusinessSettings();
   }
   
-  const stored = localStorage.getItem('businessSettings');
+  const stored = await StorageAdapter.getItem('businessSettings');
   if (!stored) return getDefaultBusinessSettings();
   
   try {
@@ -57,12 +70,12 @@ export function getBusinessSettings(): BusinessSettings {
 }
 
 // Get order settings
-export function getOrderSettings(): OrderSettings {
+export async function getOrderSettings(): Promise<OrderSettings> {
   if (typeof window === 'undefined') {
     return getDefaultOrderSettings();
   }
   
-  const stored = localStorage.getItem('orderSettings');
+  const stored = await StorageAdapter.getItem('orderSettings');
   if (!stored) return getDefaultOrderSettings();
   
   try {
@@ -73,12 +86,12 @@ export function getOrderSettings(): OrderSettings {
 }
 
 // Get recipe settings
-export function getRecipeSettings(): RecipeSettings {
+export async function getRecipeSettings(): Promise<RecipeSettings> {
   if (typeof window === 'undefined') {
     return getDefaultRecipeSettings();
   }
   
-  const stored = localStorage.getItem('recipeSettings');
+  const stored = await StorageAdapter.getItem('recipeSettings');
   if (!stored) return getDefaultRecipeSettings();
   
   try {
@@ -86,6 +99,63 @@ export function getRecipeSettings(): RecipeSettings {
   } catch {
     return getDefaultRecipeSettings();
   }
+}
+
+// Get appearance settings
+export async function getAppearanceSettings(): Promise<AppearanceSettings> {
+  if (typeof window === 'undefined') {
+    return getDefaultAppearanceSettings();
+  }
+  
+  const stored = await StorageAdapter.getItem('appearanceSettings');
+  if (!stored) return getDefaultAppearanceSettings();
+  
+  try {
+    return { ...getDefaultAppearanceSettings(), ...JSON.parse(stored) };
+  } catch {
+    return getDefaultAppearanceSettings();
+  }
+}
+
+// Get notification settings
+export async function getNotificationSettings(): Promise<NotificationSettings> {
+  if (typeof window === 'undefined') {
+    return getDefaultNotificationSettings();
+  }
+  
+  const stored = await StorageAdapter.getItem('notificationSettings');
+  if (!stored) return getDefaultNotificationSettings();
+  
+  try {
+    return { ...getDefaultNotificationSettings(), ...JSON.parse(stored) };
+  } catch {
+    return getDefaultNotificationSettings();
+  }
+}
+
+// Set business settings
+export async function setBusinessSettings(settings: BusinessSettings): Promise<void> {
+  await StorageAdapter.setItem('businessSettings', JSON.stringify(settings));
+}
+
+// Set order settings
+export async function setOrderSettings(settings: OrderSettings): Promise<void> {
+  await StorageAdapter.setItem('orderSettings', JSON.stringify(settings));
+}
+
+// Set recipe settings
+export async function setRecipeSettings(settings: RecipeSettings): Promise<void> {
+  await StorageAdapter.setItem('recipeSettings', JSON.stringify(settings));
+}
+
+// Set appearance settings
+export async function setAppearanceSettings(settings: AppearanceSettings): Promise<void> {
+  await StorageAdapter.setItem('appearanceSettings', JSON.stringify(settings));
+}
+
+// Set notification settings
+export async function setNotificationSettings(settings: NotificationSettings): Promise<void> {
+  await StorageAdapter.setItem('notificationSettings', JSON.stringify(settings));
 }
 
 // Default settings
@@ -125,9 +195,24 @@ function getDefaultRecipeSettings(): RecipeSettings {
   };
 }
 
+function getDefaultAppearanceSettings(): AppearanceSettings {
+  return {
+    theme: 'light',
+    displayDensity: 'comfortable',
+  };
+}
+
+function getDefaultNotificationSettings(): NotificationSettings {
+  return {
+    lowStockAlerts: true,
+    upcomingDeliveries: true,
+    usageLimitWarnings: true,
+  };
+}
+
 // Format currency
-export function formatCurrency(amount: number): string {
-  const settings = getBusinessSettings();
+export async function formatCurrency(amount: number): Promise<string> {
+  const settings = await getBusinessSettings();
   const symbol = CURRENCY_SYMBOLS[settings.currency] || '$';
   const formatted = amount.toFixed(2);
   
@@ -137,14 +222,14 @@ export function formatCurrency(amount: number): string {
 }
 
 // Get currency symbol
-export function getCurrencySymbol(): string {
-  const settings = getBusinessSettings();
+export async function getCurrencySymbol(): Promise<string> {
+  const settings = await getBusinessSettings();
   return CURRENCY_SYMBOLS[settings.currency] || '$';
 }
 
 // Format date
-export function formatDate(dateString: string): string {
-  const settings = getBusinessSettings();
+export async function formatDate(dateString: string): Promise<string> {
+  const settings = await getBusinessSettings();
   const date = new Date(dateString);
   
   if (isNaN(date.getTime())) return dateString;
@@ -165,8 +250,8 @@ export function formatDate(dateString: string): string {
 }
 
 // Format time
-export function formatTime(dateString: string): string {
-  const settings = getBusinessSettings();
+export async function formatTime(dateString: string): Promise<string> {
+  const settings = await getBusinessSettings();
   const date = new Date(dateString);
   
   if (isNaN(date.getTime())) return dateString;
@@ -187,49 +272,56 @@ export function formatTime(dateString: string): string {
 }
 
 // Get default markup percentage
-export function getDefaultMarkup(): number {
-  const settings = getBusinessSettings();
+export async function getDefaultMarkup(): Promise<number> {
+  const settings = await getBusinessSettings();
   return parseFloat(settings.defaultMarkup) || 150;
 }
 
 // Get tax rate
-export function getTaxRate(): number {
-  const settings = getBusinessSettings();
+export async function getTaxRate(): Promise<number> {
+  const settings = await getBusinessSettings();
   return parseFloat(settings.taxRate) || 0;
 }
 
 // Get default labor cost per hour
-export function getDefaultLaborCost(): number {
-  const settings = getRecipeSettings();
+export async function getDefaultLaborCost(): Promise<number> {
+  const settings = await getRecipeSettings();
   return parseFloat(settings.laborCostPerHour) || 15;
 }
 
 // Get default overhead percentage
-export function getDefaultOverhead(): number {
-  const settings = getRecipeSettings();
+export async function getDefaultOverhead(): Promise<number> {
+  const settings = await getRecipeSettings();
   return parseFloat(settings.overheadPercentage) || 10;
 }
 
 // Get default servings
-export function getDefaultServings(): number {
-  const settings = getRecipeSettings();
+export async function getDefaultServings(): Promise<number> {
+  const settings = await getRecipeSettings();
   return parseFloat(settings.defaultServings) || 12;
 }
 
 // Get default order status
-export function getDefaultOrderStatus(): string {
-  const settings = getOrderSettings();
-  return settings.defaultStatus || 'new';
+export async function getDefaultOrderStatus(): Promise<'new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled'> {
+  const settings = await getOrderSettings();
+  const status = settings.defaultStatus || 'new';
+  
+  // Ensure the status is one of the valid order statuses
+  const validStatuses: readonly ('new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled')[] = 
+    ['new', 'in-progress', 'ready', 'delivered', 'cancelled'] as const;
+  
+  const typedStatus = status as 'new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled';
+  return validStatuses.includes(typedStatus) ? typedStatus : 'new';
 }
 
 // Get order prefix
-export function getOrderPrefix(): string {
-  const settings = getOrderSettings();
+export async function getOrderPrefix(): Promise<string> {
+  const settings = await getOrderSettings();
   return settings.orderPrefix || 'ORD-';
 }
 
 // Get default lead time
-export function getDefaultLeadTime(): number {
-  const settings = getOrderSettings();
+export async function getDefaultLeadTime(): Promise<number> {
+  const settings = await getOrderSettings();
   return parseFloat(settings.leadTime) || 2;
 }
