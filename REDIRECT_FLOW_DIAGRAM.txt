@@ -1,0 +1,202 @@
+================================================================================
+REDIRECT FLOW DIAGRAM
+================================================================================
+
+SCENARIO: User wants to upgrade to Pro from pricing page
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         PRICING PAGE (/pricing-new)                         │
+│                                                                             │
+│  [PayPal Button Component]                                                 │
+│  - Checks if user is logged in                                             │
+│  - If NO token: Shows "Sign in to Subscribe" button                        │
+│  - If token: Shows PayPal payment button                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ User clicks "Sign in to Subscribe"
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  PayPalButton.tsx (onClick handler)                                        │
+│                                                                             │
+│  onClick={() => {                                                          │
+│    const url = getLoginUrlWithRedirect('/pricing-new')                    │
+│    // url = '/login?redirect=/pricing-new'                                │
+│    router.push(url)                                                        │
+│  }}                                                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Navigate to /login?redirect=/pricing-new
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    LOGIN PAGE (/login?redirect=...)                         │
+│                                                                             │
+│  [useRedirectIfAuthenticated hook]                                         │
+│  - If already logged in, redirect to /pricing-new                          │
+│  - If not logged in, show login form                                       │
+│                                                                             │
+│  [LoginForm Component]                                                     │
+│  - Reads redirect parameter from URL                                       │
+│  - User enters email/password                                              │
+│  - User clicks "Log In"                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ User submits login form
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  LoginForm.tsx (handleSubmit)                                              │
+│                                                                             │
+│  const result = await login(email, password)                              │
+│                                                                             │
+│  if (result.success) {                                                     │
+│    const redirectUrl = searchParams.get('redirect')                       │
+│    // redirectUrl = '/pricing-new'                                        │
+│                                                                             │
+│    if (redirectUrl && redirectUrl.startsWith('/')) {                      │
+│      router.push(redirectUrl)  // ← REDIRECT TO /pricing-new              │
+│    } else {                                                                │
+│      router.push('/bakery-business-tool')  // ← FALLBACK                  │
+│    }                                                                        │
+│  }                                                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ Redirect to /pricing-new
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PRICING PAGE (/pricing-new) - AGAIN                      │
+│                                                                             │
+│  [PayPal Button Component]                                                 │
+│  - User now HAS token (logged in)                                          │
+│  - Shows PayPal payment button                                             │
+│  - User can now complete payment                                           │
+│                                                                             │
+│  User clicks PayPal button → Completes payment → Upgraded to Pro!         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+ALTERNATIVE FLOW: User Signs Up Instead
+================================================================================
+
+LOGIN PAGE (/login?redirect=/pricing-new)
+            │
+            │ User clicks "Sign up" link
+            ↓
+SIGNUP PAGE (/signup?redirect=/pricing-new)
+            │
+            │ User fills form and creates account
+            ↓
+SignupForm.tsx (handleSubmit)
+            │
+            │ Reads redirect parameter
+            │ Validates and redirects to /pricing-new
+            ↓
+PRICING PAGE (/pricing-new) - User is now logged in
+            │
+            │ User completes PayPal payment
+            ↓
+UPGRADED TO PRO! ✓
+
+
+================================================================================
+SECURITY VALIDATION FLOW
+================================================================================
+
+User tries malicious redirect: /login?redirect=https://evil.com
+
+                                    ↓
+                            
+LoginForm.tsx checks:
+  const redirectUrl = searchParams.get('redirect')
+  // redirectUrl = 'https://evil.com'
+  
+  if (redirectUrl && redirectUrl.startsWith('/')) {
+    // ✗ FAILS - does not start with /
+    router.push(redirectUrl)
+  } else {
+    // ✓ PASSES - uses fallback
+    router.push('/bakery-business-tool')
+  }
+
+                                    ↓
+                            
+USER REDIRECTED TO: /bakery-business-tool (SAFE) ✓
+
+
+================================================================================
+REDIRECT UTILITY FUNCTIONS
+================================================================================
+
+lib/auth/redirect.ts provides:
+
+1. getLoginUrlWithRedirect(redirectTo)
+   Input:  '/pricing-new'
+   Output: '/login?redirect=%2Fpricing-new'
+   Usage:  router.push(getLoginUrlWithRedirect('/pricing-new'))
+
+2. getSignupUrlWithRedirect(redirectTo)
+   Input:  '/pricing-new'
+   Output: '/signup?redirect=%2Fpricing-new'
+   Usage:  router.push(getSignupUrlWithRedirect('/pricing-new'))
+
+3. isValidRedirectUrl(url)
+   Input:  '/pricing-new'
+   Output: true
+   Input:  'https://evil.com'
+   Output: false
+
+
+================================================================================
+QUERY PARAMETER FLOW
+================================================================================
+
+URL: /login?redirect=/pricing-new
+
+Breakdown:
+- /login = page
+- ? = query parameter separator
+- redirect = parameter name
+- = = assignment operator
+- /pricing-new = parameter value
+
+In code:
+  const searchParams = useSearchParams()
+  const redirectUrl = searchParams.get('redirect')
+  // redirectUrl = '/pricing-new'
+
+
+================================================================================
+COMPLETE COMPONENT INTERACTION
+================================================================================
+
+1. PayPalButton.tsx
+   ├─ Checks if user has token
+   ├─ If NO token:
+   │  └─ Shows button that calls getLoginUrlWithRedirect('/pricing-new')
+   └─ If token:
+      └─ Shows PayPal payment button
+
+2. LoginForm.tsx
+   ├─ Reads redirect from searchParams
+   ├─ User submits login
+   ├─ If success:
+   │  ├─ Checks if redirectUrl is valid
+   │  ├─ If valid: router.push(redirectUrl)
+   │  └─ If invalid: router.push('/bakery-business-tool')
+   └─ If error: Shows error message
+
+3. SignupForm.tsx
+   ├─ Reads redirect from searchParams
+   ├─ User submits signup
+   ├─ If success:
+   │  ├─ Checks if redirectUrl is valid
+   │  ├─ If valid: router.push(redirectUrl)
+   │  └─ If invalid: router.push('/bakery-business-tool')
+   └─ If error: Shows error message
+
+4. useRedirectIfAuthenticated hook
+   ├─ Runs on login/signup pages
+   ├─ If user already logged in:
+   │  ├─ Checks for redirect parameter
+   │  ├─ If valid: router.push(redirectUrl)
+   │  └─ If invalid: router.push('/bakery-business-tool')
+   └─ If not logged in: Does nothing (shows form)

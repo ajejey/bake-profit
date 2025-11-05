@@ -118,6 +118,33 @@ export default function BatchCostCalculator() {
       title="Free Batch Cost Calculator"
       description="Calculate total costs and profit for multiple batches. Perfect for production planning and wholesale orders."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-indigo-500 rounded-full">
+            <Package className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">🍪 Making Multiple Batches? Let&apos;s Calculate the Total!</h2>
+            <p className="text-gray-700 mb-3">
+              Planning a big bake day or wholesale order? This calculator helps you figure out the total cost and profit when making multiple batches of different products. 
+              Perfect for markets, events, or bulk orders!
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+                ✓ Multiple products
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+                ✓ Total profit
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+                ✓ Labor included
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input */}
         <div className="lg:col-span-2 space-y-6">
@@ -434,7 +461,7 @@ export default function BatchCostCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

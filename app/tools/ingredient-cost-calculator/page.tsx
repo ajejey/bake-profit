@@ -148,6 +148,33 @@ export default function IngredientCostCalculator() {
       title="Free Ingredient Cost Calculator"
       description="Calculate the cost per unit for any ingredient with automatic unit conversions. Perfect for recipe costing and bakery management."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-amber-500 rounded-full">
+            <Package className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">🥚 How Much Does Each Ingredient Really Cost?</h2>
+            <p className="text-gray-700 mb-3">
+              You buy a 5 lb bag of flour for $12.99 - but how much does 2 cups cost? We&apos;ll figure it out! 
+              This calculator converts between units and shows you the real cost of each ingredient in your recipes.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+                ✓ Auto conversions
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+                ✓ Cost per unit
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+                ✓ Recipe costs
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input */}
         <div className="lg:col-span-2 space-y-6">
@@ -442,7 +469,7 @@ export default function IngredientCostCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

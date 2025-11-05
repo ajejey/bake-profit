@@ -146,7 +146,7 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
-                  href="/bakery-business-tool"
+                  href="/pricing"
                   className="bg-rose-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-rose-600 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   Start Using Free Now
@@ -608,7 +608,7 @@ export default function Home() {
 
           <div className="text-center mt-12">
             <Link 
-              href="/bakery-business-tool"
+              href="/pricing"
               className="inline-flex items-center gap-2 bg-rose-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-rose-600 transition-all duration-300"
             >
               Try It Now - It&apos;s Free
@@ -719,7 +719,7 @@ export default function Home() {
               </div>
 
               <Link 
-                href="/bakery-business-tool"
+                href="/pricing"
                 className="block w-full bg-rose-100 text-rose-700 px-6 py-3 rounded-full font-semibold text-center hover:bg-rose-200 transition-all mb-6"
               >
                 Start Free Now
@@ -780,10 +780,10 @@ export default function Home() {
               </div>
 
               <Link 
-                href="/bakery-business-tool"
+                href="/pricing"
                 className="block w-full bg-white text-rose-600 px-6 py-3 rounded-full font-bold text-center hover:bg-rose-50 transition-all mb-6"
               >
-                Start Free Trial
+                View Pro Plans
               </Link>
 
               <div className="space-y-3">
@@ -927,11 +927,11 @@ export default function Home() {
             and growing their businesses. Start free today—upgrade when you&apos;re ready.
           </p>
           <Link 
-            href="/bakery-business-tool"
+            href="/pricing"
             className="inline-flex items-center gap-2 bg-white text-rose-600 px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-50 transition-all duration-300"
           >
             Start Using Free Now
-            <ArrowRight className="h-6 w-6" />
+            <ArrowRight className="h-5 w-5" />
           </Link>
           <p className="mt-6 text-sm opacity-75">
             Start free forever • Upgrade to Pro for $6.99/mo • 30-day money-back guarantee

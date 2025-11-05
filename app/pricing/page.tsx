@@ -1,163 +1,35 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { Header } from '@/components/layout/Header'
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
+'use client';
+
+import { useState } from 'react';
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { Header } from '@/components/layout/Header';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { 
   CheckCircle2, 
   ArrowRight, 
   Zap, 
   Lock, 
   Shield
-} from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { PayPalButton } from '@/components/pricing/PayPalButton';
+import { useAuth } from '@/contexts/AuthContext';
 
-export const metadata: Metadata = {
-  title: 'Pricing | BakeProfit - Affordable Bakery Management Software',
-  description: 'Simple, transparent pricing for bakery management software. Start free forever or upgrade to Pro for $6.99/month. No hidden fees, cancel anytime.',
-  keywords: 'bakery software pricing, recipe cost calculator pricing, bakery management cost, affordable bakery tools',
-  openGraph: {
-    title: 'BakeProfit Pricing - Start Free, Upgrade When Ready',
-    description: 'Simple, transparent pricing. Free plan forever or Pro at $6.99/month. All plans include 30-day money-back guarantee.',
-    url: 'https://bakeprofit.vercel.app/pricing',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'BakeProfit Pricing - Affordable Bakery Software',
-    description: 'Start free forever. Upgrade to Pro for just $6.99/month.',
-  },
-}
-
-export default function PricingPage() {
-  // JSON-LD Structured Data
-  const pricingSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'PricingTable',
-    name: 'BakeProfit Pricing',
-    description: 'Transparent pricing for bakery management software',
-    offers: [
-      {
-        '@type': 'Offer',
-        name: 'Free Plan',
-        price: '0',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-        description: 'Perfect for hobbyists and getting started',
-        url: 'https://bakeprofit.vercel.app/bakery-business-tool',
-      },
-      {
-        '@type': 'Offer',
-        name: 'Pro Plan',
-        price: '6.99',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-        description: 'For growing bakery businesses',
-        url: 'https://bakeprofit.vercel.app/bakery-business-tool',
-        billingDuration: 'P1M',
-      },
-    ],
-  }
-
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'Is there a free plan?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes! Our free plan is generous and available forever. You get 5 recipes, 15 orders/month, 10 customers, 20 inventory items, and access to all features. No credit card required.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is included in the Pro plan?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Pro includes unlimited recipes, orders, customers, and inventory. Plus advanced analytics, Google Drive auto-sync, priority support, and no BakeProfit branding. Just $6.99/month or $69/year.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Can I cancel anytime?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes! No contracts or commitments. Cancel your Pro subscription anytime and you will automatically revert to the free plan.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Is my data safe and private?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Absolutely! Free plan data is stored locally in your browser. Pro users get automatic Google Drive sync for backup. We never collect or sell your data.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Do you offer a money-back guarantee?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes! All plans include a 30-day money-back guarantee. If you are not satisfied, we will refund your money, no questions asked.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Can I upgrade or downgrade anytime?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes! You can upgrade to Pro or downgrade to Free anytime. Changes take effect immediately.',
-        },
-      },
-    ],
-  }
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://bakeprofit.vercel.app',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Pricing',
-        item: 'https://bakeprofit.vercel.app/pricing',
-      },
-    ],
-  }
+export default function PricingNewPage() {
+  const { user } = useAuth();
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   return (
     <div className="min-h-screen bg-white">
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-
       {/* Header */}
       <Header showBlog showTools />
 
       {/* Breadcrumbs */}
-      {/* <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-white"> */}
-        <div className="max-w-6xl pt-2 mx-auto">
-          <Breadcrumbs items={[{ label: 'Pricing' }]} />
-        </div>
-      {/* </section> */}
+      <div className="max-w-6xl pt-2 mx-auto px-4">
+        <Breadcrumbs items={[{ label: 'Pricing' }]} />
+      </div>
 
       {/* Hero Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-rose-50">
@@ -209,6 +81,9 @@ export default function PricingPage() {
                   <CardDescription className="text-base">
                     Perfect for hobbyists and getting started
                   </CardDescription>
+                  <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                    Calculate recipe costs, track orders, manage customers, and generate invoices. Everything you need to start pricing products correctly and running your bakery efficiently.
+                  </p>
                 </div>
               </CardHeader>
 
@@ -222,35 +97,59 @@ export default function PricingPage() {
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700"><strong>5 recipes</strong></span>
+                    <div>
+                      <span className="text-gray-700"><strong>5 recipes</strong></span>
+                      <p className="text-xs text-gray-500">Perfect for testing and getting started</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700"><strong>15 orders</strong> per month</span>
+                    <div>
+                      <span className="text-gray-700"><strong>15 orders</strong> per month</span>
+                      <p className="text-xs text-gray-500">Great for part-time bakers</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700"><strong>10 customers</strong></span>
+                    <div>
+                      <span className="text-gray-700"><strong>10 customers</strong></span>
+                      <p className="text-xs text-gray-500">Store contact info and order history</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700"><strong>20 inventory items</strong></span>
+                    <div>
+                      <span className="text-gray-700"><strong>20 inventory items</strong></span>
+                      <p className="text-xs text-gray-500">Track ingredients and get low-stock alerts</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">All features accessible</span>
+                    <div>
+                      <span className="text-gray-700">All features accessible</span>
+                      <p className="text-xs text-gray-500">Recipe calculator, invoicing, pricing tools</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Basic analytics</span>
+                    <div>
+                      <span className="text-gray-700">Basic analytics</span>
+                      <p className="text-xs text-gray-500">See which products make money</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Local storage</span>
+                    <div>
+                      <span className="text-gray-700">Local storage</span>
+                      <p className="text-xs text-gray-500">Your data stays on your device</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-700">Export data</span>
+                    <div>
+                      <span className="text-gray-700">Export data</span>
+                      <p className="text-xs text-gray-500">Download as PDF or spreadsheet</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -267,61 +166,134 @@ export default function PricingPage() {
               <CardHeader>
                 <div className="mb-4">
                   <CardTitle className="text-2xl mb-2">Pro</CardTitle>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-5xl font-bold text-rose-600">$6.99</span>
-                    <span className="text-gray-600">/month</span>
+                  
+                  {/* Billing Cycle Toggle */}
+                  <div className="inline-flex items-center bg-rose-100 rounded-lg p-1 mb-6">
+                    <button
+                      onClick={() => setBillingCycle('monthly')}
+                      className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                        billingCycle === 'monthly'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-gray-700 hover:text-gray-900'
+                      }`}
+                    >
+                      Monthly
+                    </button>
+                    <button
+                      onClick={() => setBillingCycle('yearly')}
+                      className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all relative ${
+                        billingCycle === 'yearly'
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'text-gray-700 hover:text-gray-900'
+                      }`}
+                    >
+                      <span>Yearly</span>
+                      <span className="ml-2 text-xs font-bold bg-green-600 text-white px-2 py-1 rounded-full">-17%</span>
+                    </button>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">or <strong>$69/year</strong> (save $14)</p>
+
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-5xl font-bold text-rose-600">
+                      ${billingCycle === 'monthly' ? '6.99' : '69'}
+                    </span>
+                    <span className="text-gray-600 text-lg">
+                      /{billingCycle === 'monthly' ? 'month' : 'year'}
+                    </span>
+                  </div>
+                  {billingCycle === 'yearly' && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-4 inline-block">
+                      <p className="text-sm text-green-700 font-medium">
+                        💰 Save $14/year compared to monthly
+                      </p>
+                    </div>
+                  )}
+                  {billingCycle === 'monthly' && (
+                    <p className="text-sm text-gray-500 mb-4">
+                      Billed monthly • Cancel anytime
+                    </p>
+                  )}
+                  {billingCycle === 'yearly' && (
+                    <p className="text-sm text-gray-500 mb-4">
+                      Billed annually • Best value
+                    </p>
+                  )}
                   <CardDescription className="text-base">
                     For growing bakery businesses
                   </CardDescription>
+                  <p className="text-sm text-gray-900 mt-3 leading-relaxed">
+                    Everything in Free, plus unlimited capacity. Advanced analytics, shopping list generator, PDF exports without branding, and automatic Google Drive backup to keep your data safe across devices.
+                  </p>
                 </div>
               </CardHeader>
 
               <CardContent>
-                <Link href="/bakery-business-tool" className="block w-full mb-6">
-                  <Button className="w-full bg-rose-600 hover:bg-rose-700 text-white">
-                    Start Free Trial
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                <div className="mb-6">
+                  <PayPalButton plan="pro" billingCycle={billingCycle} />
+                </div>
 
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900"><strong>UNLIMITED</strong> recipes</span>
+                    <div>
+                      <span className="text-gray-900"><strong>UNLIMITED</strong> recipes</span>
+                      <p className="text-xs text-gray-600">Create as many as you need</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900"><strong>UNLIMITED</strong> orders</span>
+                    <div>
+                      <span className="text-gray-900"><strong>UNLIMITED</strong> orders</span>
+                      <p className="text-xs text-gray-600">Track every order without limits</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900"><strong>UNLIMITED</strong> customers</span>
+                    <div>
+                      <span className="text-gray-900"><strong>UNLIMITED</strong> customers</span>
+                      <p className="text-xs text-gray-600">Grow your customer base freely</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900"><strong>UNLIMITED</strong> inventory</span>
+                    <div>
+                      <span className="text-gray-900"><strong>UNLIMITED</strong> inventory</span>
+                      <p className="text-xs text-gray-600">Manage all your ingredients</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900">All features accessible</span>
+                    <div>
+                      <span className="text-gray-900">All features accessible</span>
+                      <p className="text-xs text-gray-600">Everything the Free plan has</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900">Advanced analytics & reports</span>
+                    <div>
+                      <span className="text-gray-900">Advanced analytics & reports</span>
+                      <p className="text-xs text-gray-600">Profit margins, trends, insights</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900"><strong>Google Drive auto-sync</strong> ⭐</span>
+                    <div>
+                      <span className="text-gray-900"><strong>Google Drive auto-sync</strong> ⭐</span>
+                      <p className="text-xs text-gray-600">Backup and sync across devices</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900">Priority email support</span>
+                    <div>
+                      <span className="text-gray-900">Priority email support</span>
+                      <p className="text-xs text-gray-600">Get help when you need it</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-900">No branding on exports</span>
+                    <div>
+                      <span className="text-gray-900">No branding on exports</span>
+                      <p className="text-xs text-gray-600">Professional invoices and PDFs</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -392,79 +364,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Frequently Asked Questions
-            </h2>
-          </div>
-
-          <div className="space-y-6">
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                Is there a free plan?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Yes! Our free plan is generous and available forever. You get 5 recipes, 15 orders/month, 10 customers, 20 inventory items, and access to all features. No credit card required. Upgrade to Pro ($6.99/mo) when you need unlimited everything and Google Drive sync.
-              </p>
-            </details>
-
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                What&apos;s included in the Pro plan?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Pro gives you unlimited recipes, orders, customers, and inventory. Plus advanced analytics, Google Drive auto-sync (so you never lose data), priority support, and no BakeProfit branding. Just $6.99/month or $69/year (save $14).
-              </p>
-            </details>
-
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                Can I cancel anytime?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Yes! No contracts or commitments. Cancel your Pro subscription anytime and you will automatically revert to the free plan. Your data stays with you.
-              </p>
-            </details>
-
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                Is my data safe and private?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Absolutely! Free plan data is stored locally in your browser. Pro users get automatic Google Drive sync for backup and access across devices. We never collect or sell your data. You own it 100%.
-              </p>
-            </details>
-
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                Do you offer a money-back guarantee?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Yes! All plans include a 30-day money-back guarantee. If you are not satisfied, we will refund your money, no questions asked.
-              </p>
-            </details>
-
-            <details className="bg-gray-50 p-6 rounded-xl border border-gray-200 group">
-              <summary className="font-bold text-lg text-gray-900 cursor-pointer list-none flex items-center justify-between">
-                Can I upgrade or downgrade anytime?
-                <span className="text-rose-500 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <p className="mt-4 text-gray-600">
-                Yes! You can upgrade to Pro or downgrade to Free anytime. Changes take effect immediately. You only pay for the time you use.
-              </p>
-            </details>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-rose-500 to-rose-600">
         <div className="max-w-4xl mx-auto text-center text-white">
@@ -474,9 +373,9 @@ export default function PricingPage() {
           <p className="text-xl text-rose-100 mb-8">
             Start free today. No credit card required. Upgrade to Pro whenever you&apos;re ready.
           </p>
-          <Link href="/bakery-business-tool">
+          <Link href="/">
             <Button size="lg" className="bg-white text-rose-600 hover:bg-rose-50 text-lg px-8 py-6">
-              Start Free Now
+              Get Started Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
@@ -490,5 +389,5 @@ export default function PricingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

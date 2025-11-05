@@ -10,6 +10,8 @@ export interface User {
   subscription_status: 'active' | 'canceled' | 'past_due';
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
+  paypal_subscription_id: string | null;
+  paypal_payer_id: string | null;
   subscription_ends_at: Date | null;
   created_at: Date;
   updated_at: Date;

@@ -117,6 +117,33 @@ export default function RecipeCostCalculator() {
       title="Free Recipe Cost Calculator"
       description="Calculate your recipe costs instantly. Perfect for home bakers and small bakeries. No signup required."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl border-2 border-rose-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-rose-500 rounded-full">
+            <Calculator className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">👋 Let&apos;s Figure Out Your Recipe Costs!</h2>
+            <p className="text-gray-700 mb-3">
+              Ever wonder if you&apos;re charging enough for your baked goods? This calculator helps you find out! 
+              Just tell us what ingredients you use, and we&apos;ll show you exactly how much each cookie, cupcake, or cake costs to make.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+                ✓ Super easy to use
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+                ✓ No math required
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+                ✓ Results in seconds
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input Form */}
         <div className="lg:col-span-2 space-y-6">
@@ -130,26 +157,31 @@ export default function RecipeCostCalculator() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="recipeName">Recipe Name (Optional)</Label>
+                <Label htmlFor="recipeName" className="text-base font-semibold">What are you baking? (Optional)</Label>
                 <Input
                   id="recipeName"
-                  placeholder="e.g., Chocolate Chip Cookies"
+                  placeholder="e.g., My Famous Chocolate Chip Cookies"
                   value={recipeName}
                   onChange={(e) => setRecipeName(e.target.value)}
+                  className="text-base"
                 />
+                <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                  💡 Give it a fun name so you remember it later!
+                </p>
               </div>
               
               <div>
-                <Label htmlFor="servings">Number of Servings / Yield</Label>
+                <Label htmlFor="servings" className="text-base font-semibold">How many does this recipe make?</Label>
                 <Input
                   id="servings"
                   type="number"
                   min="1"
                   value={servings}
                   onChange={(e) => setServings(Number(e.target.value))}
+                  className="text-base"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  How many cookies, cupcakes, or servings does this recipe make?
+                <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                  🍪 Enter the number of cookies, cupcakes, or servings (e.g., 24 cookies)
                 </p>
               </div>
             </CardContent>
@@ -158,7 +190,13 @@ export default function RecipeCostCalculator() {
           {/* Ingredients */}
           <Card>
             <CardHeader>
-              <CardTitle>Ingredients</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-2xl">🥚</span>
+                Your Ingredients
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Add each ingredient you use. Don&apos;t worry about being perfect - you can always adjust later!
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               {ingredients.map((ingredient, index) => (
@@ -180,16 +218,16 @@ export default function RecipeCostCalculator() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="sm:col-span-2">
-                      <Label>Ingredient Name</Label>
+                      <Label className="font-semibold">What ingredient is this?</Label>
                       <Input
-                        placeholder="e.g., All-Purpose Flour"
+                        placeholder="e.g., All-Purpose Flour, Butter, Sugar..."
                         value={ingredient.name}
                         onChange={(e) => updateIngredient(ingredient.id, 'name', e.target.value)}
                       />
                     </div>
 
                     <div>
-                      <Label>Amount Used</Label>
+                      <Label className="font-semibold">How much do you use?</Label>
                       <Input
                         type="number"
                         step="0.01"
@@ -198,6 +236,7 @@ export default function RecipeCostCalculator() {
                         value={ingredient.amount || ''}
                         onChange={(e) => updateIngredient(ingredient.id, 'amount', Number(e.target.value))}
                       />
+                      <p className="text-xs text-gray-500 mt-1">The amount in your recipe</p>
                     </div>
 
                     <div>
@@ -218,7 +257,7 @@ export default function RecipeCostCalculator() {
                     </div>
 
                     <div>
-                      <Label>Package Size</Label>
+                      <Label className="font-semibold">Package size you buy</Label>
                       <Input
                         type="number"
                         step="0.01"
@@ -228,12 +267,12 @@ export default function RecipeCostCalculator() {
                         onChange={(e) => updateIngredient(ingredient.id, 'packageSize', Number(e.target.value))}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        Size of package you buy
+                        📦 What&apos;s on the bag/box? (e.g., 5 lb bag)
                       </p>
                     </div>
 
                     <div>
-                      <Label>Package Cost ($)</Label>
+                      <Label className="font-semibold">What did it cost?</Label>
                       <Input
                         type="number"
                         step="0.01"
@@ -242,6 +281,9 @@ export default function RecipeCostCalculator() {
                         value={ingredient.packageCost || ''}
                         onChange={(e) => updateIngredient(ingredient.id, 'packageCost', Number(e.target.value))}
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        💵 Price you paid at the store
+                      </p>
                     </div>
                   </div>
 
@@ -267,13 +309,19 @@ export default function RecipeCostCalculator() {
           </Card>
 
           {/* Additional Costs */}
-          <Card>
+          <Card className="border-blue-200">
             <CardHeader>
-              <CardTitle>Additional Costs (Optional)</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-2xl">⏰</span>
+                Your Time & Other Costs (Optional but Important!)
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Your time is valuable! Add these to see your TRUE cost.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="laborCost">Labor Cost ($)</Label>
+                <Label htmlFor="laborCost" className="font-semibold">Your Time (Labor Cost)</Label>
                 <Input
                   id="laborCost"
                   type="number"
@@ -283,13 +331,13 @@ export default function RecipeCostCalculator() {
                   value={laborCost || ''}
                   onChange={(e) => setLaborCost(Number(e.target.value))}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Time spent × hourly rate
+                <p className="text-sm text-gray-600 mt-1">
+                  💡 <strong>Tip:</strong> If it takes 2 hours and you value your time at $20/hr, enter $40
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="overheadCost">Overhead Cost ($)</Label>
+                <Label htmlFor="overheadCost" className="font-semibold">Other Costs (Packaging, etc.)</Label>
                 <Input
                   id="overheadCost"
                   type="number"
@@ -299,8 +347,8 @@ export default function RecipeCostCalculator() {
                   value={overheadCost || ''}
                   onChange={(e) => setOverheadCost(Number(e.target.value))}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Packaging, electricity, etc.
+                <p className="text-sm text-gray-600 mt-1">
+                  📦 Boxes, bags, electricity, etc. (usually $1-5 per batch)
                 </p>
               </div>
             </CardContent>
@@ -414,7 +462,7 @@ export default function RecipeCostCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

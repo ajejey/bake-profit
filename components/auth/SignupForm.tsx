@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRedirectIfAuthenticated } from '@/hooks/useRedirectIfAuthenticated';
@@ -14,6 +14,7 @@ import { Loader2 } from 'lucide-react';
 export default function SignupForm() {
   useRedirectIfAuthenticated();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signup } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,14 @@ export default function SignupForm() {
           title: 'Account created!',
           description: 'Welcome to BakeProfit. Let\'s get started!',
         });
-        router.push('/bakery-business-tool');
+        
+        // Check for redirect parameter
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl && redirectUrl.startsWith('/')) {
+          router.push(redirectUrl);
+        } else {
+          router.push('/bakery-business-tool');
+        }
       } else {
         toast({
           title: 'Signup failed',

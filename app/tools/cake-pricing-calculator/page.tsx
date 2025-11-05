@@ -93,6 +93,33 @@ export default function CakePricingCalculator() {
       title="Free Cake Pricing Calculator"
       description="Calculate the perfect price for your cakes. Factor in ingredients, labor, tiers, complexity, delivery, and profit margins."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-purple-500 rounded-full">
+            <Cake className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">🎂 Price Your Cakes Like a Pro!</h2>
+            <p className="text-gray-700 mb-3">
+              Stop guessing what to charge! This calculator helps you price your cakes so you make a profit AND feel confident. 
+              We&apos;ll walk you through everything - ingredients, your time, decorations, and even delivery.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+                ✓ Perfect for custom cakes
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+                ✓ Includes tier pricing
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+                ✓ Factor in complexity
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input Form */}
         <div className="lg:col-span-2 space-y-6">
@@ -100,19 +127,26 @@ export default function CakePricingCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Cake className="h-5 w-5 text-rose-500" />
-                Cake Details
+                <span className="text-2xl">🎂</span>
+                Tell Us About Your Cake
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Let&apos;s start with the basics - what kind of cake are you making?
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="cakeName">Cake Name (Optional)</Label>
+                <Label htmlFor="cakeName" className="text-base font-semibold">What&apos;s this cake for? (Optional)</Label>
                 <Input
                   id="cakeName"
-                  placeholder="e.g., 3-Tier Wedding Cake"
+                  placeholder="e.g., Sarah's Birthday Cake, Wedding Cake for the Johnsons"
                   value={cakeName}
                   onChange={(e) => setCakeName(e.target.value)}
+                  className="text-base"
                 />
+                <p className="text-sm text-gray-600 mt-1">
+                  💡 Helps you remember which cake this is!
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -149,22 +183,23 @@ export default function CakePricingCalculator() {
               </div>
 
               <div>
-                <Label htmlFor="servings">Number of Servings</Label>
+                <Label htmlFor="servings" className="text-base font-semibold">How many people will eat this cake?</Label>
                 <Input
                   id="servings"
                   type="number"
                   min="1"
                   value={servings}
                   onChange={(e) => setServings(Number(e.target.value))}
+                  className="text-base"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  How many people will this cake serve?
+                <p className="text-sm text-gray-600 mt-1">
+                  🍰 Number of servings (e.g., 50 for a wedding cake)
                 </p>
               </div>
 
-              <div>
-                <Label htmlFor="complexity">
-                  Complexity Level: <span className="font-bold text-rose-600">{getComplexityLabel(complexityLevel)}</span>
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <Label htmlFor="complexity" className="text-base font-semibold">
+                  How fancy is this cake? <span className="font-bold text-purple-600">{getComplexityLabel(complexityLevel)}</span>
                 </Label>
                 <Slider
                   id="complexity"
@@ -173,14 +208,14 @@ export default function CakePricingCalculator() {
                   step={1}
                   value={[complexityLevel]}
                   onValueChange={(value: number[]) => setComplexityLevel(value[0])}
-                  className="mt-2"
+                  className="mt-3"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-gray-500 mt-2">
                   <span>Simple</span>
                   <span>Very Complex</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Simple = basic frosting • Complex = fondant, sugar flowers, intricate designs
+                <p className="text-sm text-gray-600 mt-2">
+                  🎨 <strong>Simple:</strong> Basic buttercream • <strong>Complex:</strong> Fondant, sugar flowers, hand-painted designs
                 </p>
               </div>
             </CardContent>
@@ -190,40 +225,43 @@ export default function CakePricingCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5 text-rose-500" />
-                Material Costs
+                <span className="text-2xl">📦</span>
+                What Did You Spend on Materials?
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Add up what you spent on ingredients, decorations, and packaging.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="ingredientCost">Ingredient Cost ($)</Label>
+                <Label htmlFor="ingredientCost" className="font-semibold">Ingredients (Cake, Frosting, Fillings)</Label>
                 <Input
                   id="ingredientCost"
                   type="number"
                   step="0.01"
                   min="0"
-                  placeholder="0.00"
+                  placeholder="25.00"
                   value={ingredientCost || ''}
                   onChange={(e) => setIngredientCost(Number(e.target.value))}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Cake batter, frosting, fillings, etc.
+                <p className="text-sm text-gray-600 mt-1">
+                  🥚 Flour, eggs, butter, sugar, frosting, etc.
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="decorationCost">Decoration Cost ($)</Label>
+                <Label htmlFor="decorationCost" className="font-semibold">Decorations & Toppers</Label>
                 <Input
                   id="decorationCost"
                   type="number"
                   step="0.01"
                   min="0"
-                  placeholder="0.00"
+                  placeholder="15.00"
                   value={decorationCost || ''}
                   onChange={(e) => setDecorationCost(Number(e.target.value))}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Fondant, edible flowers, toppers, sprinkles, etc.
+                <p className="text-sm text-gray-600 mt-1">
+                  🌹 Fondant, flowers, toppers, sprinkles, food coloring
                 </p>
               </div>
 
@@ -246,16 +284,19 @@ export default function CakePricingCalculator() {
           </Card>
 
           {/* Labor & Time */}
-          <Card>
+          <Card className="border-blue-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-rose-500" />
-                Labor & Time
+                <span className="text-2xl">⏰</span>
+                Your Time Matters!
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Don&apos;t forget to pay yourself! Your time and skill are valuable.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="hourlyRate">Your Hourly Rate ($)</Label>
+                <Label htmlFor="hourlyRate" className="font-semibold">What&apos;s your time worth per hour?</Label>
                 <Input
                   id="hourlyRate"
                   type="number"
@@ -265,8 +306,8 @@ export default function CakePricingCalculator() {
                   value={hourlyRate || ''}
                   onChange={(e) => setHourlyRate(Number(e.target.value))}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  How much is your time worth per hour?
+                <p className="text-sm text-gray-600 mt-1">
+                  💡 Most bakers charge $20-40/hour. You deserve it!
                 </p>
               </div>
 
@@ -521,7 +562,7 @@ export default function CakePricingCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

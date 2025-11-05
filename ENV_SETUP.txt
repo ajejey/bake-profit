@@ -1,0 +1,299 @@
+# Environment Variables Setup for BakeProfit
+
+Copy these variables to your .env.local file:
+
+# MongoDB
+MONGODB_URI=your_mongodb_connection_string
+
+# JWT Secret
+JWT_SECRET=your_jwt_secret_key_here
+
+# Email (Gmail)
+NEXT_PUBLIC_GMAIL_EMAIL=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-16-char-app-password
+
+# App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Google OAuth (for Google Drive sync)
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# PayPal
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_client_secret
+PAYPAL_API_URL=https://api-m.sandbox.paypal.com
+
+# PayPal Subscription Plan IDs (create these in PayPal dashboard)
+NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID=P-xxxxxxxxxxxxx
+NEXT_PUBLIC_PAYPAL_YEARLY_PLAN_ID=P-xxxxxxxxxxxxx
+
+# PayPal Webhook ID (get this after creating webhook)
+PAYPAL_WEBHOOK_ID=your_webhook_id_here
+
+# For production, change PAYPAL_API_URL to:
+# PAYPAL_API_URL=https://api-m.paypal.com
+
+## PayPal Setup Instructions:
+
+### Part 1: PayPal Developer Account Setup
+
+1. **Create PayPal Developer Account**
+   - Go to https://developer.paypal.com/
+   - Click "Log in to Dashboard" (top right)
+   - Sign in with your personal PayPal account OR create a new one
+   - Accept the developer agreement
+
+2. **Create Your App**
+   - In the Dashboard, go to "My Apps & Credentials"
+   - Make sure you're on the "Sandbox" tab
+   - Click "Create App"
+   - Enter app name (e.g., "BakeProfit Subscriptions")
+   - Select app type: "Merchant"
+   - Click "Create App"
+
+3. **Get Your Sandbox Credentials**
+   - After creating the app, you'll see:
+     * Client ID (copy to NEXT_PUBLIC_PAYPAL_CLIENT_ID)
+     * Secret (click "Show" then copy to PAYPAL_CLIENT_SECRET)
+   - Keep PAYPAL_API_URL as: https://api-m.sandbox.paypal.com
+
+4. **Enable Subscriptions Feature**
+   - In your app settings, scroll to "Features"
+   - Make sure "Subscriptions" is checked/enabled
+   - If not visible, it may be enabled by default
+   - Save changes
+
+### Part 2: Create Subscription Plans (REQUIRED for recurring payments)
+
+**Important**: PayPal subscriptions require creating billing plans first.
+
+1. **Create Subscription Plans via API or Dashboard**
+   
+   **Option A: Via PayPal Dashboard (Recommended for testing)**
+   - Go to https://www.sandbox.paypal.com/
+   - Log in with your SANDBOX BUSINESS account (see Part 3 below)
+   - Navigate to: Products & Services > Subscriptions > Plans
+   - Click "Create Plan"
+   
+   **For Monthly Plan:**
+   - Plan name: "BakeProfit Pro - Monthly"
+   - Plan ID: Save this (you'll need it in your code)
+   - Billing cycle: Monthly
+   - Price: $9.99 (or your price)
+   - Setup fee: $0
+   - Trial period: Optional (e.g., 7 days free)
+   
+   **For Yearly Plan:**
+   - Plan name: "BakeProfit Pro - Yearly"
+   - Plan ID: Save this (you'll need it in your code)
+   - Billing cycle: Yearly
+   - Price: $99.99 (or your price)
+   - Setup fee: $0
+   - Trial period: Optional
+   
+   **Option B: Via API (for programmatic setup)**
+   - Use PayPal Billing Plans API
+   - POST to: https://api-m.sandbox.paypal.com/v1/billing/plans
+   - Include plan details (frequency, price, billing cycles)
+   - Save the returned plan IDs
+
+2. **Update Your Code with Plan IDs**
+   - Add to your .env.local:
+     ```
+     NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID=P-xxxxxxxxxxxxx
+     NEXT_PUBLIC_PAYPAL_YEARLY_PLAN_ID=P-xxxxxxxxxxxxx
+     ```
+   - Use these plan IDs in your PayPal button component
+
+### Part 3: Create Test Buyer Accounts (Sandbox)
+
+1. **Access Sandbox Accounts**
+   - Go to https://developer.paypal.com/dashboard/
+   - Click "Testing Tools" > "Sandbox Accounts" (left menu)
+
+2. **Create Business Account (Merchant - receives payments)**
+   - Click "Create Account"
+   - Account Type: "Business"
+   - Email: Will be auto-generated (e.g., sb-xxxxx@business.example.com)
+   - Password: Set a password you'll remember
+   - PayPal Balance: Set to $5,000 (for testing)
+   - Click "Create Account"
+   - **Save these credentials** - you'll use this to log in and check received payments
+
+3. **Create Personal Accounts (Buyers - make payments)**
+   - Click "Create Account" again
+   - Account Type: "Personal"
+   - Email: Will be auto-generated (e.g., sb-yyyyy@personal.example.com)
+   - Password: Set a password
+   - PayPal Balance: Set to $1,000
+   - Credit Card: Auto-generated (or add custom)
+   - Click "Create Account"
+   - **Create 2-3 buyer accounts** for different test scenarios
+   - **Save all credentials** in a secure note
+
+4. **View Account Details**
+   - Click the "..." menu next to any account
+   - Select "View/Edit Account"
+   - Here you can see:
+     * Email address
+     * Password
+     * Credit card details (for testing checkout)
+     * PayPal balance
+
+### Part 4: Testing Subscriptions in Sandbox
+
+1. **Test Monthly Subscription**
+   - Run your app locally (localhost:3000)
+   - Go to /pricing-new page
+   - Make sure you're logged in to your app
+   - Click the PayPal subscription button
+   - You'll be redirected to PayPal sandbox
+   - Log in with a PERSONAL test account (buyer)
+   - Approve the subscription
+   - You'll be redirected back to your app
+   - Check webhook/confirmation
+
+2. **Test Yearly Subscription**
+   - Same process, but select yearly plan
+   - Verify different pricing is shown
+   - Complete subscription approval
+
+3. **Verify Payment Received**
+   - Go to https://www.sandbox.paypal.com/
+   - Log in with your BUSINESS test account
+   - Go to "Activity" or "Transactions"
+   - You should see the subscription payment
+   - Check subscription details under "Subscriptions"
+
+4. **Test Subscription Management**
+   - As buyer: Log in to sandbox.paypal.com with personal account
+   - Go to Settings > Payments > Manage automatic payments
+   - Find your BakeProfit subscription
+   - Test cancellation (if you have cancel feature)
+
+### Part 5: Webhook Setup (Important for subscription events)
+
+1. **Create Webhook in Developer Dashboard**
+   - Go to https://developer.paypal.com/dashboard/
+   - Select your app
+   - Scroll to "Webhooks"
+   - Click "Add Webhook"
+   - Webhook URL: https://yourdomain.com/api/webhooks/paypal
+     (For local testing, use ngrok: https://abc123.ngrok.io/api/webhooks/paypal)
+
+2. **Select Webhook Events for Subscriptions**
+   - Check these events:
+     * BILLING.SUBSCRIPTION.CREATED
+     * BILLING.SUBSCRIPTION.ACTIVATED
+     * BILLING.SUBSCRIPTION.UPDATED
+     * BILLING.SUBSCRIPTION.CANCELLED
+     * BILLING.SUBSCRIPTION.SUSPENDED
+     * BILLING.SUBSCRIPTION.EXPIRED
+     * PAYMENT.SALE.COMPLETED
+     * PAYMENT.SALE.REFUNDED
+   - Click "Save"
+
+3. **Save Webhook ID**
+   - Copy the Webhook ID to your .env.local:
+     ```
+     PAYPAL_WEBHOOK_ID=your_webhook_id_here
+     ```
+
+### Part 6: Production Setup
+
+1. **Get Live Credentials**
+   - In PayPal Developer Dashboard
+   - Go to "My Apps & Credentials"
+   - Switch to "Live" tab (top)
+   - Click "Create App" (create separate live app)
+   - Copy Live Client ID and Secret
+   - Update your production .env:
+     ```
+     NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_live_client_id
+     PAYPAL_CLIENT_SECRET=your_live_client_secret
+     PAYPAL_API_URL=https://api-m.paypal.com
+     ```
+
+2. **Create Live Subscription Plans**
+   - Log in to https://www.paypal.com/ (LIVE account)
+   - Go to Products & Services > Subscriptions > Plans
+   - Create Monthly and Yearly plans (same as sandbox)
+   - Save the LIVE plan IDs
+   - Update production environment variables:
+     ```
+     NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID=P-live-monthly-id
+     NEXT_PUBLIC_PAYPAL_YEARLY_PLAN_ID=P-live-yearly-id
+     ```
+
+3. **Setup Live Webhooks**
+   - In your LIVE app settings
+   - Add webhook with your production URL
+   - Select same subscription events
+   - Save webhook ID for production
+
+4. **Business Account Verification**
+   - Your actual PayPal business account must be verified
+   - Complete business verification if prompted
+   - Link bank account for withdrawals
+   - Verify email and phone number
+
+5. **Test with Real Account**
+   - Use your own PayPal personal account
+   - Make a real $0.01 test subscription (create a test plan)
+   - Verify it works end-to-end
+   - Cancel immediately after testing
+   - Then switch to real pricing
+
+### Part 7: Important Notes for Subscriptions
+
+**Recurring Payments:**
+- PayPal handles automatic billing on the subscription cycle
+- First payment: Immediate (when user subscribes)
+- Subsequent payments: Automatic on billing date
+- Monthly: Charges on same day each month
+- Yearly: Charges on same date each year
+
+**No Additional Setup Needed For:**
+- Automatic renewals (PayPal handles this)
+- Failed payment retries (PayPal retries automatically)
+- Proration (if you implement plan changes)
+
+**You MUST Implement:**
+- Webhook handler to receive subscription events
+- Database updates when subscription status changes
+- User access control based on subscription status
+- Cancellation flow (optional - users can cancel via PayPal)
+
+**Testing Recurring Payments in Sandbox:**
+- Sandbox doesn't wait real months/years
+- Use PayPal's testing tools to simulate time passage
+- Or manually trigger webhook events for testing
+
+### Part 8: Checklist
+
+**Sandbox Setup:**
+- [ ] Created PayPal Developer account
+- [ ] Created sandbox app
+- [ ] Got sandbox Client ID and Secret
+- [ ] Created business test account (merchant)
+- [ ] Created 2-3 personal test accounts (buyers)
+- [ ] Created monthly subscription plan
+- [ ] Created yearly subscription plan
+- [ ] Saved all plan IDs
+- [ ] Setup sandbox webhook
+- [ ] Tested monthly subscription
+- [ ] Tested yearly subscription
+- [ ] Verified payment received in business account
+
+**Production Setup:**
+- [ ] Created live app
+- [ ] Got live Client ID and Secret
+- [ ] Created live monthly plan
+- [ ] Created live yearly plan
+- [ ] Setup live webhook
+- [ ] Verified business account
+- [ ] Updated production environment variables
+- [ ] Tested with real account (small amount)
+- [ ] Implemented webhook handler
+- [ ] Implemented subscription status checks

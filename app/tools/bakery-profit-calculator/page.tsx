@@ -97,6 +97,33 @@ export default function BakeryProfitCalculator() {
       title="Free Bakery Profit Calculator"
       description="Calculate your bakery's profit margins and compare to industry benchmarks. Know if your business is profitable."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-green-500 rounded-full">
+            <TrendingUp className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">💰 Is Your Bakery Actually Making Money?</h2>
+            <p className="text-gray-700 mb-3">
+              Let&apos;s find out! This calculator shows you if you&apos;re profitable and how you compare to other bakeries. 
+              Just enter your sales and costs - we&apos;ll show you the real numbers and what they mean.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+                ✓ See profit margins
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+                ✓ Industry benchmarks
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+                ✓ Break-even analysis
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input */}
         <div className="lg:col-span-2 space-y-6">
@@ -104,24 +131,28 @@ export default function BakeryProfitCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-green-500" />
-                Revenue
+                <span className="text-2xl">💵</span>
+                How Much Did You Make in Sales?
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Your total income from selling baked goods
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="totalRevenue">Total Revenue ($)</Label>
+                <Label htmlFor="totalRevenue" className="text-base font-semibold">Total Sales/Revenue</Label>
                 <Input
                   id="totalRevenue"
                   type="number"
                   step="0.01"
                   min="0"
-                  placeholder="0.00"
+                  placeholder="5000.00"
                   value={totalRevenue || ''}
                   onChange={(e) => setTotalRevenue(Number(e.target.value))}
+                  className="text-base"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Total sales for the period (weekly, monthly, or yearly)
+                <p className="text-sm text-gray-600 mt-1">
+                  📊 For a week, month, or year - whatever period you want to check
                 </p>
               </div>
             </CardContent>
@@ -416,7 +447,7 @@ export default function BakeryProfitCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

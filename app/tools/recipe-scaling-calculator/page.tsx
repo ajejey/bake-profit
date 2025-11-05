@@ -200,6 +200,33 @@ export default function RecipeScalingCalculator() {
       title="Free Recipe Scaling Calculator"
       description="Scale recipes up or down instantly. Perfect for adjusting batch sizes, converting servings, and scaling baking recipes."
     >
+      {/* Friendly Introduction */}
+      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-blue-500 rounded-full">
+            <Scale className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">📊 Need More (or Less)? Let&apos;s Scale Your Recipe!</h2>
+            <p className="text-gray-700 mb-3">
+              Got a recipe that makes 12 cookies but need 48? Or need to cut a recipe in half? We&apos;ve got you! 
+              Just enter your ingredients and tell us how much you want to make - we&apos;ll do all the math for you.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+                ✓ Scale up or down
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+                ✓ Handles fractions
+              </span>
+              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+                ✓ Quick buttons
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Input */}
         <div className="lg:col-span-2 space-y-6">
@@ -207,38 +234,43 @@ export default function RecipeScalingCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Scale className="h-5 w-5 text-rose-500" />
-                Recipe Information
+                <span className="text-2xl">📊</span>
+                Let&apos;s Start with Your Recipe
               </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                Tell us what you&apos;re making and how much you need!
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="recipeName">Recipe Name (Optional)</Label>
+                <Label htmlFor="recipeName" className="text-base font-semibold">What are you making? (Optional)</Label>
                 <Input
                   id="recipeName"
-                  placeholder="e.g., Chocolate Chip Cookies"
+                  placeholder="e.g., Grandma's Chocolate Chip Cookies"
                   value={recipeName}
                   onChange={(e) => setRecipeName(e.target.value)}
+                  className="text-base"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="originalYield">Original Yield</Label>
+                  <Label htmlFor="originalYield" className="font-semibold">Recipe currently makes:</Label>
                   <Input
                     id="originalYield"
                     type="number"
                     min="1"
                     value={originalYield}
                     onChange={(e) => setOriginalYield(Number(e.target.value))}
+                    className="text-base"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Original servings/pieces
+                  <p className="text-sm text-gray-600 mt-1">
+                    🍪 How many it makes now (e.g., 12 cookies)
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor="desiredYield">Desired Yield</Label>
+                  <Label htmlFor="desiredYield" className="font-semibold">You want to make:</Label>
                   <Input
                     id="desiredYield"
                     type="number"
@@ -248,9 +280,10 @@ export default function RecipeScalingCalculator() {
                       setDesiredYield(Number(e.target.value))
                       setScalingMethod('yield')
                     }}
+                    className="text-base"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    How many you want to make
+                  <p className="text-sm text-gray-600 mt-1">
+                    🎯 How many you need (e.g., 48 cookies)
                   </p>
                 </div>
               </div>
@@ -270,7 +303,7 @@ export default function RecipeScalingCalculator() {
 
               {/* Quick Scale Buttons */}
               <div>
-                <Label>Quick Scale</Label>
+                <Label className="font-semibold">Or use these quick buttons:</Label>
                 <div className="grid grid-cols-4 gap-2 mt-2">
                   <Button
                     variant={multiplier === 0.5 && scalingMethod === 'multiplier' ? 'default' : 'outline'}
@@ -462,7 +495,7 @@ export default function RecipeScalingCalculator() {
                 </p>
                 <Button
                   className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/bakery-business-tool'}
+                  onClick={() => window.location.href = '/'}
                 >
                   Sign Up Free →
                 </Button>

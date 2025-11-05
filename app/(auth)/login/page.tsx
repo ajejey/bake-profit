@@ -33,6 +33,12 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-600 mt-6">
+          Don&apos;t have an account?{' '}
+          <Link href="/signup" className="text-rose-600 hover:text-rose-700 font-semibold">
+            Sign up
+          </Link>
+        </p>
+        <p className="text-center text-sm text-gray-600 mt-6">
           <Link href="/" className="hover:text-rose-600">
             ← Back to home
           </Link>

@@ -20,6 +20,8 @@ export interface IUser {
   subscription_status: 'active' | 'canceled' | 'past_due';
   stripe_customer_id?: string;
   stripe_subscription_id?: string;
+  paypal_subscription_id?: string;
+  paypal_payer_id?: string;
   subscription_ends_at?: Date;
   
   created_at: Date;
@@ -104,6 +106,15 @@ const UserSchema = new Schema<IUser>(
       index: true,
     },
     stripe_subscription_id: {
+      type: String,
+      required: false,
+    },
+    paypal_subscription_id: {
+      type: String,
+      required: false,
+      index: true,
+    },
+    paypal_payer_id: {
       type: String,
       required: false,
     },
