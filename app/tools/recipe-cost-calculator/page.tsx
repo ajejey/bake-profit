@@ -118,25 +118,25 @@ export default function RecipeCostCalculator() {
       description="Calculate your recipe costs instantly. Perfect for home bakers and small bakeries. No signup required."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl border-2 border-rose-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-rose-500 rounded-full">
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl border-2 border-rose-200">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-3 bg-rose-500 rounded-full shrink-0">
             <Calculator className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">👋 Let&apos;s Figure Out Your Recipe Costs!</h2>
-            <p className="text-gray-700 mb-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">👋 Let&apos;s Figure Out Your Recipe Costs!</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               Ever wonder if you&apos;re charging enough for your baked goods? This calculator helps you find out! 
               Just tell us what ingredients you use, and we&apos;ll show you exactly how much each cookie, cupcake, or cake costs to make.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-rose-200">
                 ✓ Super easy to use
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-rose-200">
                 ✓ No math required
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-rose-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-rose-200">
                 ✓ Results in seconds
               </span>
             </div>

@@ -119,25 +119,25 @@ export default function BatchCostCalculator() {
       description="Calculate total costs and profit for multiple batches. Perfect for production planning and wholesale orders."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-indigo-500 rounded-full">
-            <Package className="h-6 w-6 text-white" />
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-3 bg-indigo-500 rounded-full flex-shrink-0">
+            <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🍪 Making Multiple Batches? Let&apos;s Calculate the Total!</h2>
-            <p className="text-gray-700 mb-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🍪 Making Multiple Batches? Let&apos;s Calculate the Total!</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               Planning a big bake day or wholesale order? This calculator helps you figure out the total cost and profit when making multiple batches of different products. 
               Perfect for markets, events, or bulk orders!
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-indigo-200">
                 ✓ Multiple products
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-indigo-200">
                 ✓ Total profit
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-indigo-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-indigo-200">
                 ✓ Labor included
               </span>
             </div>

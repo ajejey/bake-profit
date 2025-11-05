@@ -98,25 +98,25 @@ export default function BakeryProfitCalculator() {
       description="Calculate your bakery's profit margins and compare to industry benchmarks. Know if your business is profitable."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-green-500 rounded-full">
-            <TrendingUp className="h-6 w-6 text-white" />
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-3 bg-green-500 rounded-full shrink-0">
+            <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">💰 Is Your Bakery Actually Making Money?</h2>
-            <p className="text-gray-700 mb-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">💰 Is Your Bakery Actually Making Money?</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               Let&apos;s find out! This calculator shows you if you&apos;re profitable and how you compare to other bakeries. 
               Just enter your sales and costs - we&apos;ll show you the real numbers and what they mean.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-green-200">
                 ✓ See profit margins
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-green-200">
                 ✓ Industry benchmarks
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-green-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-green-200">
                 ✓ Break-even analysis
               </span>
             </div>

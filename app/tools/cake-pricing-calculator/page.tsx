@@ -94,25 +94,25 @@ export default function CakePricingCalculator() {
       description="Calculate the perfect price for your cakes. Factor in ingredients, labor, tiers, complexity, delivery, and profit margins."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-purple-500 rounded-full">
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-3 bg-purple-500 rounded-full shrink-0">
             <Cake className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🎂 Price Your Cakes Like a Pro!</h2>
-            <p className="text-gray-700 mb-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🎂 Price Your Cakes Like a Pro!</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               Stop guessing what to charge! This calculator helps you price your cakes so you make a profit AND feel confident. 
               We&apos;ll walk you through everything - ingredients, your time, decorations, and even delivery.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-purple-200">
                 ✓ Perfect for custom cakes
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-purple-200">
                 ✓ Includes tier pricing
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-purple-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-purple-200">
                 ✓ Factor in complexity
               </span>
             </div>

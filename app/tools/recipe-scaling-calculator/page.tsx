@@ -201,25 +201,25 @@ export default function RecipeScalingCalculator() {
       description="Scale recipes up or down instantly. Perfect for adjusting batch sizes, converting servings, and scaling baking recipes."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-500 rounded-full">
-            <Scale className="h-6 w-6 text-white" />
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="p-2 sm:p-3 bg-blue-500 rounded-full flex-shrink-0">
+            <Scale className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">📊 Need More (or Less)? Let&apos;s Scale Your Recipe!</h2>
-            <p className="text-gray-700 mb-3">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">📊 Need More (or Less)? Let&apos;s Scale Your Recipe!</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               Got a recipe that makes 12 cookies but need 48? Or need to cut a recipe in half? We&apos;ve got you! 
               Just enter your ingredients and tell us how much you want to make - we&apos;ll do all the math for you.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-blue-200">
                 ✓ Scale up or down
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-blue-200">
                 ✓ Handles fractions
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-blue-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-blue-200">
                 ✓ Quick buttons
               </span>
             </div>

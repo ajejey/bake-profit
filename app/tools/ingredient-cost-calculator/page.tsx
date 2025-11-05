@@ -149,25 +149,25 @@ export default function IngredientCostCalculator() {
       description="Calculate the cost per unit for any ingredient with automatic unit conversions. Perfect for recipe costing and bakery management."
     >
       {/* Friendly Introduction */}
-      <div className="max-w-4xl mx-auto mb-8 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-amber-500 rounded-full">
+      <div className="max-w-4xl mx-auto mb-8 p-4 sm:p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="p-3 bg-amber-500 rounded-full shrink-0">
             <Package className="h-6 w-6 text-white" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🥚 How Much Does Each Ingredient Really Cost?</h2>
-            <p className="text-gray-700 mb-3">
+          <div className="flex-1 w-full">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🥚 How Much Does Each Ingredient Really Cost?</h2>
+            <p className="text-sm sm:text-base text-gray-700 mb-3">
               You buy a 5 lb bag of flour for $12.99 - but how much does 2 cups cost? We&apos;ll figure it out! 
               This calculator converts between units and shows you the real cost of each ingredient in your recipes.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-amber-200">
                 ✓ Auto conversions
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-amber-200">
                 ✓ Cost per unit
               </span>
-              <span className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium text-gray-700 border border-amber-200">
+              <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white rounded-full text-xs sm:text-sm font-medium text-gray-700 border border-amber-200">
                 ✓ Recipe costs
               </span>
             </div>
