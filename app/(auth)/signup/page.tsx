@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { ChefHat } from 'lucide-react';
 import SignupForm from '@/components/auth/SignupForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
@@ -26,7 +25,9 @@ export default function SignupPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SignupForm />
+              <Suspense fallback={<div>Loading...</div>}>
+                <SignupForm />
+              </Suspense>
             </CardContent>
           </Card>
 

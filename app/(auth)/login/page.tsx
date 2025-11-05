@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { ChefHat } from 'lucide-react';
 import LoginForm from '@/components/auth/LoginForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
@@ -27,7 +26,9 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm />
+            <Suspense fallback={<div>Loading...</div>}>
+              <LoginForm />
+            </Suspense>
           </CardContent>
         </Card>
 

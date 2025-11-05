@@ -6,10 +6,30 @@ import { useAuth } from '@/contexts/AuthContext'
  * Hook to redirect authenticated users away from auth pages
  * Usage: Call this at the top of login, signup, forgot-password, reset-password pages
  * 
- * Supports redirect query parameter: ?redirect=/path/to/redirect
- * Example: /login?redirect=/pricing-new
+ * Note: This hook does NOT use useSearchParams() to avoid Suspense boundary issues.
+ * For redirect functionality, use useRedirectIfAuthenticatedWithParams instead.
  */
 export function useRedirectIfAuthenticated() {
+  const router = useRouter()
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    // Don't redirect while loading
+    if (loading) return
+
+    // If user is authenticated, redirect to default
+    if (user) {
+      router.push('/bakery-business-tool')
+    }
+  }, [user, loading, router])
+}
+
+/**
+ * Hook to redirect authenticated users with support for redirect query parameter
+ * This version uses useSearchParams and should only be called in Client Components
+ * that are wrapped in a Suspense boundary
+ */
+export function useRedirectIfAuthenticatedWithParams() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, loading } = useAuth()

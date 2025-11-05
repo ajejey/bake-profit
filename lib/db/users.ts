@@ -18,6 +18,8 @@ function toUser(doc: IUser): User {
     subscription_status: doc.subscription_status,
     stripe_customer_id: doc.stripe_customer_id || null,
     stripe_subscription_id: doc.stripe_subscription_id || null,
+    paypal_subscription_id: doc.paypal_subscription_id || null,
+    paypal_payer_id: doc.paypal_payer_id || null,
     subscription_ends_at: doc.subscription_ends_at || null,
     created_at: doc.created_at,
     updated_at: doc.updated_at,
