@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
   title: 'Pricing | BakeProfit - Affordable Bakery Management Software',
@@ -484,11 +485,7 @@ export default function PricingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center text-sm">
-          <p>© 2025 BakeProfit. All rights reserved. Made with ❤️ for bakers.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

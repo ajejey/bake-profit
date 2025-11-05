@@ -6,6 +6,7 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { ChefHat, Calculator, DollarSign, Scale, TrendingUp, Package, PieChart, CheckCircle, Users, ArrowRight } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
   title: 'Free Baking Calculators & Tools for Home Bakers | BakeProfit',
@@ -886,13 +887,7 @@ export default function ToolsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-sm text-gray-600">
-            <p>© 2025 BakeProfit. All rights reserved. Made with ❤️ for bakers.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

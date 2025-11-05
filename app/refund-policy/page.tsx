@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { Header } from '@/components/layout/Header'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { CheckCircle2, AlertCircle } from 'lucide-react'
+import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
   title: 'Refund Policy | BakeProfit',
@@ -259,11 +260,7 @@ export default function RefundPolicyPage() {
         </div>
       </section>
 
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-20">
-        <div className="max-w-7xl mx-auto text-center text-sm">
-          <p>© 2025 BakeProfit. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

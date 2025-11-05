@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { PayPalButton } from '@/components/pricing/PayPalButton';
 import { useAuth } from '@/contexts/AuthContext';
+import Footer from '@/components/layout/Footer';
 
 export default function PricingNewPage() {
   const { user } = useAuth();
@@ -383,11 +384,7 @@ export default function PricingNewPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center text-sm">
-          <p>© 2025 BakeProfit. All rights reserved. Made with ❤️ for bakers.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
