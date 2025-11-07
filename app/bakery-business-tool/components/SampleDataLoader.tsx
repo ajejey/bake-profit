@@ -38,7 +38,7 @@ export function SampleDataLoader({
     addRecipe, 
     addOrder, 
     addCustomer,
-    adjustStock 
+    updateStock 
   } = useBakeryData()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -94,7 +94,7 @@ export function SampleDataLoader({
       if (target === 'inventory' || target === 'all') {
         const sampleInventory = data.inventory.slice(0, 8)
         sampleInventory.forEach(item => {
-          adjustStock(item.ingredientId, item.currentStock)
+          updateStock(item.ingredientId, item.currentStock)
         })
         loadedCount += sampleInventory.length
         itemsLoaded.push(`${sampleInventory.length} inventory items`)
