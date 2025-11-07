@@ -259,4 +259,72 @@
   .stat-card-label {
     @apply text-sm text-gray-600 mt-1;
   }
+
+  /* Professional Ripple Glow Effect */
+  .ripple-glow {
+    position: relative;
+    overflow: visible;
+  }
+
+  .ripple-glow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.6) 0%, rgba(244, 63, 94, 0.4) 30%, transparent 70%);
+    border-radius: 0.5rem;
+    transform: translate(-50%, -50%) scale(1);
+    animation: ripple-pulse 2s ease-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .ripple-glow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.6) 0%, rgba(244, 63, 94, 0.4) 40%, transparent 70%);
+    border-radius: 0.5rem;
+    transform: translate(-50%, -50%) scale(1);
+    animation: ripple-pulse 2s ease-out infinite 0.6s;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes ripple-pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  /* Enhanced icon animation */
+  .icon-glow {
+    animation: icon-pulse 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.4));
+  }
+
+  @keyframes icon-pulse {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-2px) scale(1.1);
+    }
+  }
+
+  /* Hover state to stop ripple */
+  .ripple-glow:hover::before,
+  .ripple-glow:hover::after {
+    animation: none;
+  }
 }

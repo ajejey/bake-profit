@@ -222,10 +222,10 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
             <div className="p-4 border-t">
             <Button
               variant="default"
-              className="w-full flex items-center justify-center bg-rose-500 text-white hover:text-white hover:bg-rose-600"
+              className="w-full flex items-center justify-center bg-rose-500 text-white hover:text-white hover:bg-rose-600 ripple-glow"
               onClick={handleLoadSampleData}
             >
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 mr-2 icon-glow" />
               Load Sample Data
             </Button>
           </div>
