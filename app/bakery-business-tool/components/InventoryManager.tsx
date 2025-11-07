@@ -528,7 +528,7 @@ const formatCurrency = (amount: number): string => {
                             <Input 
                             placeholder="e.g., All-Purpose Flour" 
                             {...field}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            onChange={(e) => field.onChange(e.target.value)}
                             />
                           </FormControl>
                           <FormMessage />

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useOrders, useRecipes, useCustomers, useInventory, useCurrencySymbol } from '../hooks'
-
+import { useAuth } from '@/contexts/AuthContext'
 
 
 // Helper to format date
@@ -46,10 +46,10 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   } = useOrders()
   
   const { recipes } = useRecipes()
+  const { user } = useAuth()
   const { customers, topCustomers } = useCustomers()
   const { alerts, hasLowStock, hasOutOfStock, lowStockItems, outOfStockItems } = useInventory()
   const { symbol: currencySymbol } = useCurrencySymbol()
-  console.log("currencySymbol", currencySymbol)
 
   // Get status color
   const getStatusColor = (status: Order['status']) => {
@@ -84,15 +84,15 @@ const formatCurrency = (amount: number): string => {
 
   return (
     <div className="space-y-6">
+      {/* Greeting */}
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          Welcome back, {user?.name || 'Baker'}! 
+        </h1>
 
       {/* Quick Actions */}
       <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common tasks</CardDescription>
-        </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Link href="/bakery-business-tool/orders">
               <Button 
                 className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
@@ -109,25 +109,23 @@ const formatCurrency = (amount: number): string => {
                 size="lg"
               >
                 <ChefHat className="h-5 w-5" />
-                <span>View Recipes</span>
+                <span>Recipes</span>
               </Button>
             </Link>
-            <Link href="/bakery-business-tool/inventory">
+            <Link href="/bakery-business-tool/inventory" className="relative">
               <Button 
                 className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
                 variant="outline" 
                 size="lg"
               >
                 <Package className="h-5 w-5" />
-                {alerts.length > 0 ? (
-                  <span className="flex items-center gap-1">
-                    Inventory
-                    <Badge variant="destructive" className="ml-1 text-xs">{alerts.length}</Badge>
-                  </span>
-                ) : (
-                  <span>Inventory</span>
-                )}
+                <span>Inventory</span>
               </Button>
+              {alerts.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs font-semibold">
+                  {alerts.length}
+                </span>
+              )}
             </Link>
           </div>
         </CardContent>
@@ -145,7 +143,7 @@ const formatCurrency = (amount: number): string => {
             </CardTitle>
             <CardDescription>Orders that need attention today</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 grid grid-cols-2 md:grid-cols-4 gap-3">
             {ordersDueToday.map(order => (
               <div
                 key={order.id}
@@ -188,9 +186,9 @@ const formatCurrency = (amount: number): string => {
       )}
 
             {/* Key Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Orders Today */}
-        <Card>
+        <Card className="gap-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Orders Today</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
@@ -204,7 +202,7 @@ const formatCurrency = (amount: number): string => {
         </Card>
 
         {/* Total Revenue */}
-        <Card>
+        <Card className='gap-2'>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -216,7 +214,7 @@ const formatCurrency = (amount: number): string => {
         </Card>
 
         {/* Total Profit */}
-        <Card>
+        <Card className='gap-2'>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -230,7 +228,7 @@ const formatCurrency = (amount: number): string => {
         </Card>
 
         {/* Recipes & Customers */}
-        <Card>
+        <Card className='gap-2'>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Catalog</CardTitle>
             <ChefHat className="h-4 w-4 text-muted-foreground" />

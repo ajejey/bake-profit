@@ -202,7 +202,7 @@ export default function BlogPage() {
               </Button>
             </Link>
             <Link href="/bakery-business-tool">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-rose-600">
+              <Button size="lg" variant="outline" className="border-white text-rose-600 hover:bg-rose-600">
                 Sign Up Free
               </Button>
             </Link>

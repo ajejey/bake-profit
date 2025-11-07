@@ -266,11 +266,11 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
                 <div className="bg-rose-100 p-1 rounded-full">
                   <ChefHat className="h-4 w-4 text-rose-600" />
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-xs text-gray-700">
                     Your data stays local and is stored on your device using browser storage.
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
