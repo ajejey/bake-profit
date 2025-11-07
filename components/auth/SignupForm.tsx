@@ -50,9 +50,19 @@ export default function SignupForm() {
       );
 
       if (result.success) {
+        // Send welcome email (non-blocking)
+        fetch('/api/auth/send-welcome-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: formData.email, 
+            name: formData.name || 'there' 
+          })
+        }).catch(err => console.error('Failed to send welcome email:', err));
+
         toast({
           title: 'Account created!',
-          description: 'Welcome to BakeProfit. Let\'s get started!',
+          description: 'Welcome to BakeProfit! Check your email for a getting started guide.',
         });
         
         // Check for redirect parameter
