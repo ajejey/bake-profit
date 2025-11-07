@@ -41,8 +41,21 @@ import {
   Download,
   Calendar,
   Edit,
-  Trash2
+  Trash2,
+  Save,
+  Copy,
+  Clock,
+  Thermometer,
+  X,
+  Scale,
+  FileText,
+  DollarSign,
+  ClipboardList,
+  TrendingUp,
+  Lightbulb,
+  Calculator,
 } from 'lucide-react'
+import { SampleDataLoader } from './SampleDataLoader'
 import { useInventory, useIngredients, useOrders } from '../hooks'
 import { useToast } from '@/hooks/use-toast'
 import type { Ingredient, ShoppingListItem } from '../types'
@@ -661,9 +674,106 @@ const formatCurrency = (amount: number): string => {
             )}
 
           {ingredients.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <p className="text-gray-500">No ingredients added yet. Add your first ingredient to get started.</p>
+            <Card className="border-2 border-dashed border-rose-200 bg-gradient-to-br from-rose-50 to-pink-50">
+              <CardContent className="pt-8 pb-8 px-6">
+                <div className="text-center">
+                  <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-rose-100 flex items-center justify-center">
+                    <Package className="h-8 w-8 text-rose-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Build Your Ingredient Library</h3>
+                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                    Start by adding your baking ingredients. We&apos;ll automatically calculate cost per unit and help you track inventory levels.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-6">
+                    <div className="bg-white rounded-lg p-4 shadow-sm border">
+                      <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                        <Package className="h-5 w-5 text-blue-500 mr-2" />
+                        Required Information
+                      </h4>
+                      <ul className="text-sm text-gray-600 space-y-2 text-left">
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-2">•</span>
+                          <span><strong>Ingredient name:</strong> e.g., &quot;All-Purpose Flour&quot;</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-2">•</span>
+                          <span><strong>Package size:</strong> How much you buy (e.g., 5kg bag)</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-2">•</span>
+                          <span><strong>Package cost:</strong> What you paid for the whole package</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-500 mr-2">•</span>
+                          <span><strong>Unit:</strong> g, kg, cups, tbsp, etc.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-white rounded-lg p-4 shadow-sm border">
+                      <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                        <Calculator className="h-5 w-5 text-green-500 mr-2" />
+                        What You&apos;ll Get
+                      </h4>
+                      <ul className="text-sm text-gray-600 space-y-2 text-left">
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-2">•</span>
+                          <span><strong>Cost per unit:</strong> Automatically calculated</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-2">•</span>
+                          <span><strong>Recipe costs:</strong> Precise ingredient costs</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-2">•</span>
+                          <span><strong>Inventory tracking:</strong> Stock level monitoring</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-green-500 mr-2">•</span>
+                          <span><strong>Shopping lists:</strong> Auto-generated restock lists</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 rounded-lg p-4 max-w-2xl mx-auto text-left">
+                    <h4 className="font-medium text-amber-900 mb-2 flex items-center">
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Quick Start Tips
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-amber-800">
+                      <div>
+                        <strong>Start with basics:</strong> Flour, sugar, butter, eggs, vanilla
+                      </div>
+                      <div>
+                        <strong>Be accurate:</strong> Use exact package weights from labels
+                      </div>
+                      <div>
+                        <strong>Include everything:</strong> Salt, baking powder, spices count too
+                      </div>
+                      <div>
+                        <strong>Update regularly:</strong> Adjust costs when prices change
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex gap-4 justify-center">
+                    <Button 
+                      onClick={() => setIsAddIngredientOpen(true)}
+                      className="bg-rose-600 hover:bg-rose-700" 
+                      size="lg"
+                    >
+                      <Plus className="h-5 w-5 mr-2" />
+                      Add Your First Ingredient
+                    </Button>
+                    <SampleDataLoader 
+                      target="ingredients"
+                      buttonText="Load Sample Ingredients"
+                      size="lg"
+                    />
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ) : filteredAndSortedIngredients.length === 0 ? (
@@ -931,10 +1041,105 @@ const formatCurrency = (amount: number): string => {
             </CardHeader>
             <CardContent>
               {inventoryWithDetails.length === 0 && uninitializedIngredients.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Package className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                  <p>No ingredients found. Add ingredients in the Recipe Calculator first.</p>
-                </div>
+                <Card className="border-2 border-dashed border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
+                  <CardContent className="pt-8 pb-8 px-6">
+                    <div className="text-center">
+                      <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
+                        <ClipboardList className="h-8 w-8 text-green-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Ready to Track Your Inventory!</h3>
+                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                        Once you add ingredients, you can track stock levels, set minimum quantities, and get automatic alerts when running low.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
+                        <div className="bg-white rounded-lg p-4 shadow-sm border">
+                          <div className="flex items-center mb-2">
+                            <TrendingUp className="h-5 w-5 text-green-500 mr-2" />
+                            <h4 className="font-medium text-gray-900">Step 1: Add Ingredients</h4>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            First, add your ingredients in the Ingredients tab with cost information.
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-3 w-full"
+                            onClick={() => {
+                              const tabs = document.querySelector('[role="tablist"]') as HTMLElement;
+                              const ingredientsTab = tabs?.querySelector('[role="tab"]:first-child') as HTMLElement;
+                              ingredientsTab?.click();
+                            }}
+                          >
+                            Go to Ingredients
+                          </Button>
+                        </div>
+
+                        <div className="bg-white rounded-lg p-4 shadow-sm border">
+                          <div className="flex items-center mb-2">
+                            <Settings className="h-5 w-5 text-blue-500 mr-2" />
+                            <h4 className="font-medium text-gray-900">Step 2: Set Stock Levels</h4>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            Set your current stock levels and minimum stock alerts for each ingredient.
+                          </p>
+                          <div className="mt-3 text-xs text-blue-600 font-medium">
+                            ✓ Automatic tracking
+                          </div>
+                        </div>
+
+                        <div className="bg-white rounded-lg p-4 shadow-sm border">
+                          <div className="flex items-center mb-2">
+                            <ShoppingCart className="h-5 w-5 text-purple-500 mr-2" />
+                            <h4 className="font-medium text-gray-900">Step 3: Smart Alerts</h4>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            Get automatic low-stock alerts and generate shopping lists based on pending orders.
+                          </p>
+                          <div className="mt-3 text-xs text-purple-600 font-medium">
+                            ✓ Never run out
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 rounded-lg p-4 max-w-2xl mx-auto">
+                        <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+                          <Lightbulb className="h-4 w-4 mr-2" />
+                          Inventory Best Practices
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800">
+                          <div>
+                            <strong>Set realistic min stock:</strong> Based on your typical weekly usage
+                          </div>
+                          <div>
+                            <strong>Update regularly:</strong> After each baking session or delivery
+                          </div>
+                          <div>
+                            <strong>Track everything:</strong> Even small quantities matter for accurate costs
+                          </div>
+                          <div>
+                            <strong>Use shopping lists:</strong> Auto-generated based on your orders
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-6">
+                        <Button 
+                          onClick={() => {
+                            const tabs = document.querySelector('[role="tablist"]') as HTMLElement;
+                            const ingredientsTab = tabs?.querySelector('[role="tab"]:first-child') as HTMLElement;
+                            ingredientsTab?.click();
+                          }} 
+                          className="bg-green-600 hover:bg-green-700"
+                          size="lg"
+                        >
+                          <Plus className="h-5 w-5 mr-2" />
+                          Add Ingredients First
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
                 <div className="rounded-md border">
                   <Table>

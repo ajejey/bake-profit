@@ -64,11 +64,11 @@ export default function SubscriptionSettings() {
                   : 'Limited features - Upgrade for unlimited access'
                 }
               </p>
-              {isPro && (
+              {/* {isPro && (
                 <p className="text-xs text-gray-500 mt-2">
                   Next billing date: January 15, 2025
                 </p>
-              )}
+              )} */}
             </div>
             <div className="text-right">
               {isPro ? (

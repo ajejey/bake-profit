@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import { ChefHat, ListChecks, ClipboardList, Calculator, Lightbulb, Plus } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -46,7 +47,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Trash2, Edit, Save, Calculator, Copy, Clock, Thermometer, ChefHat, X, Scale, Package, Download, FileText, DollarSign, AlertTriangle } from 'lucide-react'
+import { 
+  Trash2, 
+  Edit, 
+  Save, 
+  Copy, 
+  Clock, 
+  Thermometer, 
+  X, 
+  Scale, 
+  Package, 
+  Download, 
+  FileText, 
+  DollarSign, 
+  AlertTriangle 
+} from 'lucide-react'
+import { SampleDataLoader } from './SampleDataLoader'
 import SearchBar from './SearchBar'
 import FilterChips, { type FilterOption } from './FilterChips'
 import SortDropdown, { type SortOption } from './SortDropdown'
@@ -1187,9 +1203,124 @@ export default function RecipeCalculator() {
       )}
 
       {recipes.length === 0 ? (
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <p className="text-gray-500">No recipes added yet. Add your first recipe to get started.</p>
+        <Card className="border-2 border-dashed border-rose-200 bg-gradient-to-br from-rose-50 to-pink-50">
+          <CardContent className="pt-8 pb-8 px-6">
+            <div className="text-center">
+              <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-rose-100 flex items-center justify-center">
+                <ChefHat className="h-8 w-8 text-rose-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Welcome to Recipe Cost Calculator!</h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Start building your recipe collection to calculate exact costs and profit margins for your baked goods.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
+                <div className="bg-white rounded-lg p-4 shadow-sm border">
+                  <div className="flex items-center mb-2">
+                    <ListChecks className="h-5 w-5 text-rose-500 mr-2" />
+                    <h4 className="font-medium text-gray-900">Step 1: Add Ingredients</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Add your baking ingredients to inventory first. Each ingredient needs:
+                  </p>
+                  <ul className="text-xs text-gray-500 mt-2 space-y-1 text-left">
+                    <li>• Name and unit (g, cups, ml, etc.)</li>
+                    <li>• Package size and cost</li>
+                    <li>• Cost per unit (auto-calculated)</li>
+                  </ul>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-3 w-full"
+                    onClick={() => window.location.href = '/bakery-business-tool/inventory'}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Ingredients
+                  </Button>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 shadow-sm border">
+                  <div className="flex items-center mb-2">
+                    <ClipboardList className="h-5 w-5 text-blue-500 mr-2" />
+                    <h4 className="font-medium text-gray-900">Step 2: Create Recipe</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Build your recipe with:
+                  </p>
+                  <ul className="text-xs text-gray-500 mt-2 space-y-1 text-left">
+                    <li>• Recipe name and category</li>
+                    <li>• Ingredients with quantities</li>
+                    <li>• Baking instructions</li>
+                    <li>• Servings and timing</li>
+                  </ul>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-3 w-full"
+                    onClick={() => setIsAddRecipeOpen(true)}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Create Recipe
+                  </Button>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 shadow-sm border">
+                  <div className="flex items-center mb-2">
+                    <Calculator className="h-5 w-5 text-green-500 mr-2" />
+                    <h4 className="font-medium text-gray-900">Step 3: Calculate Costs</h4>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Get instant cost breakdowns:
+                  </p>
+                  <ul className="text-xs text-gray-500 mt-2 space-y-1 text-left">
+                    <li>• Ingredient costs per serving</li>
+                    <li>• Labor and overhead costs</li>
+                    <li>• Profit margin calculations</li>
+                    <li>• Pricing recommendations</li>
+                  </ul>
+                  <div className="mt-3 text-xs text-green-600 font-medium">
+                    ✓ Automatic calculations
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 rounded-lg p-4 max-w-2xl mx-auto">
+                <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+                  <Lightbulb className="h-4 w-4 mr-2" />
+                  Pro Tips for Getting Started
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800">
+                  <div>
+                    <strong>Start Simple:</strong> Begin with 3-5 basic ingredients like flour, sugar, butter, eggs
+                  </div>
+                  <div>
+                    <strong>Be Accurate:</strong> Use kitchen scales for precise measurements
+                  </div>
+                  <div>
+                    <strong>Include Everything:</strong> Don&apos;t forget packaging, utilities, and your time
+                  </div>
+                  <div>
+                    <strong>Test & Adjust:</strong> Start with one recipe and refine your process
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-4 justify-center">
+                <Button 
+                  onClick={() => setIsAddRecipeOpen(true)} 
+                  className="bg-rose-500 hover:bg-rose-600"
+                  size="lg"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Your First Recipe
+                </Button>
+                <SampleDataLoader 
+                  target="recipes"
+                  buttonText="Load Sample Recipes"
+                  size="lg"
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
       ) : filteredAndSortedRecipes.length === 0 ? (
