@@ -47,7 +47,7 @@ After extensive research across multiple sources (SaaS SEO experts, indie hacker
 #### **B. Embed Widgets**
 Create embeddable calculator widgets that other blogs can use:
 ```html
-<script src="https://bakeprofit.com/widget/recipe-calculator.js"></script>
+<script src="https://bakeprofit.vercel.app/widget/recipe-calculator.js"></script>
 ```
 
 **Result:** Every blog that embeds = backlink + traffic

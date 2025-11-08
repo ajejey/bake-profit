@@ -49,7 +49,7 @@ export function SubscriptionManagement() {
       window.location.reload();
     } catch (error) {
       console.error('Error canceling subscription:', error);
-      alert('Failed to cancel subscription. Please try again or contact support@bakeprofit.com');
+      alert('Failed to cancel subscription. Please try again or contact thebakeprofit@gmail.com');
     } finally {
       setLoading(false);
     }

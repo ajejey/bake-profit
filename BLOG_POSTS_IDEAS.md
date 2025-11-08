@@ -35,121 +35,121 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
 
 #### **Pricing & Profitability (20 posts)**
 
-1. **"Why You're Losing Money on Every Cake (And Don't Know It)"**
+[x] 1. **"Why You're Losing Money on Every Cake (And Don't Know It)"**
    - Real examples of hidden costs bakers miss
    - Labor cost calculation mistakes
    - How to track actual profitability
    - Link to Recipe Cost Calculator
 
-2. **"The 3 Biggest Pricing Mistakes Home Bakers Make"**
+[x] 2. **"The 3 Biggest Pricing Mistakes Home Bakers Make"**
    - Undercharging due to lack of confidence
    - Not including overhead in calculations
    - Forgetting about your time value
    - Free pricing calculator CTA
 
-3. **"How to Price Custom Cakes When Customers Say 'That's Too Expensive'"**
+[ ] 3. **"How to Price Custom Cakes When Customers Say 'That's Too Expensive'"**
    - Scripts for handling price objections
    - Value communication strategies
    - Building perceived value
    - Pricing psychology for bakers
 
-4. **"Should You Charge for Consultations? A Baker's Guide"**
+[ ] 4. **"Should You Charge for Consultations? A Baker's Guide"**
    - Pros and cons of consultation fees
    - How to structure consultation pricing
    - When to waive fees strategically
    - Calculators for consultation value
 
-5. **"How to Raise Your Prices Without Losing Customers"**
+[ ] 5. **"How to Raise Your Prices Without Losing Customers"**
    - When to increase prices
    - How to communicate price changes
    - Grandfathering strategies
    - Real case studies
 
-6. **"Cupcake Pricing Guide: $2 vs $5 vs $8 - What's Right for You?"**
+[x] 6. **"Cupcake Pricing Guide: $2 vs $5 vs $8 - What's Right for You?"**
    - Price point positioning strategies
    - Market analysis by location type
    - Ingredient quality vs. pricing
    - Profitability at different tiers
 
-7. **"Wedding Cake Pricing: How to Quote Without Undercharging"**
+[ ] 7. **"Wedding Cake Pricing: How to Quote Without Undercharging"**
    - Complexity multipliers explained
    - Delivery and setup fees
    - Consultation time value
    - Rush order premiums
 
-8. **"How to Price Decorated Sugar Cookies (Per Dozen vs. Per Cookie)"**
+[ ] 8. **"How to Price Decorated Sugar Cookies (Per Dozen vs. Per Cookie)"**
    - Time-based pricing for decorated cookies
    - Simple vs. intricate design pricing tiers
    - Bulk order discounting strategies
    - Design complexity calculator
 
-9. **"Wholesale Bakery Pricing: How Much to Charge Cafes & Restaurants"**
+[ ] 9. **"Wholesale Bakery Pricing: How Much to Charge Cafes & Restaurants"**
    - Wholesale vs. retail pricing structures
    - Volume discount strategies
    - Contract pricing models
    - Minimum order requirements
 
-10. **"How to Price Vegan/Gluten-Free Baked Goods for Profit"**
+[ ] 10. **"How to Price Vegan/Gluten-Free Baked Goods for Profit"**
     - Premium ingredient cost tracking
     - Specialty market pricing strategies
     - Communicating value of dietary options
     - Cost analysis of specialty flours
 
-11. **"Should You Charge More for Last-Minute Orders?"**
+[ ] 11. **"Should You Charge More for Last-Minute Orders?"**
     - Rush fee structures
     - How to communicate urgency pricing
     - Balancing flexibility with profitability
     - Policy templates
 
-12. **"How to Stop Giving Friends & Family Discounts That Hurt Your Business"**
+[ ] 12. **"How to Stop Giving Friends & Family Discounts That Hurt Your Business"**
     - Setting boundaries professionally
     - Creating a friends/family policy
     - Alternative ways to show appreciation
     - Scripts for difficult conversations
 
-13. **"Delivery Fees: How Much to Charge & When to Waive Them"**
+[ ] 13. **"Delivery Fees: How Much to Charge & When to Waive Them"**
     - Distance-based fee calculations
     - Vehicle cost tracking
     - Minimum order for free delivery
     - Time value in delivery
 
-14. **"How to Price Multi-Tier Cakes: The Complete Formula"**
+[ ] 14. **"How to Price Multi-Tier Cakes: The Complete Formula"**
     - Per-serving vs. per-tier pricing
     - Structural complexity factors
     - Assembly time considerations
     - Comparison with competitors
 
-15. **"Seasonal Pricing: Should You Charge More During Holidays?"**
+[ ] 15. **"Seasonal Pricing: Should You Charge More During Holidays?"**
     - Peak season demand pricing
     - Holiday rush order premiums
     - Communicating seasonal rates
     - Year-round pricing strategies
 
-16. **"How to Calculate Your True Hourly Rate as a Baker"**
+[x] 16. **"How to Calculate Your True Hourly Rate as a Baker"**
     - Breaking down all time investments
     - Admin, baking, decorating, delivery
     - Setting sustainable hourly goals
     - Comparing to local wages
 
-17. **"Cookie Pricing Calculator: Decorated vs. Simple"**
+[ ] 17. **"Cookie Pricing Calculator: Decorated vs. Simple"**
     - Time per cookie tracking
     - Decorating complexity tiers
     - Icing cost calculations
     - Per dozen vs. individual pricing
 
-18. **"How Much Should You Mark Up Ingredients?"**
+[ ] 18. **"How Much Should You Mark Up Ingredients?"**
     - Industry standard markup percentages
     - Premium ingredient considerations
     - Organic/local ingredient premiums
     - Markup vs. profit margin explained
 
-19. **"Break-Even Analysis for Bakers: When Do You Start Making Money?"**
+[x] 19. **"Break-Even Analysis for Bakers: When Do You Start Making Money?"**
     - Fixed vs. variable cost analysis
     - Monthly sales targets
     - Pricing to reach break-even faster
     - Growth trajectory planning
 
-20. **"Subscription Box Pricing: How to Price Monthly Bake Boxes"**
+[ ] 20. **"Subscription Box Pricing: How to Price Monthly Bake Boxes"**
     - Subscription pricing psychology
     - Packaging and shipping considerations
     - Churn prevention strategies
@@ -157,19 +157,19 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
 
 #### **Cost Control & Waste Reduction (10 posts)**
 
-21. **"How to Reduce Ingredient Waste by 30% in Your Home Bakery"**
+[ ] 21. **"How to Reduce Ingredient Waste by 30% in Your Home Bakery"**
     - Inventory tracking systems
     - FIFO implementation
     - Recipe scaling strategies
     - Waste audit template
 
-22. **"Tracking Ingredient Costs When Prices Keep Rising"**
+[ ] 22. **"Tracking Ingredient Costs When Prices Keep Rising"**
     - Inflation tracking methods
     - Price alert systems
     - Supplier comparison spreadsheets
     - Quarterly cost reviews
 
-23. **"The Hidden Costs Eating Your Bakery Profits"**
+[ ] 23. **"The Hidden Costs Eating Your Bakery Profits"**
     - Utilities breakdown
     - Equipment depreciation
     - Packaging costs
@@ -378,7 +378,7 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
 
 #### **Starting & Growing Your Bakery (25 posts)**
 
-56. **"How to Start a Home Bakery with $500 or Less"**
+[x] 56. **"How to Start a Home Bakery with $500 or Less"**
     - Essential equipment list
     - First inventory purchases
     - Marketing on a budget
@@ -390,7 +390,7 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
     - Tax implications
     - Decision framework
 
-58. **"Home Bakery Business Plan Template (Free Download)"**
+[x] 58. **"Home Bakery Business Plan Template (Free Download)"**
     - Executive summary outline
     - Financial projections
     - Marketing strategy
@@ -408,7 +408,7 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
     - Week 3: Marketing launch
     - Week 4: First orders
 
-61. **"How to Create a Bakery Menu That Sells"**
+[x] 61. **"How to Create a Bakery Menu That Sells"**
     - Product mix strategy
     - Pricing psychology
     - Description writing
@@ -468,13 +468,13 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
     - Training helpers
     - Consistency benefits
 
-71. **"Bakery Branding on a Budget: DIY Guide"**
+[x] 71. **"Bakery Branding on a Budget: DIY Guide"**
     - Logo creation tools
     - Color psychology
     - Brand voice development
     - Consistency across platforms
 
-72. **"How to Create a Bakery Email List (And What to Send)"**
+[x] 72. **"How to Create a Bakery Email List (And What to Send)"**
     - Lead magnet ideas
     - Email service providers
     - Content planning
@@ -600,7 +600,7 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
     - Product category breakdown
     - Regional differences
 
-92. **"What Customers Really Pay for Cakes: 2025 Price Survey"**
+[x] 92. **"What Customers Really Pay for Cakes: 2025 Price Survey"**
     - National average prices
     - Regional variations
     - Custom vs. basic pricing
@@ -630,7 +630,7 @@ I'll conduct comprehensive research on the bakery business SEO landscape to crea
     - Content performance analysis
     - Growth strategies
 
-97. **"Home Bakery Success Rates: What Makes Businesses Thrive"**
+[x] 97. **"Home Bakery Success Rates: What Makes Businesses Thrive"**
     - Failure rate statistics
     - Success factor analysis
     - Common pitfalls

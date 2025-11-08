@@ -1,8 +1,11 @@
 import { MetadataRoute } from 'next'
+import blogPostList from './blog/blogPostList'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://bakeprofit.vercel.app'
   
+  const blogSlugs = blogPostList.map((post) => post.slug)
+
   // Static pages
   const routes = [
     '',
@@ -32,16 +35,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Blog posts
-  const blogPosts = [
-    '/blog/how-to-calculate-recipe-cost',
-    '/blog/how-to-price-cakes',
-    '/blog/how-to-start-home-bakery',
-    '/blog/how-to-price-cupcakes',
-    '/blog/track-ingredient-costs',
-    '/blog/recipe-cost-calculator-comparison',
-    '/blog/best-recipe-calculators',
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
+  const blogPosts = blogSlugs.map((slug) => ({
+    url: `${baseUrl}/blog/${slug}`,
     lastModified: new Date('2025-01-15'),
     changeFrequency: 'monthly' as const,
     priority: 0.7,

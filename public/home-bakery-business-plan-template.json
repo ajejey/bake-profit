@@ -1,0 +1,234 @@
+{
+  "templateName": "Home Bakery Business Plan Template",
+  "version": "1.0",
+  "sections": [
+    {
+      "id": "executive-summary",
+      "title": "Executive Summary",
+      "fields": [
+        {
+          "label": "Business Name",
+          "type": "text",
+          "placeholder": "e.g., Sweet Dreams Bakery"
+        },
+        {
+          "label": "Mission Statement",
+          "type": "textarea",
+          "placeholder": "What is the purpose of your bakery? What value do you provide?"
+        },
+        {
+          "label": "Products & Services Summary",
+          "type": "textarea",
+          "placeholder": "Brief overview of what you'll sell (e.g., custom cakes, cookies, bread)"
+        },
+        {
+          "label": "Target Market",
+          "type": "textarea",
+          "placeholder": "Who are your ideal customers?"
+        },
+        {
+          "label": "Startup Costs",
+          "type": "number",
+          "placeholder": "500"
+        },
+        {
+          "label": "First Year Revenue Goal",
+          "type": "number",
+          "placeholder": "15000"
+        }
+      ]
+    },
+    {
+      "id": "business-description",
+      "title": "Business Description",
+      "fields": [
+        {
+          "label": "Business Structure",
+          "type": "select",
+          "options": ["Sole Proprietorship", "LLC", "Partnership", "Corporation"]
+        },
+        {
+          "label": "Location",
+          "type": "text",
+          "placeholder": "City, State"
+        },
+        {
+          "label": "Operating Hours",
+          "type": "textarea",
+          "placeholder": "e.g., Orders accepted Mon-Fri, Pickup Sat-Sun"
+        },
+        {
+          "label": "What Makes You Unique?",
+          "type": "textarea",
+          "placeholder": "What sets your bakery apart from competitors?"
+        },
+        {
+          "label": "Brand Values",
+          "type": "textarea",
+          "placeholder": "What does your brand stand for?"
+        }
+      ]
+    },
+    {
+      "id": "products-services",
+      "title": "Products & Services",
+      "fields": [
+        {
+          "label": "Core Products",
+          "type": "textarea",
+          "placeholder": "List your main products (e.g., Custom Birthday Cakes, Cookies, Cupcakes)"
+        },
+        {
+          "label": "Pricing Strategy",
+          "type": "textarea",
+          "placeholder": "How will you price your products? (e.g., Cost × 2.5, Market-based)"
+        },
+        {
+          "label": "Product Examples with Prices",
+          "type": "textarea",
+          "placeholder": "Chocolate Chip Cookies: $40/dozen\nCustom Cake (8-inch): $120"
+        }
+      ]
+    },
+    {
+      "id": "market-analysis",
+      "title": "Market Analysis",
+      "fields": [
+        {
+          "label": "Target Customer Demographics",
+          "type": "textarea",
+          "placeholder": "Age, income level, location, preferences"
+        },
+        {
+          "label": "Market Size",
+          "type": "textarea",
+          "placeholder": "How many potential customers in your area?"
+        },
+        {
+          "label": "Competitors",
+          "type": "textarea",
+          "placeholder": "List 3-5 competitors and what they offer"
+        },
+        {
+          "label": "Competitive Advantage",
+          "type": "textarea",
+          "placeholder": "Why will customers choose you over competitors?"
+        }
+      ]
+    },
+    {
+      "id": "marketing-sales",
+      "title": "Marketing & Sales Strategy",
+      "fields": [
+        {
+          "label": "Marketing Channels",
+          "type": "textarea",
+          "placeholder": "Instagram, Facebook, Farmers Markets, Word-of-Mouth, etc."
+        },
+        {
+          "label": "Social Media Strategy",
+          "type": "textarea",
+          "placeholder": "What will you post? How often?"
+        },
+        {
+          "label": "Customer Acquisition Plan",
+          "type": "textarea",
+          "placeholder": "How will you get your first 10 customers?"
+        },
+        {
+          "label": "Customer Retention Strategy",
+          "type": "textarea",
+          "placeholder": "How will you keep customers coming back?"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "title": "Operations Plan",
+      "fields": [
+        {
+          "label": "Production Schedule",
+          "type": "textarea",
+          "placeholder": "When will you bake? (e.g., Tues-Thurs evenings)"
+        },
+        {
+          "label": "Order Process",
+          "type": "textarea",
+          "placeholder": "How will customers place orders? (Online form, DM, email)"
+        },
+        {
+          "label": "Delivery/Pickup Options",
+          "type": "textarea",
+          "placeholder": "Home pickup, local delivery, farmers market, etc."
+        },
+        {
+          "label": "Equipment Needed",
+          "type": "textarea",
+          "placeholder": "List essential equipment you have or need"
+        }
+      ]
+    },
+    {
+      "id": "financial-plan",
+      "title": "Financial Plan",
+      "fields": [
+        {
+          "label": "Startup Costs Breakdown",
+          "type": "textarea",
+          "placeholder": "Permits: $100\nPackaging: $150\nIngredients: $200\nMarketing: $50"
+        },
+        {
+          "label": "Monthly Fixed Costs",
+          "type": "textarea",
+          "placeholder": "Insurance: $40\nWebsite: $25\nSoftware: $7\nMarketing: $50"
+        },
+        {
+          "label": "Variable Cost Per Unit",
+          "type": "number",
+          "placeholder": "20"
+        },
+        {
+          "label": "Average Selling Price",
+          "type": "number",
+          "placeholder": "75"
+        },
+        {
+          "label": "Monthly Sales Goal (Units)",
+          "type": "number",
+          "placeholder": "12"
+        },
+        {
+          "label": "Break-Even Point (Units/Month)",
+          "type": "number",
+          "placeholder": "3"
+        }
+      ]
+    },
+    {
+      "id": "goals-milestones",
+      "title": "Goals & Milestones",
+      "fields": [
+        {
+          "label": "3-Month Goals",
+          "type": "textarea",
+          "placeholder": "e.g., Get cottage food license, Make first 10 sales, Break even"
+        },
+        {
+          "label": "6-Month Goals",
+          "type": "textarea",
+          "placeholder": "e.g., 20 sales/month, Build email list of 50, Add 2nd product"
+        },
+        {
+          "label": "1-Year Goals",
+          "type": "textarea",
+          "placeholder": "e.g., $15,000 revenue, 30 sales/month, Hire part-time help"
+        },
+        {
+          "label": "3-Year Vision",
+          "type": "textarea",
+          "placeholder": "Where do you see your bakery in 3 years?"
+        }
+      ]
+    }
+  ]
+}
