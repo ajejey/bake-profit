@@ -280,6 +280,60 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
         <div className="flex-1 overflow-y-auto px-4 py-2 md:px-6 md:py-4">
           {children}
         </div>
+
+        {/* Footer */}
+        <footer className="bg-gray-50 border-t border-gray-200 px-4 py-3 md:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
+              {/* Contact Info - Desktop */}
+              <div className="hidden sm:flex items-center gap-2 text-gray-600">
+                <span className="font-medium">Need help?</span>
+                <a 
+                  href="mailto:thebakeprofit@gmail.com" 
+                  className="text-rose-600 hover:text-rose-700 hover:underline font-medium"
+                >
+                  thebakeprofit@gmail.com
+                </a>
+              </div>
+
+              {/* Navigation Links - Desktop only */}
+              <div className="hidden sm:flex items-center gap-4">
+                <a 
+                  href="/blog" 
+                  className="text-gray-600 hover:text-rose-600 hover:underline"
+                >
+                  Blog
+                </a>
+                <a 
+                  href="/tools" 
+                  className="text-gray-600 hover:text-rose-600 hover:underline"
+                >
+                  Tools
+                </a>
+                <a 
+                  href="/contact" 
+                  className="text-gray-600 hover:text-rose-600 hover:underline"
+                >
+                  Contact
+                </a>
+                <span className="text-gray-400">•</span>
+                <span className="text-gray-500">
+                  © {new Date().getFullYear()} BakeProfit
+                </span>
+              </div>
+
+              {/* Mobile-optimized minimal footer */}
+              <div className="sm:hidden text-center text-xs">
+                <a 
+                  href="mailto:thebakeprofit@gmail.com" 
+                  className="text-rose-600 hover:text-rose-700"
+                >
+                  Need help? thebakeprofit@gmail.com
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   )
