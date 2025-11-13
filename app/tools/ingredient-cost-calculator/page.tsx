@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import CalculatorLayout from '@/components/calculators/CalculatorLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Package, DollarSign, Save, Share2, Printer, Calculator } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/AuthContext'
+import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
 
 // Unit conversion factors (to grams for weight, to ml for volume)
 const CONVERSIONS = {
@@ -37,6 +40,9 @@ const UNIT_TYPES = {
 
 export default function IngredientCostCalculator() {
   const { toast } = useToast()
+  const router = useRouter()
+  const { user } = useAuth()
+  const [showSignupDialog, setShowSignupDialog] = useState(false)
   
   const [ingredientName, setIngredientName] = useState('')
   const [packageSize, setPackageSize] = useState(0)
@@ -124,11 +130,22 @@ export default function IngredientCostCalculator() {
 
   const { costPerUnit, recipeCost, canCalculate } = calculateCost()
 
-  const handleSave = () => {
+  const handleSaveClick = () => {
+    if (!user) {
+      setShowSignupDialog(true)
+      return
+    }
+    handleActualSave()
+  }
+
+  const handleActualSave = () => {
     toast({
-      title: 'Sign up to save',
-      description: 'Create a free account to save ingredient costs and use in recipes.',
+      title: '✅ Calculation saved!',
+      description: 'View it in My Calculations.',
     })
+    setTimeout(() => {
+      router.push('/tools/my-calculations')
+    }, 1500)
   }
 
   const handleShare = () => {
@@ -443,7 +460,7 @@ export default function IngredientCostCalculator() {
             <div className="space-y-2">
               <Button
                 className="w-full bg-rose-500 hover:bg-rose-600"
-                onClick={handleSave}
+                onClick={handleSaveClick}
               >
                 <Save className="h-4 w-4 mr-2" />
                 Save Ingredient
@@ -591,6 +608,14 @@ export default function IngredientCostCalculator() {
           </Card>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SaveCalculationDialog
+        open={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        calculatorType="Ingredient"
+        onSuccess={handleActualSave}
+      />
     </CalculatorLayout>
   )
 }

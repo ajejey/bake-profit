@@ -24,6 +24,12 @@ export interface IUser {
   paypal_payer_id?: string;
   subscription_ends_at?: Date;
   
+  // Questionnaire data
+  questionnaire_looking_for?: string;
+  questionnaire_help_with?: string;
+  questionnaire_interested_features?: string[];
+  questionnaire_answered_at?: Date;
+  
   created_at: Date;
   updated_at: Date;
   last_login_at?: Date;
@@ -119,6 +125,25 @@ const UserSchema = new Schema<IUser>(
       required: false,
     },
     subscription_ends_at: {
+      type: Date,
+      required: false,
+    },
+    
+    // Questionnaire data
+    questionnaire_looking_for: {
+      type: String,
+      required: false,
+    },
+    questionnaire_help_with: {
+      type: String,
+      required: false,
+    },
+    questionnaire_interested_features: {
+      type: [String],
+      required: false,
+      default: [],
+    },
+    questionnaire_answered_at: {
       type: Date,
       required: false,
     },

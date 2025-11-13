@@ -115,17 +115,22 @@ const recipeFormSchema = z.object({
   temperature: z.string().optional(),
 })
 
-// Unit conversion map
+// Unit conversion map - each row shows: "If I have 1 [fromUnit], how many [toUnit] do I get?"
 const unitConversions: Record<string, Record<string, number>> = {
-  g: { kg: 0.001, g: 1, oz: 0.035274, lb: 0.00220462 },
-  kg: { kg: 1, g: 1000, oz: 35.274, lb: 2.20462 },
-  oz: { kg: 0.0283495, g: 28.3495, oz: 1, lb: 0.0625 },
-  lb: { kg: 0.453592, g: 453.592, oz: 16, lb: 1 },
-  ml: { l: 0.001, ml: 1, cup: 0.00422675, tbsp: 0.067628, tsp: 0.202884 },
-  l: { l: 1, ml: 1000, cup: 4.22675, tbsp: 67.628, tsp: 202.884 },
-  cup: { l: 0.236588, ml: 236.588, cup: 1, tbsp: 16, tsp: 48 },
-  tbsp: { l: 0.0147868, ml: 14.7868, cup: 0.0625, tbsp: 1, tsp: 3 },
-  tsp: { l: 0.00492892, ml: 4.92892, cup: 0.0208333, tbsp: 0.333333, tsp: 1 },
+  // Weight conversions (FROM each unit TO other units)
+  g: { g: 1, kg: 0.001, oz: 0.035274, lb: 0.00220462 },
+  kg: { g: 1000, kg: 1, oz: 35.274, lb: 2.20462 },
+  oz: { g: 28.3495, kg: 0.0283495, oz: 1, lb: 0.0625 },
+  lb: { g: 453.592, kg: 0.453592, oz: 16, lb: 1 },
+  
+  // Volume conversions (FROM each unit TO other units)
+  ml: { ml: 1, l: 0.001, cup: 0.00422675, tbsp: 0.067628, tsp: 0.202884 },
+  l: { ml: 1000, l: 1, cup: 4.22675, tbsp: 67.628, tsp: 202.884 },
+  cup: { ml: 236.588, l: 0.236588, cup: 1, tbsp: 16, tsp: 48 },
+  tbsp: { ml: 14.7868, l: 0.0147868, cup: 0.0625, tbsp: 1, tsp: 3 },
+  tsp: { ml: 4.92892, l: 0.00492892, cup: 0.0208333, tbsp: 0.333333, tsp: 1 },
+  
+  // Count conversions
   unit: { unit: 1, dozen: 0.0833333 },
   dozen: { unit: 12, dozen: 1 },
 }
@@ -134,23 +139,18 @@ const unitConversions: Record<string, Record<string, number>> = {
 const convertUnit = (value: number, fromUnit: string, toUnit: string): number => {
   if (fromUnit === toUnit) return value
 
-  // Check if units are in the same category
-  const fromCategory = Object.keys(unitConversions).find(unit =>
-    unitConversions[unit][fromUnit] !== undefined
-  )
+  // Normalize unit names to lowercase
+  const from = fromUnit.toLowerCase()
+  const to = toUnit.toLowerCase()
 
-  const toCategory = Object.keys(unitConversions).find(unit =>
-    unitConversions[unit][toUnit] !== undefined
-  )
-
-  if (!fromCategory || !toCategory || fromCategory !== toCategory) {
-    return value // Cannot convert between different categories
+  // Check if conversion exists
+  if (unitConversions[from] && unitConversions[from][to] !== undefined) {
+    return value * unitConversions[from][to]
   }
 
-  // Convert to base unit first, then to target unit
-  const baseUnit = fromCategory
-  const valueInBaseUnit = value * unitConversions[baseUnit][fromUnit]
-  return valueInBaseUnit / unitConversions[baseUnit][toUnit]
+  // If no direct conversion found, return original value
+  console.warn(`No conversion found from ${from} to ${to}`)
+  return value
 }
 
 
@@ -173,6 +173,7 @@ export default function RecipeCalculator() {
   const {
     recipes,
     addRecipe,
+    updateRecipe,
     deleteRecipe,
   } = useRecipes()
 
@@ -181,6 +182,8 @@ export default function RecipeCalculator() {
   // UI State only
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
   const [isAddRecipeOpen, setIsAddRecipeOpen] = useState(false)
+  const [isEditRecipeOpen, setIsEditRecipeOpen] = useState(false)
+  const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null)
   const [recipeIngredients, setRecipeIngredients] = useState<RecipeIngredient[]>([])
   const [selectedIngredientId, setSelectedIngredientId] = useState<string>('')
   const [ingredientQuantity, setIngredientQuantity] = useState<number>(0)
@@ -336,6 +339,81 @@ export default function RecipeCalculator() {
       title: 'Recipe created',
       description: `${data.name} has been added to your recipes (Cost: ${formatCurrency(totalCost)}).`,
     })
+  }
+
+  // Handle editing a recipe
+  const onEditRecipe = (data: z.infer<typeof recipeFormSchema>) => {
+    if (!editingRecipe) return
+
+    if (recipeIngredients.length === 0) {
+      toast({
+        title: 'No ingredients added',
+        description: 'Please add at least one ingredient to your recipe.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // Calculate total cost and cost per serving
+    const totalCost = calculateTotalRecipeCost(recipeIngredients, data.laborCost, data.overheadCost)
+    const costPerServing = calculateCostPerServing(totalCost, data.servings)
+
+    const updates: Partial<Recipe> = {
+      name: data.name,
+      description: data.description || '',
+      category: data.category as RecipeCategory | undefined,
+      servings: data.servings,
+      ingredients: recipeIngredients,
+      laborCost: data.laborCost,
+      laborTime: data.laborTime,
+      overheadCost: data.overheadCost,
+      notes: data.notes || '',
+      instructions: recipeInstructions,
+      prepTime: data.prepTime || 0,
+      cookTime: data.cookTime || 0,
+      coolTime: data.coolTime || 0,
+      temperature: data.temperature || '',
+      totalCost: totalCost,
+      costPerServing: costPerServing,
+    }
+
+    // Update recipe in-place (preserves createdAt)
+    updateRecipe(editingRecipe.id, updates)
+    
+    setIsEditRecipeOpen(false)
+    setEditingRecipe(null)
+    recipeForm.reset()
+    setRecipeIngredients([])
+    setRecipeInstructions([])
+
+    toast({
+      title: 'Recipe updated',
+      description: `${data.name} has been updated successfully.`,
+    })
+  }
+
+  // Handle opening edit dialog
+  const handleEditRecipe = (recipe: Recipe) => {
+    setEditingRecipe(recipe)
+    setRecipeIngredients(recipe.ingredients)
+    setRecipeInstructions(recipe.instructions)
+    
+    recipeForm.reset({
+      name: recipe.name,
+      description: recipe.description,
+      category: recipe.category,
+      servings: recipe.servings,
+      laborCost: recipe.laborCost,
+      laborTime: recipe.laborTime,
+      overheadCost: recipe.overheadCost,
+      notes: recipe.notes,
+      prepTime: recipe.prepTime,
+      cookTime: recipe.cookTime,
+      coolTime: recipe.coolTime,
+      temperature: recipe.temperature,
+    })
+    
+    setIsEditRecipeOpen(true)
   }
 
   // Handle Add Recipe button click with limit check
@@ -1159,6 +1237,561 @@ export default function RecipeCalculator() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Recipe Dialog */}
+        <Dialog open={isEditRecipeOpen} onOpenChange={setIsEditRecipeOpen}>
+          <DialogContent className="max-w-[95vw] lg:max-w-7xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader className="flex flex-row items-center justify-between">
+              <div>
+                <DialogTitle>Edit Recipe</DialogTitle>
+                <DialogDescription>
+                  Update recipe details, ingredients, labor, and overhead costs.
+                </DialogDescription>
+              </div>
+              <Button
+                onClick={recipeForm.handleSubmit(onEditRecipe)}
+                className="flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                Save Changes
+              </Button>
+            </DialogHeader>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <Form {...recipeForm}>
+                  <form className="space-y-4">
+                    <FormField
+                      control={recipeForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Recipe Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Chocolate Chip Cookies" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={recipeForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Brief description of the recipe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={recipeForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <FormControl>
+                            <Input
+                              list="recipe-categories-edit"
+                              placeholder="Type or select a category..."
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e)
+                                const category: RecipeCategory = e.target.value.trim() as RecipeCategory;
+                                if (category && !recipeCategories.includes(category)) {
+                                  registerCategory(category)
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <datalist id="recipe-categories-edit">
+                            {recipeCategories.map((category) => (
+                              <option key={category} value={category} />
+                            ))}
+                          </datalist>
+                          <FormDescription className="text-xs">
+                            Type to create a new category or select from existing ones
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={recipeForm.control}
+                      name="servings"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of Servings/Yield</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={recipeForm.control}
+                        name="laborTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Labor Time (minutes)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={recipeForm.control}
+                        name="laborCost"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Labor Cost ({currencySymbol})</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={recipeForm.control}
+                      name="overheadCost"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Overhead Cost ({currencySymbol})</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Include costs like electricity, packaging, etc.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={recipeForm.control}
+                      name="notes"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Notes (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Additional notes about the recipe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="border-t pt-4 mt-4">
+                      <h4 className="font-medium mb-3">Timing & Temperature</h4>
+
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <FormField
+                          control={recipeForm.control}
+                          name="prepTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Prep Time (min)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="30"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={recipeForm.control}
+                          name="cookTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Bake Time (min)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="45"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={recipeForm.control}
+                          name="coolTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Cool Time (min)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="20"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={recipeForm.control}
+                          name="temperature"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Temperature</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="350°F or 180°C"
+                                  {...field}
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="mt-4">
+                        <h4 className="font-medium mb-2">Baking Instructions</h4>
+                        <div className="space-y-2">
+                          {recipeInstructions.map((instruction, index) => (
+                            <div key={index} className="flex gap-2 items-start">
+                              <span className="text-sm font-medium mt-2 min-w-[24px]">{index + 1}.</span>
+                              <Input
+                                value={instruction}
+                                onChange={(e) => {
+                                  const updated = [...recipeInstructions]
+                                  updated[index] = e.target.value
+                                  setRecipeInstructions(updated)
+                                }}
+                                className="flex-1"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  setRecipeInstructions(recipeInstructions.filter((_, i) => i !== index))
+                                }}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ))}
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter next step..."
+                              value={currentInstruction}
+                              onChange={(e) => setCurrentInstruction(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && currentInstruction.trim()) {
+                                  e.preventDefault()
+                                  setRecipeInstructions([...recipeInstructions, currentInstruction.trim()])
+                                  setCurrentInstruction('')
+                                }
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
+                                if (currentInstruction.trim()) {
+                                  setRecipeInstructions([...recipeInstructions, currentInstruction.trim()])
+                                  setCurrentInstruction('')
+                                }
+                              }}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+
+              <div className="space-y-6">
+                {!ingredients.length && (
+                  <div className="flex flex-col items-center justify-center p-6 text-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
+                    <AlertTriangle className="h-10 w-10 text-amber-500 mb-2" />
+                    <h3 className="text-lg font-medium mb-1">No ingredients available</h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      You need to add ingredients to your inventory before editing recipes.
+                    </p>
+                    <Link
+                      href="/bakery-business-tool/inventory"
+                      className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add ingredients to inventory
+                    </Link>
+                  </div>
+                )}
+
+                {/* Section Header */}
+                <div className="flex items-center gap-2 pb-3 border-b">
+                  <Scale className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Recipe Ingredients</h3>
+                </div>
+
+                {/* Add Ingredient Form */}
+                <Card className="bg-gradient-to-br gap-2 from-blue-50 to-indigo-50 border-blue-200">
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add Ingredient
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-1">
+                    <div className="space-y-1">
+                      <Label className="text-sm font-medium">Ingredient</Label>
+                      <Select
+                        value={selectedIngredientId}
+                        onValueChange={(value) => {
+                          setSelectedIngredientId(value)
+                          const ingredient = ingredients.find(ing => ing.id === value)
+                          if (ingredient) {
+                            setIngredientUnit(ingredient.unit)
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Choose an ingredient..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ingredients.map((ing) => (
+                            <SelectItem key={ing.id} value={ing.id}>
+                              <div className="flex items-center justify-between w-full">
+                                <span>{ing.name}</span>
+                                <span className="text-xs text-gray-500 ml-2">({ing.unit})</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-sm font-medium">Quantity</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          value={ingredientQuantity || ''}
+                          onChange={(e) => setIngredientQuantity(parseFloat(e.target.value))}
+                          className="bg-white"
+                          disabled={!selectedIngredientId}
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-sm font-medium">Unit</Label>
+                        <Select
+                          value={ingredientUnit}
+                          onValueChange={setIngredientUnit}
+                          disabled={!selectedIngredientId}
+                        >
+                          <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedIngredientId &&
+                              getAvailableUnits(selectedIngredientId).map((unit) => (
+                                <SelectItem key={unit} value={unit}>
+                                  {unit}
+                                </SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      className="w-full"
+                      onClick={handleAddRecipeIngredient}
+                      disabled={!selectedIngredientId || !ingredientQuantity || !ingredientUnit}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add to Recipe
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Ingredients List */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-gray-700">
+                      Ingredients List
+                      {recipeIngredients.length > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {recipeIngredients.length}
+                        </Badge>
+                      )}
+                    </h4>
+                  </div>
+
+                  {recipeIngredients.length === 0 ? (
+                    <Card className="border-dashed">
+                      <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                        <Package className="h-12 w-12 text-gray-300 mb-3" />
+                        <p className="text-sm text-gray-500 mb-1">No ingredients added yet</p>
+                        <p className="text-xs text-gray-400">Add ingredients above to build your recipe</p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden bg-white">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-gray-50">
+                            <TableHead className="font-semibold">Ingredient</TableHead>
+                            <TableHead className="font-semibold">Quantity</TableHead>
+                            <TableHead className="font-semibold">Cost</TableHead>
+                            <TableHead className="w-[50px]"></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {recipeIngredients.map((ing) => (
+                            <TableRow key={ing.id} className="hover:bg-gray-50 transition-colors">
+                              <TableCell className="font-medium">{getIngredientName(ing.ingredientId)}</TableCell>
+                              <TableCell>
+                                <span className="text-sm">
+                                  {ing.quantity} <span className="text-gray-500">{ing.unit}</span>
+                                </span>
+                              </TableCell>
+                              <TableCell className="font-mono text-sm">{formatCurrency(ing.cost)}</TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleRemoveRecipeIngredient(ing.id)}
+                                  className="hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-500" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Cost Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">Ingredients Cost:</span>
+                        <span className="font-mono font-medium">
+                          {formatCurrency(recipeIngredients.reduce((sum, ing) => sum + ing.cost, 0))}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">Labor Cost:</span>
+                        <span className="font-mono font-medium">
+                          {formatCurrency(Number(recipeForm.watch('laborCost')) || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">Overhead Cost:</span>
+                        <span className="font-mono font-medium">
+                          {formatCurrency(Number(recipeForm.watch('overheadCost')) || 0)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-green-200 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">Total Recipe Cost:</span>
+                        <span className="font-mono text-lg font-bold text-green-700">
+                          {formatCurrency(
+                            calculateTotalRecipeCost(
+                              recipeIngredients,
+                              Number(recipeForm.watch('laborCost')) || 0,
+                              Number(recipeForm.watch('overheadCost')) || 0
+                            )
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t border-green-100">
+                        <span className="text-sm text-gray-600">Cost per Serving:</span>
+                        <span className="font-mono text-sm font-semibold text-green-600">
+                          {formatCurrency(
+                            calculateCostPerServing(
+                              calculateTotalRecipeCost(
+                                recipeIngredients,
+                                Number(recipeForm.watch('laborCost')) || 0,
+                                Number(recipeForm.watch('overheadCost')) || 0
+                              ),
+                              Number(recipeForm.watch('servings')) || 1
+                            )
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            <DialogFooter className="mt-6">
+              <Button type="button" onClick={recipeForm.handleSubmit(onEditRecipe)}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Search and Filters */}
@@ -1345,9 +1978,17 @@ export default function RecipeCalculator() {
                     )}
                   </div>
                   <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditRecipe(recipe)}
+                      title="Edit recipe"
+                    >
+                      <Edit className="h-4 w-4 text-blue-500" />
+                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button title='Download' variant="ghost" size="icon">
                           <Download className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -1375,6 +2016,7 @@ export default function RecipeCalculator() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      title='Duplicate Recipe'
                       onClick={() => handleDuplicateRecipe(recipe)}
                     >
                       <Copy className="h-4 w-4" />
@@ -1382,6 +2024,7 @@ export default function RecipeCalculator() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      title='Delete Recipe'
                       onClick={() => handleDeleteRecipe(recipe.id)}
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
@@ -1456,6 +2099,7 @@ export default function RecipeCalculator() {
                   <Button
                     variant="outline"
                     size="sm"
+                    title='Scale Recipe'
                     onClick={() => handleOpenScaleDialog(recipe)}
                   >
                     <Scale className="h-4 w-4" />

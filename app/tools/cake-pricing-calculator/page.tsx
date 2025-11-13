@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import CalculatorLayout from '@/components/calculators/CalculatorLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,11 +9,29 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Cake, DollarSign, Clock, Truck, Package, Save, Share2, Printer, Sparkles } from 'lucide-react'
+import { Cake, DollarSign, Clock, Truck, Package, Save, Share2, Printer, Sparkles, Check } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/AuthContext'
+import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { 
+  saveCalculation, 
+  getCalculation, 
+  generateCalculationId,
+  CALCULATOR_STORES,
+  type SavedCakeCalculation 
+} from '../utils/calculatorStorage'
 
 export default function CakePricingCalculator() {
   const { toast } = useToast()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const loadId = searchParams?.get('load')
+  const { user } = useAuth()
+  
+  const [calculationId, setCalculationId] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [showSignupDialog, setShowSignupDialog] = useState(false)
   
   // Cake Details
   const [cakeName, setCakeName] = useState('')
@@ -64,11 +83,130 @@ export default function CakePricingCalculator() {
   }
   const tierAdjustedPrice = suggestedPrice * (tierMultipliers[tiers as keyof typeof tierMultipliers] || 1)
 
-  const handleSave = () => {
-    toast({
-      title: 'Sign up to save',
-      description: 'Create a free account to save and track all your cake prices.',
-    })
+  const loadCalculation = async (id: string) => {
+    try {
+      const saved = await getCalculation<SavedCakeCalculation>(
+        CALCULATOR_STORES.cakes,
+        id
+      )
+      
+      if (saved) {
+        setCalculationId(saved.id)
+        setCakeName(saved.name)
+        setCakeType(saved.cakeType)
+        setTiers(saved.tiers)
+        setServings(saved.servings)
+        setIngredientCost(saved.ingredientCost)
+        setDecorationCost(saved.decorationCost)
+        setPackagingCost(saved.packagingCost)
+        setBakingTime(saved.bakingTime)
+        setDecoratingTime(saved.decoratingTime)
+        setSetupTime(saved.setupTime)
+        setHourlyRate(saved.hourlyRate)
+        setDeliveryDistance(saved.deliveryDistance)
+        setDeliveryCostPerMile(saved.deliveryCostPerMile)
+        setComplexityLevel(saved.complexityLevel)
+        setDesiredProfit(saved.desiredProfit)
+        setLastSaved(new Date(saved.updatedAt))
+        
+        toast({
+          title: '✅ Cake loaded',
+          description: `Loaded "${saved.name}"`,
+        })
+      }
+    } catch (error) {
+      console.error('Error loading calculation:', error)
+      toast({
+        title: 'Error loading cake',
+        description: 'Could not load the saved cake.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (loadId) {
+      loadCalculation(loadId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadId])
+
+  const handleSaveClick = () => {
+    if (!cakeName.trim()) {
+      toast({
+        title: 'Cake name required',
+        description: 'Please give your cake a name before saving.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // Check if user is logged in
+    if (!user) {
+      // Show signup dialog
+      setShowSignupDialog(true)
+      return
+    }
+
+    // User is logged in, save directly
+    handleActualSave()
+  }
+
+  const handleActualSave = async () => {
+    setIsSaving(true)
+    
+    try {
+      const id = calculationId || generateCalculationId()
+      const now = new Date().toISOString()
+      
+      const calculation: SavedCakeCalculation = {
+        id,
+        name: cakeName,
+        createdAt: calculationId ? (lastSaved?.toISOString() || now) : now,
+        updatedAt: now,
+        cakeType,
+        tiers,
+        servings,
+        ingredientCost,
+        decorationCost,
+        packagingCost,
+        bakingTime,
+        decoratingTime,
+        setupTime,
+        hourlyRate,
+        deliveryDistance,
+        deliveryCostPerMile,
+        complexityLevel,
+        desiredProfit,
+        totalCost,
+        suggestedPrice,
+        tierAdjustedPrice,
+      }
+      
+      await saveCalculation(CALCULATOR_STORES.cakes, calculation)
+      
+      setCalculationId(id)
+      setLastSaved(new Date())
+      
+      toast({
+        title: '✅ Cake saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      // Redirect to My Calculations after a brief delay
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: 'Error saving cake',
+        description: 'Could not save your cake. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleShare = () => {
@@ -536,11 +674,31 @@ export default function CakePricingCalculator() {
             <div className="space-y-2">
               <Button
                 className="w-full bg-rose-500 hover:bg-rose-600"
-                onClick={handleSave}
+                onClick={handleSaveClick}
+                disabled={isSaving}
               >
-                <Save className="h-4 w-4 mr-2" />
-                Save Calculation
+                {isSaving ? (
+                  <>
+                    <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Saving...
+                  </>
+                ) : lastSaved ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Saved
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Calculation
+                  </>
+                )}
               </Button>
+              {lastSaved && (
+                <p className="text-xs text-center text-gray-500">
+                  Last saved {lastSaved.toLocaleTimeString()}
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" onClick={handleShare}>
                   <Share2 className="h-4 w-4 mr-2" />
@@ -556,16 +714,39 @@ export default function CakePricingCalculator() {
             {/* CTA Card */}
             <Card className="bg-gradient-to-br from-rose-500 to-rose-600 text-white border-0">
               <CardContent className="pt-6">
-                <h3 className="font-bold text-lg mb-2">Track All Your Cakes</h3>
+                <h3 className="font-bold text-lg mb-2">💾 Your Work is Saved Locally</h3>
                 <p className="text-sm text-rose-100 mb-4">
-                  Save unlimited cake prices, track orders, manage customers, and grow your cake business.
+                  Saved cakes are stored in your browser. Want more?
                 </p>
-                <Button
-                  className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/'}
-                >
-                  Sign Up Free →
-                </Button>
+                <div className="space-y-2 text-sm text-rose-100 mb-4">
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Sync across all devices</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Track orders & customers</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Manage inventory & costs</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent border-white text-white hover:bg-white/10"
+                    onClick={() => router.push('/tools/my-calculations')}
+                  >
+                    View My Calculations
+                  </Button>
+                  <Button
+                    className="w-full bg-white text-rose-600 hover:bg-rose-50"
+                    onClick={() => router.push('/bakery-business-tool')}
+                  >
+                    Upgrade to Full Platform →
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -683,6 +864,14 @@ export default function CakePricingCalculator() {
           </Card>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SaveCalculationDialog
+        open={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        calculatorType="Cake"
+        onSuccess={handleActualSave}
+      />
     </CalculatorLayout>
   )
 }

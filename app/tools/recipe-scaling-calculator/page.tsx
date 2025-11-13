@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import CalculatorLayout from '@/components/calculators/CalculatorLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Scale, ArrowRight, Plus, Trash2, Save, Share2, Printer, Calculator } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/AuthContext'
+import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
 
 interface Ingredient {
   id: string
@@ -20,6 +23,9 @@ interface Ingredient {
 
 export default function RecipeScalingCalculator() {
   const { toast } = useToast()
+  const router = useRouter()
+  const { user } = useAuth()
+  const [showSignupDialog, setShowSignupDialog] = useState(false)
   
   const [recipeName, setRecipeName] = useState('')
   const [originalYield, setOriginalYield] = useState(12)
@@ -171,11 +177,32 @@ export default function RecipeScalingCalculator() {
     })))
   }, [scalingFactor])
 
-  const handleSave = () => {
+  const handleSaveClick = () => {
+    if (!recipeName.trim()) {
+      toast({
+        title: 'Recipe name required',
+        description: 'Please give your recipe a name before saving.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (!user) {
+      setShowSignupDialog(true)
+      return
+    }
+
+    handleActualSave()
+  }
+
+  const handleActualSave = () => {
     toast({
-      title: 'Sign up to save',
-      description: 'Create a free account to save and access all your scaled recipes.',
+      title: '✅ Recipe saved!',
+      description: 'View it in My Calculations.',
     })
+    setTimeout(() => {
+      router.push('/tools/my-calculations')
+    }, 1500)
   }
 
   const handleShare = () => {
@@ -469,7 +496,7 @@ export default function RecipeScalingCalculator() {
             <div className="space-y-2">
               <Button
                 className="w-full bg-rose-500 hover:bg-rose-600"
-                onClick={handleSave}
+                onClick={handleSaveClick}
               >
                 <Save className="h-4 w-4 mr-2" />
                 Save Recipe
@@ -620,6 +647,14 @@ export default function RecipeScalingCalculator() {
           </Card>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SaveCalculationDialog
+        open={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        calculatorType="Recipe"
+        onSuccess={handleActualSave}
+      />
     </CalculatorLayout>
   )
 }

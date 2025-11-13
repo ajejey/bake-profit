@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import CalculatorLayout from '@/components/calculators/CalculatorLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,9 +9,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { TrendingUp, DollarSign, AlertCircle, CheckCircle, Save, Share2, Printer, BarChart3 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/AuthContext'
+import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
 
 export default function BakeryProfitCalculator() {
   const { toast } = useToast()
+  const router = useRouter()
+  const { user } = useAuth()
+  const [showSignupDialog, setShowSignupDialog] = useState(false)
   
   // Revenue
   const [totalRevenue, setTotalRevenue] = useState(0)
@@ -73,11 +79,22 @@ export default function BakeryProfitCalculator() {
   const netMarginStatus = getMarginStatus(netProfitMargin, benchmarks.netMargin)
   const cogsStatus = cogsPercentage <= benchmarks.cogs.ideal ? 'excellent' : cogsPercentage <= benchmarks.cogs.max ? 'good' : 'poor'
 
-  const handleSave = () => {
+  const handleSaveClick = () => {
+    if (!user) {
+      setShowSignupDialog(true)
+      return
+    }
+    handleActualSave()
+  }
+
+  const handleActualSave = () => {
     toast({
-      title: 'Sign up to save',
-      description: 'Create a free account to track your profit margins over time.',
+      title: '✅ Calculation saved!',
+      description: 'View it in My Calculations.',
     })
+    setTimeout(() => {
+      router.push('/tools/my-calculations')
+    }, 1500)
   }
 
   const handleShare = () => {
@@ -421,7 +438,7 @@ export default function BakeryProfitCalculator() {
             <div className="space-y-2">
               <Button
                 className="w-full bg-rose-500 hover:bg-rose-600"
-                onClick={handleSave}
+                onClick={handleSaveClick}
               >
                 <Save className="h-4 w-4 mr-2" />
                 Save Analysis
@@ -589,6 +606,14 @@ export default function BakeryProfitCalculator() {
           </Card>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SaveCalculationDialog
+        open={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        calculatorType="Profit Analysis"
+        onSuccess={handleActualSave}
+      />
     </CalculatorLayout>
   )
 }

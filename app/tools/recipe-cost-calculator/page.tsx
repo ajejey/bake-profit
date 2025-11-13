@@ -1,14 +1,24 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import CalculatorLayout from '@/components/calculators/CalculatorLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Trash2, Calculator, Save, Share2, Printer, DollarSign } from 'lucide-react'
+import { Plus, Trash2, Calculator, Save, Share2, Printer, DollarSign, Check } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/AuthContext'
+import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { 
+  saveCalculation, 
+  getCalculation, 
+  generateCalculationId,
+  CALCULATOR_STORES,
+  type SavedRecipeCalculation 
+} from '../utils/calculatorStorage'
 
 interface Ingredient {
   id: string
@@ -26,8 +36,17 @@ const UNITS = [
 
 export default function RecipeCostCalculator() {
   const { toast } = useToast()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const loadId = searchParams?.get('load')
+  const { user } = useAuth()
+  
+  const [calculationId, setCalculationId] = useState<string | null>(null)
   const [recipeName, setRecipeName] = useState('')
   const [servings, setServings] = useState(12)
+  const [isSaving, setIsSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [showSignupDialog, setShowSignupDialog] = useState(false)
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     {
       id: '1',
@@ -93,11 +112,121 @@ export default function RecipeCostCalculator() {
   const profitPerServing = suggestedPrice - costPerServing
   const totalProfit = profitPerServing * servings
 
-  const handleSave = () => {
-    toast({
-      title: 'Sign up to save',
-      description: 'Create a free account to save and track all your recipes.',
-    })
+  const loadCalculation = async (id: string) => {
+    try {
+      const saved = await getCalculation<SavedRecipeCalculation>(
+        CALCULATOR_STORES.recipes,
+        id
+      )
+      
+      if (saved) {
+        setCalculationId(saved.id)
+        setRecipeName(saved.name)
+        setServings(saved.servings)
+        setIngredients(saved.ingredients)
+        setLaborCost(saved.laborCost)
+        setOverheadCost(saved.overheadCost)
+        setDesiredProfit(saved.desiredProfit)
+        setLastSaved(new Date(saved.updatedAt))
+        
+        toast({
+          title: '✅ Recipe loaded',
+          description: `Loaded "${saved.name}"`,
+        })
+      }
+    } catch (error) {
+      console.error('Error loading calculation:', error)
+      toast({
+        title: 'Error loading recipe',
+        description: 'Could not load the saved recipe.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  // Load saved calculation on mount
+  useEffect(() => {
+    if (loadId) {
+      loadCalculation(loadId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadId])
+
+  const handleSaveClick = () => {
+    if (!recipeName.trim()) {
+      toast({
+        title: 'Recipe name required',
+        description: 'Please give your recipe a name before saving.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // Check if user is logged in
+    if (!user) {
+      // Show signup dialog
+      setShowSignupDialog(true)
+      return
+    }
+
+    // User is logged in, save directly
+    handleActualSave()
+  }
+
+  const handleActualSave = async () => {
+    setIsSaving(true)
+    
+    try {
+      const id = calculationId || generateCalculationId()
+      const now = new Date().toISOString()
+      
+      const calculation: SavedRecipeCalculation = {
+        id,
+        name: recipeName,
+        createdAt: calculationId ? (lastSaved?.toISOString() || now) : now,
+        updatedAt: now,
+        servings,
+        ingredients: ingredients.map(ing => ({
+          id: ing.id,
+          name: ing.name,
+          amount: ing.amount,
+          unit: ing.unit,
+          packageSize: ing.packageSize,
+          packageCost: ing.packageCost,
+          cost: ing.cost,
+        })),
+        laborCost,
+        overheadCost,
+        desiredProfit,
+        totalCost: totalRecipeCost,
+        costPerServing,
+        suggestedPrice,
+      }
+      
+      await saveCalculation(CALCULATOR_STORES.recipes, calculation)
+      
+      setCalculationId(id)
+      setLastSaved(new Date())
+      
+      toast({
+        title: '✅ Recipe saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      // Redirect to My Calculations after a brief delay
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: 'Error saving recipe',
+        description: 'Could not save your recipe. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleShare = () => {
@@ -436,11 +565,31 @@ export default function RecipeCostCalculator() {
             <div className="space-y-2">
               <Button
                 className="w-full bg-rose-500 hover:bg-rose-600"
-                onClick={handleSave}
+                onClick={handleSaveClick}
+                disabled={isSaving}
               >
-                <Save className="h-4 w-4 mr-2" />
-                Save Recipe
+                {isSaving ? (
+                  <>
+                    <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Saving...
+                  </>
+                ) : lastSaved ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Saved
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Recipe
+                  </>
+                )}
               </Button>
+              {lastSaved && (
+                <p className="text-xs text-center text-gray-500">
+                  Last saved {lastSaved.toLocaleTimeString()}
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" onClick={handleShare}>
                   <Share2 className="h-4 w-4 mr-2" />
@@ -456,16 +605,39 @@ export default function RecipeCostCalculator() {
             {/* CTA Card */}
             <Card className="bg-gradient-to-br from-rose-500 to-rose-600 text-white border-0">
               <CardContent className="pt-6">
-                <h3 className="font-bold text-lg mb-2">Want to save this recipe?</h3>
+                <h3 className="font-bold text-lg mb-2">💾 Your Work is Saved Locally</h3>
                 <p className="text-sm text-rose-100 mb-4">
-                  Create a free account to save unlimited recipes, track orders, and manage your bakery business.
+                  Saved recipes are stored in your browser. Want more?
                 </p>
-                <Button
-                  className="w-full bg-white text-rose-600 hover:bg-rose-50"
-                  onClick={() => window.location.href = '/'}
-                >
-                  Sign Up Free →
-                </Button>
+                <div className="space-y-2 text-sm text-rose-100 mb-4">
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Sync across all devices</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Track orders & customers</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span>Manage inventory & costs</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent border-white text-white hover:bg-white/10"
+                    onClick={() => router.push('/tools/my-calculations')}
+                  >
+                    View My Calculations
+                  </Button>
+                  <Button
+                    className="w-full bg-white text-rose-600 hover:bg-rose-50"
+                    onClick={() => router.push('/bakery-business-tool')}
+                  >
+                    Upgrade to Full Platform →
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -512,6 +684,14 @@ export default function RecipeCostCalculator() {
           </Card>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SaveCalculationDialog
+        open={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        calculatorType="Recipe"
+        onSuccess={handleActualSave}
+      />
     </CalculatorLayout>
   )
 }

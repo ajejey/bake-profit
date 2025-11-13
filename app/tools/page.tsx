@@ -323,9 +323,15 @@ export default function ToolsPage() {
           <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
             Professional tools for home bakers and small bakeries. Calculate costs, pricing, and profits instantly.
           </p>
-          <p className="text-lg text-gray-500">
+          <p className="text-lg text-gray-500 mb-6">
             ✨ No signup required • 100% Free • Mobile-friendly
           </p>
+          <Link href="/tools/my-calculations">
+            <Button variant="outline" size="lg" className="gap-2">
+              <Calculator className="h-5 w-5" />
+              View My Saved Calculations
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -389,16 +395,23 @@ export default function ToolsPage() {
       <section className="py-16 bg-gradient-to-r from-rose-500 to-rose-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Want to Save Your Calculations?
+            Ready to Save Your Work?
           </h2>
           <p className="text-xl text-rose-100 mb-8">
-            Create a free account to save unlimited recipes, track orders, manage inventory, and grow your bakery business.
+            Sign up free to save unlimited calculations, sync across devices, track orders, manage inventory, and grow your bakery business.
           </p>
-          <Link href="/bakery-business-tool">
-            <Button size="lg" className="bg-white text-rose-600 hover:bg-rose-50 text-lg px-8 py-6">
-              Get Started Free →
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/signup?redirect=/tools/my-calculations">
+              <Button size="lg" className="bg-white text-rose-600 hover:bg-rose-50 text-lg px-8 py-6">
+                Sign Up Free →
+              </Button>
+            </Link>
+            <Link href="/login?redirect=/tools/my-calculations">
+              <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6">
+                Already have an account?
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

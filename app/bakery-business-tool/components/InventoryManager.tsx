@@ -560,7 +560,7 @@ const formatCurrency = (amount: number): string => {
                               <Input 
                                 type="number" 
                                 step="0.01" 
-                                {...field}
+                                value={field.value}
                                 onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                               />
                             </FormControl>
@@ -614,7 +614,7 @@ const formatCurrency = (amount: number): string => {
                             <Input 
                               type="number" 
                               step="0.01" 
-                              {...field}
+                              value={field.value}
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
@@ -871,7 +871,12 @@ const formatCurrency = (amount: number): string => {
                         <FormItem>
                           <FormLabel>Package Size</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.01" {...field} />
+                            <Input 
+                              type="number" 
+                              step="0.01" 
+                              value={field.value}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -920,7 +925,12 @@ const formatCurrency = (amount: number): string => {
                       <FormItem>
                         <FormLabel>Package Cost ($)</FormLabel>
                         <FormControl>
-                          <Input type="number" step="0.01" {...field} />
+                          <Input 
+                            type="number" 
+                            step="0.01" 
+                            value={field.value}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
