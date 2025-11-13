@@ -21,7 +21,9 @@ import {
   type SavedCakeCalculation 
 } from '../utils/calculatorStorage'
 
-export default function CakePricingCalculator() {
+import { Suspense } from 'react'
+
+function CakePricingCalculatorContent() {
   const { toast } = useToast()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -873,5 +875,26 @@ export default function CakePricingCalculator() {
         onSuccess={handleActualSave}
       />
     </CalculatorLayout>
+  )
+}
+
+export default function CakePricingCalculator() {
+  return (
+    <Suspense fallback={
+      <CalculatorLayout
+        title="Free Cake Pricing Calculator"
+        description="Calculate the perfect price for your cakes..."
+      >
+        <div className="max-w-4xl mx-auto p-8 text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </CalculatorLayout>
+    }>
+      <CakePricingCalculatorContent />
+    </Suspense>
   )
 }

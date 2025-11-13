@@ -34,7 +34,9 @@ const UNITS = [
   'g', 'kg', 'oz', 'lb', 'ml', 'l', 'cup', 'tbsp', 'tsp', 'unit', 'dozen'
 ]
 
-export default function RecipeCostCalculator() {
+import { Suspense } from 'react'
+
+function RecipeCostCalculatorContent() {
   const { toast } = useToast()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -693,5 +695,26 @@ export default function RecipeCostCalculator() {
         onSuccess={handleActualSave}
       />
     </CalculatorLayout>
+  )
+}
+
+export default function RecipeCostCalculator() {
+  return (
+    <Suspense fallback={
+      <CalculatorLayout
+        title="Free Recipe Cost Calculator"
+        description="Calculate your recipe costs instantly..."
+      >
+        <div className="max-w-4xl mx-auto p-8 text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </CalculatorLayout>
+    }>
+      <RecipeCostCalculatorContent />
+    </Suspense>
   )
 }

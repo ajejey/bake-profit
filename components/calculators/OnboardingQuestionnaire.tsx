@@ -231,7 +231,7 @@ export function OnboardingQuestionnaire({
               </div>
 
               <div className="space-y-3">
-                <Label>What's your approximate monthly revenue? (optional)</Label>
+                <Label>What&apos;s your approximate monthly revenue? (optional)</Label>
                 <RadioGroup
                   value={formData.monthlyRevenue}
                   onValueChange={(value) => setFormData({ ...formData, monthlyRevenue: value })}
@@ -281,7 +281,7 @@ export function OnboardingQuestionnaire({
           {step === 3 && (
             <div className="space-y-6">
               <div className="space-y-3">
-                <Label>What's your biggest challenge right now?</Label>
+                <Label>What&apos;s your biggest challenge right now?</Label>
                 <Textarea
                   placeholder="e.g., Pricing my products correctly, managing inventory, tracking orders..."
                   value={formData.mainChallenges}
