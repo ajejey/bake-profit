@@ -142,7 +142,7 @@ export default function BatchCostCalculator() {
             <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🍪 Making Multiple Batches? Let&apos;s Calculate the Total!</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Making Multiple Batches? Let&apos;s Calculate the Total!</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               Planning a big bake day or wholesale order? This calculator helps you figure out the total cost and profit when making multiple batches of different products. 
               Perfect for markets, events, or bulk orders!
@@ -197,6 +197,7 @@ export default function BatchCostCalculator() {
                     <Input
                       id={`name-${product.id}`}
                       placeholder="e.g., Chocolate Chip Cookies"
+                      className="placeholder:text-gray-300"
                       value={product.name}
                       onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
                     />
@@ -245,6 +246,7 @@ export default function BatchCostCalculator() {
                         step="0.01"
                         min="0"
                         placeholder="0.00"
+                        className="placeholder:text-gray-300"
                         value={product.costPerBatch || ''}
                         onChange={(e) => updateProduct(product.id, 'costPerBatch', Number(e.target.value))}
                       />
@@ -259,6 +261,7 @@ export default function BatchCostCalculator() {
                         step="0.01"
                         min="0"
                         placeholder="0.00"
+                        className="placeholder:text-gray-300"
                         value={product.pricePerBatch || ''}
                         onChange={(e) => updateProduct(product.id, 'pricePerBatch', Number(e.target.value))}
                       />
@@ -335,6 +338,7 @@ export default function BatchCostCalculator() {
                     step="0.01"
                     min="0"
                     placeholder="25.00"
+                    className="placeholder:text-gray-300"
                     value={hourlyRate || ''}
                     onChange={(e) => setHourlyRate(Number(e.target.value))}
                   />
@@ -358,6 +362,7 @@ export default function BatchCostCalculator() {
                   step="0.01"
                   min="0"
                   placeholder="0.00"
+                  className="placeholder:text-gray-300"
                   value={overheadCosts || ''}
                   onChange={(e) => setOverheadCosts(Number(e.target.value))}
                 />

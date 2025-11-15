@@ -121,7 +121,7 @@ export default function BakeryProfitCalculator() {
             <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">💰 Is Your Bakery Actually Making Money?</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Is Your Bakery Actually Making Money?</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               Let&apos;s find out! This calculator shows you if you&apos;re profitable and how you compare to other bakeries. 
               Just enter your sales and costs - we&apos;ll show you the real numbers and what they mean.
@@ -166,7 +166,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="5000.00"
                   value={totalRevenue || ''}
                   onChange={(e) => setTotalRevenue(Number(e.target.value))}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   📊 For a week, month, or year - whatever period you want to check
@@ -197,6 +197,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={ingredientCosts || ''}
                   onChange={(e) => setIngredientCosts(Number(e.target.value))}
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Flour, sugar, butter, eggs, etc.
@@ -213,6 +214,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={packagingCosts || ''}
                   onChange={(e) => setPackagingCosts(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Boxes, bags, labels, ribbons, etc.
@@ -250,6 +252,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={laborCosts || ''}
                   onChange={(e) => setLaborCosts(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Your time + any employees
@@ -266,6 +269,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={overheadCosts || ''}
                   onChange={(e) => setOverheadCosts(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Rent, utilities, equipment, insurance, etc.
@@ -282,6 +286,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={marketingCosts || ''}
                   onChange={(e) => setMarketingCosts(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Ads, social media, website, etc.
@@ -298,6 +303,7 @@ export default function BakeryProfitCalculator() {
                   placeholder="0.00"
                   value={otherCosts || ''}
                   onChange={(e) => setOtherCosts(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Licenses, fees, software, etc.

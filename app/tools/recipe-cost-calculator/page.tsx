@@ -255,7 +255,7 @@ function RecipeCostCalculatorContent() {
             <Calculator className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">👋 Let&apos;s Figure Out Your Recipe Costs!</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Let&apos;s Figure Out Your Recipe Costs!</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               Ever wonder if you&apos;re charging enough for your baked goods? This calculator helps you find out! 
               Just tell us what ingredients you use, and we&apos;ll show you exactly how much each cookie, cupcake, or cake costs to make.
@@ -294,7 +294,7 @@ function RecipeCostCalculatorContent() {
                   placeholder="e.g., My Famous Chocolate Chip Cookies"
                   value={recipeName}
                   onChange={(e) => setRecipeName(e.target.value)}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
                   💡 Give it a fun name so you remember it later!
@@ -309,7 +309,7 @@ function RecipeCostCalculatorContent() {
                   min="1"
                   value={servings}
                   onChange={(e) => setServings(Number(e.target.value))}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
                   🍪 Enter the number of cookies, cupcakes, or servings (e.g., 24 cookies)
@@ -354,6 +354,7 @@ function RecipeCostCalculatorContent() {
                         placeholder="e.g., All-Purpose Flour, Butter, Sugar..."
                         value={ingredient.name}
                         onChange={(e) => updateIngredient(ingredient.id, 'name', e.target.value)}
+                        className="placeholder:text-gray-300"
                       />
                     </div>
 
@@ -366,6 +367,7 @@ function RecipeCostCalculatorContent() {
                         placeholder="2"
                         value={ingredient.amount || ''}
                         onChange={(e) => updateIngredient(ingredient.id, 'amount', Number(e.target.value))}
+                        className="placeholder:text-gray-300"
                       />
                       <p className="text-xs text-gray-500 mt-1">The amount in your recipe</p>
                     </div>
@@ -394,6 +396,7 @@ function RecipeCostCalculatorContent() {
                         step="0.01"
                         min="0"
                         placeholder="5"
+                        className="placeholder:text-gray-300"
                         value={ingredient.packageSize || ''}
                         onChange={(e) => updateIngredient(ingredient.id, 'packageSize', Number(e.target.value))}
                       />
@@ -411,6 +414,7 @@ function RecipeCostCalculatorContent() {
                         placeholder="12.99"
                         value={ingredient.packageCost || ''}
                         onChange={(e) => updateIngredient(ingredient.id, 'packageCost', Number(e.target.value))}
+                        className="placeholder:text-gray-300"
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         💵 Price you paid at the store
@@ -461,6 +465,7 @@ function RecipeCostCalculatorContent() {
                   placeholder="0.00"
                   value={laborCost || ''}
                   onChange={(e) => setLaborCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   💡 <strong>Tip:</strong> If it takes 2 hours and you value your time at $20/hr, enter $40
@@ -477,6 +482,7 @@ function RecipeCostCalculatorContent() {
                   placeholder="0.00"
                   value={overheadCost || ''}
                   onChange={(e) => setOverheadCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   📦 Boxes, bags, electricity, etc. (usually $1-5 per batch)

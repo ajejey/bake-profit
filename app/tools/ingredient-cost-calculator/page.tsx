@@ -172,7 +172,7 @@ export default function IngredientCostCalculator() {
             <Package className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 w-full">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🥚 How Much Does Each Ingredient Really Cost?</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">How Much Does Each Ingredient Really Cost?</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               You buy a 5 lb bag of flour for $12.99 - but how much does 2 cups cost? We&apos;ll figure it out! 
               This calculator converts between units and shows you the real cost of each ingredient in your recipes.
@@ -211,6 +211,7 @@ export default function IngredientCostCalculator() {
                   placeholder="e.g., All-Purpose Flour"
                   value={ingredientName}
                   onChange={(e) => setIngredientName(e.target.value)}
+                  className="placeholder:text-gray-300"
                 />
               </div>
 
@@ -269,6 +270,7 @@ export default function IngredientCostCalculator() {
                     placeholder="5"
                     value={packageSize || ''}
                     onChange={(e) => setPackageSize(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
 
@@ -304,6 +306,7 @@ export default function IngredientCostCalculator() {
                   placeholder="12.99"
                   value={packageCost || ''}
                   onChange={(e) => setPackageCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   How much you paid for the package
@@ -343,6 +346,7 @@ export default function IngredientCostCalculator() {
                     placeholder="2"
                     value={recipeAmount || ''}
                     onChange={(e) => setRecipeAmount(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
 

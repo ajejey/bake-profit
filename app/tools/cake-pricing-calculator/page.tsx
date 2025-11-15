@@ -240,7 +240,7 @@ function CakePricingCalculatorContent() {
             <Cake className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">🎂 Price Your Cakes Like a Pro!</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Price Your Cakes Like a Pro!</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               Stop guessing what to charge! This calculator helps you price your cakes so you make a profit AND feel confident. 
               We&apos;ll walk you through everything - ingredients, your time, decorations, and even delivery.
@@ -282,7 +282,7 @@ function CakePricingCalculatorContent() {
                   placeholder="e.g., Sarah's Birthday Cake, Wedding Cake for the Johnsons"
                   value={cakeName}
                   onChange={(e) => setCakeName(e.target.value)}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   💡 Helps you remember which cake this is!
@@ -330,7 +330,7 @@ function CakePricingCalculatorContent() {
                   min="1"
                   value={servings}
                   onChange={(e) => setServings(Number(e.target.value))}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   🍰 Number of servings (e.g., 50 for a wedding cake)
@@ -383,6 +383,7 @@ function CakePricingCalculatorContent() {
                   placeholder="25.00"
                   value={ingredientCost || ''}
                   onChange={(e) => setIngredientCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   🥚 Flour, eggs, butter, sugar, frosting, etc.
@@ -399,6 +400,7 @@ function CakePricingCalculatorContent() {
                   placeholder="15.00"
                   value={decorationCost || ''}
                   onChange={(e) => setDecorationCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   🌹 Fondant, flowers, toppers, sprinkles, food coloring
@@ -415,6 +417,7 @@ function CakePricingCalculatorContent() {
                   placeholder="0.00"
                   value={packagingCost || ''}
                   onChange={(e) => setPackagingCost(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Cake box, boards, dowels, ribbon, etc.
@@ -445,6 +448,7 @@ function CakePricingCalculatorContent() {
                   placeholder="25.00"
                   value={hourlyRate || ''}
                   onChange={(e) => setHourlyRate(Number(e.target.value))}
+                  className="placeholder:text-gray-300"
                 />
                 <p className="text-sm text-gray-600 mt-1">
                   💡 Most bakers charge $20-40/hour. You deserve it!
@@ -462,6 +466,7 @@ function CakePricingCalculatorContent() {
                     placeholder="2"
                     value={bakingTime || ''}
                     onChange={(e) => setBakingTime(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
 
@@ -475,6 +480,7 @@ function CakePricingCalculatorContent() {
                     placeholder="3"
                     value={decoratingTime || ''}
                     onChange={(e) => setDecoratingTime(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
 
@@ -488,6 +494,7 @@ function CakePricingCalculatorContent() {
                     placeholder="0"
                     value={setupTime || ''}
                     onChange={(e) => setSetupTime(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
               </div>
@@ -521,6 +528,7 @@ function CakePricingCalculatorContent() {
                     placeholder="0"
                     value={deliveryDistance || ''}
                     onChange={(e) => setDeliveryDistance(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
 
@@ -534,6 +542,7 @@ function CakePricingCalculatorContent() {
                     placeholder="2.00"
                     value={deliveryCostPerMile || ''}
                     onChange={(e) => setDeliveryCostPerMile(Number(e.target.value))}
+                    className="placeholder:text-gray-300"
                   />
                 </div>
               </div>

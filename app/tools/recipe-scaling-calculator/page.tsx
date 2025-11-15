@@ -234,7 +234,7 @@ export default function RecipeScalingCalculator() {
             <Scale className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">📊 Need More (or Less)? Let&apos;s Scale Your Recipe!</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Need More (or Less)? Let&apos;s Scale Your Recipe!</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
               Got a recipe that makes 12 cookies but need 48? Or need to cut a recipe in half? We&apos;ve got you! 
               Just enter your ingredients and tell us how much you want to make - we&apos;ll do all the math for you.
@@ -276,7 +276,7 @@ export default function RecipeScalingCalculator() {
                   placeholder="e.g., Grandma's Chocolate Chip Cookies"
                   value={recipeName}
                   onChange={(e) => setRecipeName(e.target.value)}
-                  className="text-base"
+                  className="text-base placeholder:text-gray-300"
                 />
               </div>
 
@@ -386,7 +386,7 @@ export default function RecipeScalingCalculator() {
                         placeholder="e.g., 2 cups all-purpose flour"
                         value={ingredient.original}
                         onChange={(e) => updateIngredient(ingredient.id, e.target.value)}
-                        className="mt-1"
+                        className="mt-1 placeholder:text-gray-300"
                       />
                     </div>
                     {ingredients.length > 1 && (
