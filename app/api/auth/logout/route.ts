@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
 
 export async function POST() {
-  // For JWT-based auth, logout is handled client-side by removing the token
-  // This endpoint exists for consistency and future session management
-  
-  return NextResponse.json(
+  const response = NextResponse.json(
     {
       success: true,
       message: 'Logged out successfully',
     },
     { status: 200 }
   );
+
+  // Clear refresh token cookie
+  response.cookies.set('refreshToken', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 0, // Immediately expire
+    path: '/',
+  });
+
+  return response;
 }

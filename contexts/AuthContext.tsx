@@ -164,6 +164,74 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Decode JWT to get expiration time
+  const getTokenExpiration = (jwtToken: string): number | null => {
+    try {
+      const parts = jwtToken.split('.');
+      if (parts.length !== 3) return null;
+      const decoded = JSON.parse(atob(parts[1]));
+      return decoded.exp ? decoded.exp * 1000 : null; // Convert to milliseconds
+    } catch {
+      return null;
+    }
+  };
+
+  // Automatically refresh token before it expires
+  useEffect(() => {
+    if (!token) return;
+
+    const expirationTime = getTokenExpiration(token);
+    if (!expirationTime) return;
+
+    // Refresh 1 minute before expiration
+    const timeUntilRefresh = expirationTime - Date.now() - 60 * 1000;
+    if (timeUntilRefresh <= 0) {
+      // Token already expired or expiring very soon, refresh immediately
+      fetch('/api/auth/refresh', { method: 'POST' })
+        .then(res => res.json())
+        .then((data: AuthResponse) => {
+          if (data.success && data.token && data.user) {
+            setToken(data.token);
+            setUser(data.user as User);
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('auth_user', JSON.stringify(data.user));
+          }
+        })
+        .catch(err => console.error('Token refresh failed:', err));
+      return;
+    }
+
+    // Schedule refresh for 1 minute before expiration
+    const timeout = setTimeout(() => {
+      fetch('/api/auth/refresh', { method: 'POST' })
+        .then(res => res.json())
+        .then((data: AuthResponse) => {
+          if (data.success && data.token && data.user) {
+            setToken(data.token);
+            setUser(data.user as User);
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('auth_user', JSON.stringify(data.user));
+          } else if (!data.success) {
+            // Refresh failed, clear auth
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            setToken(null);
+            setUser(null);
+          }
+        })
+        .catch(err => {
+          console.error('Token refresh failed:', err);
+          // On error, clear auth to force re-login
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_user');
+          setToken(null);
+          setUser(null);
+        });
+    }, timeUntilRefresh);
+
+    return () => clearTimeout(timeout);
+  }, [token]);
+
   return (
     <AuthContext.Provider
       value={{

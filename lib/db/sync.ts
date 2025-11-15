@@ -36,38 +36,27 @@ export async function syncRecipes(userId: string, changes: SyncChange<IRecipe>[]
 
   for (const change of changes) {
     try {
+      const docId = change.data?._id || change.id;
+      if (!docId) continue;
+
+      const db = RecipeModel.collection;
+
       switch (change.action) {
         case 'create':
-          if (change.data) {
-            // Use replaceOne with upsert to handle string IDs without casting
-            const docId = change.data._id || change.id;
-            const db = RecipeModel.collection;
-            await db.updateOne(
-              { _id: docId, userId } as any,
-              { $set: { ...change.data, userId, _id: docId } } as any,
-              { upsert: true }
-            );
-          }
-          break;
-
         case 'update':
-          if (change.id && change.data) {
-            // Use collection.updateOne to bypass Mongoose schema validation
-            const db = RecipeModel.collection;
-            await db.updateOne(
-              { _id: change.id, userId } as any,
-              { $set: { ...change.data, userId, _id: change.id } } as any,
+          if (change.data) {
+            // Use replaceOne with upsert for both create and update
+            // This handles the case where the document may or may not exist
+            await db.replaceOne(
+              { _id: docId } as any, // Only filter by _id, not userId
+              { ...change.data, _id: docId, userId } as any,
               { upsert: true }
             );
           }
           break;
 
         case 'delete':
-          if (change.id) {
-            // Use collection.deleteOne to bypass Mongoose schema validation
-            const db = RecipeModel.collection;
-            await db.deleteOne({ _id: change.id, userId } as any);
-          }
+          await db.deleteOne({ _id: docId, userId } as any);
           break;
       }
     } catch (error) {
@@ -85,35 +74,25 @@ export async function syncOrders(userId: string, changes: SyncChange<IOrder>[]):
 
   for (const change of changes) {
     try {
+      const docId = change.data?._id || change.id;
+      if (!docId) continue;
+
+      const db = OrderModel.collection;
+
       switch (change.action) {
         case 'create':
-          if (change.data) {
-            const docId = change.data._id || change.id;
-            const db = OrderModel.collection;
-            await db.updateOne(
-              { _id: docId, userId } as any,
-              { $set: { ...change.data, userId, _id: docId } } as any,
-              { upsert: true }
-            );
-          }
-          break;
-
         case 'update':
-          if (change.id && change.data) {
-            const db = OrderModel.collection;
-            await db.updateOne(
-              { _id: change.id, userId } as any,
-              { $set: { ...change.data, userId, _id: change.id } } as any,
+          if (change.data) {
+            await db.replaceOne(
+              { _id: docId } as any,
+              { ...change.data, _id: docId, userId } as any,
               { upsert: true }
             );
           }
           break;
 
         case 'delete':
-          if (change.id) {
-            const db = OrderModel.collection;
-            await db.deleteOne({ _id: change.id, userId } as any);
-          }
+          await db.deleteOne({ _id: docId, userId } as any);
           break;
       }
     } catch (error) {
@@ -131,35 +110,25 @@ export async function syncCustomers(userId: string, changes: SyncChange<ICustome
 
   for (const change of changes) {
     try {
+      const docId = change.data?._id || change.id;
+      if (!docId) continue;
+
+      const db = CustomerModel.collection;
+
       switch (change.action) {
         case 'create':
-          if (change.data) {
-            const docId = change.data._id || change.id;
-            const db = CustomerModel.collection;
-            await db.updateOne(
-              { _id: docId, userId } as any,
-              { $set: { ...change.data, userId, _id: docId } } as any,
-              { upsert: true }
-            );
-          }
-          break;
-
         case 'update':
-          if (change.id && change.data) {
-            const db = CustomerModel.collection;
-            await db.updateOne(
-              { _id: change.id, userId } as any,
-              { $set: { ...change.data, userId, _id: change.id } } as any,
+          if (change.data) {
+            await db.replaceOne(
+              { _id: docId } as any,
+              { ...change.data, _id: docId, userId } as any,
               { upsert: true }
             );
           }
           break;
 
         case 'delete':
-          if (change.id) {
-            const db = CustomerModel.collection;
-            await db.deleteOne({ _id: change.id, userId } as any);
-          }
+          await db.deleteOne({ _id: docId, userId } as any);
           break;
       }
     } catch (error) {
@@ -177,35 +146,25 @@ export async function syncIngredients(userId: string, changes: SyncChange<IIngre
 
   for (const change of changes) {
     try {
+      const docId = change.data?._id || change.id;
+      if (!docId) continue;
+
+      const db = IngredientModel.collection;
+
       switch (change.action) {
         case 'create':
-          if (change.data) {
-            const docId = change.data._id || change.id;
-            const db = IngredientModel.collection;
-            await db.updateOne(
-              { _id: docId, userId } as any,
-              { $set: { ...change.data, userId, _id: docId } } as any,
-              { upsert: true }
-            );
-          }
-          break;
-
         case 'update':
-          if (change.id && change.data) {
-            const db = IngredientModel.collection;
-            await db.updateOne(
-              { _id: change.id, userId } as any,
-              { $set: { ...change.data, userId, _id: change.id } } as any,
+          if (change.data) {
+            await db.replaceOne(
+              { _id: docId } as any,
+              { ...change.data, _id: docId, userId } as any,
               { upsert: true }
             );
           }
           break;
 
         case 'delete':
-          if (change.id) {
-            const db = IngredientModel.collection;
-            await db.deleteOne({ _id: change.id, userId } as any);
-          }
+          await db.deleteOne({ _id: docId, userId } as any);
           break;
       }
     } catch (error) {
@@ -223,35 +182,25 @@ export async function syncInventory(userId: string, changes: SyncChange<IInvento
 
   for (const change of changes) {
     try {
+      const docId = change.data?._id || change.id;
+      if (!docId) continue;
+
+      const db = InventoryModel.collection;
+
       switch (change.action) {
         case 'create':
-          if (change.data) {
-            const docId = change.data._id || change.id;
-            const db = InventoryModel.collection;
-            await db.updateOne(
-              { _id: docId, userId } as any,
-              { $set: { ...change.data, userId, _id: docId } } as any,
-              { upsert: true }
-            );
-          }
-          break;
-
         case 'update':
-          if (change.id && change.data) {
-            const db = InventoryModel.collection;
-            await db.updateOne(
-              { _id: change.id, userId } as any,
-              { $set: { ...change.data, userId, _id: change.id } } as any,
+          if (change.data) {
+            await db.replaceOne(
+              { _id: docId } as any,
+              { ...change.data, _id: docId, userId } as any,
               { upsert: true }
             );
           }
           break;
 
         case 'delete':
-          if (change.id) {
-            const db = InventoryModel.collection;
-            await db.deleteOne({ _id: change.id, userId } as any);
-          }
+          await db.deleteOne({ _id: docId, userId } as any);
           break;
       }
     } catch (error) {

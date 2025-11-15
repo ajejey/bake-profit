@@ -62,9 +62,9 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
         <Input
           id="email"
           type="email"
@@ -73,19 +73,12 @@ export default function LoginForm() {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          {/* <Link
-            href="/forgot-password"
-            className="text-sm text-yellow-600 hover:text-yellow-700 font-medium"
-          >
-            Forgot password?
-          </Link> */}
-        </div>
+        <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
         <Input
           id="password"
           type="password"
@@ -94,12 +87,13 @@ export default function LoginForm() {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full"
+        className="w-full text-sm sm:text-base py-2 sm:py-2.5"
         disabled={loading}
       >
         {loading ? (
@@ -113,11 +107,11 @@ export default function LoginForm() {
       </Button>
       <Link
         href="/forgot-password"
-        className="text-sm text-rose-600 hover:text-rose-700 flex items-center justify-center" 
+        className="text-xs sm:text-sm text-rose-600 hover:text-rose-700 flex items-center justify-center" 
       >
         Forgot password?
       </Link>
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-xs sm:text-sm text-gray-600">
         Don&apos;t have an account?{' '}
         <Link href="/signup" className="text-rose-600 hover:text-rose-700 font-semibold">
           Sign up

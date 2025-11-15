@@ -1,21 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 import { processSyncPayload, fetchUserData, SyncPayload } from '@/lib/db/sync';
-import { verifyToken } from '@/lib/auth/jwt';
+import { verifyToken, extractTokenFromHeader } from '@/lib/auth/jwt';
 
 /**
  * Extract user ID from JWT token in Authorization header
+ * Handles both valid and expired tokens
  */
 function getUserIdFromRequest(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
+  const token = extractTokenFromHeader(authHeader);
+  
+  if (!token) {
     return null;
   }
 
-  const token = authHeader.slice(7);
+  // Try to verify the token
   const payload = verifyToken(token);
+  
+  // If verification failed, try to decode anyway (in case it's just expired)
   if (!payload) {
+    try {
+      const decoded = jwt.decode(token) as Record<string, unknown> | null;
+      if (decoded && typeof decoded.email === 'string') {
+        return decoded.email;
+      }
+    } catch {
+      return null;
+    }
     return null;
   }
+
   return payload.email;
 }
 

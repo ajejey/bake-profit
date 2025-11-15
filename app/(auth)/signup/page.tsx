@@ -7,20 +7,15 @@ import Footer from '@/components/layout/Footer';
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50 flex flex-col">
       <Header />
-      <div className="w-full flex items-center justify-center min-h-screen">
-        {/* Logo */}
-        {/* <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <ChefHat className="h-10 w-10 text-rose-500" />
-          <span className="text-2xl font-bold text-gray-900">BakeProfit</span>
-        </Link> */}
-        <div>
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
+        <div className="w-full max-w-md">
           {/* Signup Card */}
-          <Card className="w-full min-w-md">
+          <Card className="w-full">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Create Your Account</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl sm:text-2xl">Create Your Account</CardTitle>
+              <CardDescription className="text-sm sm:text-base">
                 Start managing your bakery business for free
               </CardDescription>
             </CardHeader>
@@ -32,7 +27,7 @@ export default function SignupPage() {
           </Card>
 
           {/* Footer */}
-          <p className="text-center text-sm text-gray-600 mt-6">
+          <p className="text-center text-xs sm:text-sm text-gray-600 mt-6">
             <Link href="/" className="hover:text-rose-600">
               ← Back to home
             </Link>

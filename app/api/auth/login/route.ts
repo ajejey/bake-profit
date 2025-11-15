@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { findUserByEmail, updateLastLogin } from '@/lib/db/users';
 import { verifyPassword } from '@/lib/auth/password';
-import { generateToken } from '@/lib/auth/jwt';
+import { generateTokenPair } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
 
 const loginSchema = z.object({
@@ -66,8 +66,8 @@ export async function POST(request: NextRequest) {
     // Update last login
     await updateLastLogin(user.id);
 
-    // Generate JWT token
-    const token = generateToken({
+    // Generate token pair (access + refresh)
+    const { accessToken, refreshToken } = generateTokenPair({
       userId: user.id,
       email: user.email,
       tier: user.subscription_tier,
@@ -75,17 +75,29 @@ export async function POST(request: NextRequest) {
 
     // Remove sensitive data (password_hash is not in User type, but just to be safe)
     const userWithoutPassword = { ...user };
-    delete (userWithoutPassword as any).password_hash;
+    delete (userWithoutPassword as Record<string, unknown>).password_hash;
 
-    return NextResponse.json<AuthResponse>(
+    // Set refresh token as httpOnly cookie (secure, not accessible to JavaScript)
+    const response = NextResponse.json<AuthResponse>(
       {
         success: true,
         user: userWithoutPassword,
-        token,
+        token: accessToken,
         message: 'Login successful',
       },
       { status: 200 }
     );
+
+    // Set refresh token in httpOnly cookie
+    response.cookies.set('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+
+    return response;
 
   } catch (error) {
     console.error('Login error:', error);

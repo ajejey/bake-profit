@@ -91,9 +91,9 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email *</Label>
+        <Label htmlFor="email" className="text-sm sm:text-base">Email *</Label>
         <Input
           id="email"
           type="email"
@@ -102,11 +102,12 @@ export default function SignupForm() {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="name">Your Name (Optional)</Label>
+        <Label htmlFor="name" className="text-sm sm:text-base">Your Name (Optional)</Label>
         <Input
           id="name"
           type="text"
@@ -114,11 +115,12 @@ export default function SignupForm() {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="businessName">Business Name (Optional)</Label>
+        <Label htmlFor="businessName" className="text-sm sm:text-base">Business Name (Optional)</Label>
         <Input
           id="businessName"
           type="text"
@@ -126,11 +128,12 @@ export default function SignupForm() {
           value={formData.businessName}
           onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password *</Label>
+        <Label htmlFor="password" className="text-sm sm:text-base">Password *</Label>
         <Input
           id="password"
           type="password"
@@ -139,12 +142,13 @@ export default function SignupForm() {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
           disabled={loading}
+          className="text-sm sm:text-base"
         />
         <p className="text-xs text-gray-500">Must be at least 8 characters</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password *</Label>
+        <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password *</Label>
         <Input
           id="confirmPassword"
           type="password"
@@ -153,12 +157,13 @@ export default function SignupForm() {
           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
           required
           disabled={loading}
+          className="text-sm sm:text-base"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full"
+        className="w-full text-sm sm:text-base py-2 sm:py-2.5"
         disabled={loading}
       >
         {loading ? (
@@ -182,7 +187,7 @@ export default function SignupForm() {
         </Link>
       </p>
 
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-xs sm:text-sm text-gray-600">
         Already have an account?{' '}
         <Link href="/login" className="text-rose-600 hover:text-rose-700 font-semibold">
           Log in
