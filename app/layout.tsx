@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { ExitIntentProvider } from "@/components/ExitIntentProvider";
 
 const spectral = Spectral({
   weight: ['300', '400', '500', '600', '700'],
@@ -141,6 +142,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <SubscriptionProvider>
+            <ExitIntentProvider />
             {children}
           </SubscriptionProvider>
         </AuthProvider>
