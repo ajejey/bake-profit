@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
 import { 
   User, 
   Crown, 
@@ -52,94 +51,66 @@ export default function Settings() {
 
       {/* Settings Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        {/* Mobile Tabs */}
-        <div className="lg:hidden">
-          <TabsList className="grid grid-cols-2 gap-2 h-auto">
-            {tabs.slice(0, 4).map((tab) => {
+        {/* Unified Tabs Row (mobile + desktop) */}
+        <div className="border-b border-gray-200 pb-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <TabsList className="inline-flex w-auto min-w-max gap-2 bg-transparent p-0">
+            {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="flex items-center gap-2 py-2"
+                  className="flex shrink-0 items-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors data-[state=active]:bg-white data-[state=active]:shadow-sm border data-[state=active]:border-gray-200 bg-gray-100/70 hover:bg-gray-100 text-gray-700"
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="text-xs">{tab.label}</span>
+                  <Icon className="h-4 w-4 mr-1.5" />
+                  <span>{tab.label}</span>
                 </TabsTrigger>
               );
             })}
           </TabsList>
         </div>
 
-        {/* Desktop + Content */}
-        <div className="lg:grid lg:grid-cols-12 lg:gap-6">
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block lg:col-span-3">
-            <Card className="p-2">
-              <nav className="space-y-1">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        activeTab === tab.id
-                          ? 'bg-yellow-50 text-yellow-600'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </nav>
-            </Card>
-          </div>
+        {/* Content Area */}
+        <div className="space-y-6">
+          <TabsContent value="business" className="mt-0">
+            <BusinessSettings />
+          </TabsContent>
 
-          {/* Content Area */}
-          <div className="lg:col-span-9">
-            <TabsContent value="account" className="mt-0">
-              <AccountSettings />
-            </TabsContent>
+          <TabsContent value="orders" className="mt-0">
+            <OrderSettings />
+          </TabsContent>
 
-            <TabsContent value="subscription" className="mt-0">
-              <SubscriptionSettings />
-            </TabsContent>
+          <TabsContent value="recipes" className="mt-0">
+            <RecipeSettings />
+          </TabsContent>
 
-            <TabsContent value="business" className="mt-0">
-              <BusinessSettings />
-            </TabsContent>
+          <TabsContent value="pdf" className="mt-0">
+            <PDFCustomizationSettings />
+          </TabsContent>
 
-            <TabsContent value="orders" className="mt-0">
-              <OrderSettings />
-            </TabsContent>
+          <TabsContent value="subscription" className="mt-0">
+            <SubscriptionSettings />
+          </TabsContent>
 
-            <TabsContent value="recipes" className="mt-0">
-              <RecipeSettings />
-            </TabsContent>
+          <TabsContent value="account" className="mt-0">
+            <AccountSettings />
+          </TabsContent>
 
-            <TabsContent value="data" className="mt-0">
-              <DataPrivacySettings />
-            </TabsContent>
+          <TabsContent value="backup" className="mt-0">
+            <GoogleDriveSettings />
+          </TabsContent>
 
-            <TabsContent value="appearance" className="mt-0">
-              <AppearanceSettings />
-            </TabsContent>
+          <TabsContent value="appearance" className="mt-0">
+            <AppearanceSettings />
+          </TabsContent>
 
-            <TabsContent value="notifications" className="mt-0">
-              <NotificationsSettings />
-            </TabsContent>
+          <TabsContent value="notifications" className="mt-0">
+            <NotificationsSettings />
+          </TabsContent>
 
-            <TabsContent value="backup" className="mt-0">
-              <GoogleDriveSettings />
-            </TabsContent>
-
-            <TabsContent value="pdf" className="mt-0">
-              <PDFCustomizationSettings />
-            </TabsContent>
-          </div>
+          <TabsContent value="data" className="mt-0">
+            <DataPrivacySettings />
+          </TabsContent>
         </div>
       </Tabs>
     </div>

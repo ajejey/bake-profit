@@ -758,10 +758,10 @@ const formatCurrency = (amount: number): string => {
                     </div>
                   </div>
 
-                  <div className="mt-6 flex gap-4 justify-center">
+                  <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
                     <Button 
                       onClick={() => setIsAddIngredientOpen(true)}
-                      className="bg-rose-600 hover:bg-rose-700" 
+                      className="bg-rose-600 hover:bg-rose-700 w-full sm:w-auto" 
                       size="lg"
                     >
                       <Plus className="h-5 w-5 mr-2" />
@@ -771,6 +771,7 @@ const formatCurrency = (amount: number): string => {
                       target="ingredients"
                       buttonText="Load Sample Ingredients"
                       size="lg"
+                      className="w-full sm:w-auto"
                     />
                   </div>
                 </div>

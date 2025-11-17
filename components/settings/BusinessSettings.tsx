@@ -145,6 +145,11 @@ export default function BusinessSettings() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end mb-2">
+        <Button onClick={handleSave} size="lg" variant="default">
+          Save All Changes
+        </Button>
+      </div>
       {/* Currency & Pricing */}
       <Card>
         <CardHeader>

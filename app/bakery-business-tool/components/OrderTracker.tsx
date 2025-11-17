@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -40,6 +41,7 @@ import {
 
 
 export default function OrderTracker() {
+  const router = useRouter()
   const { toast } = useToast()
   const { checkLimit } = useSubscription()
   const { symbol: currencySymbol = '$' } = useCurrencySymbol()
@@ -377,32 +379,49 @@ const formatCurrency = (amount: number): string => {
               <div className="border-t pt-4">
                 <h3 className="font-semibold mb-3">Order Items</h3>
                 
-                <div className="grid grid-cols-12 gap-2 mb-3">
-                  <div className="col-span-5">
+                <div className="space-y-3 mb-3 md:grid md:grid-cols-12 md:gap-2 md:space-y-0">
+                  <div className="w-full md:col-span-5">
                     <Label className="text-sm font-medium mb-1">Recipe</Label>
-                    <Select value={selectedRecipeId} onValueChange={setSelectedRecipeId}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select recipe" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {recipes.map(recipe => (
-                          <SelectItem key={recipe.id} value={recipe.id}>
-                            {recipe.name} ({formatCurrency(recipe.totalCost || 0)})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {recipes.length === 0 ? (
+                      <div className="mt-1 rounded-md border border-dashed border-rose-200 bg-rose-50/60 px-3 py-3 text-sm text-gray-700">
+                        <p className="mb-2">
+                          To add items to an order, first set up your ingredients and create at least one recipe.
+                        </p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="btn-primary-action w-full justify-center"
+                          onClick={() => router.push('/bakery-business-tool/recipes')}
+                        >
+                          Go to Recipes setup
+                        </Button>
+                      </div>
+                    ) : (
+                      <Select value={selectedRecipeId} onValueChange={setSelectedRecipeId}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select recipe" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {recipes.map(recipe => (
+                            <SelectItem key={recipe.id} value={recipe.id}>
+                              {recipe.name} ({formatCurrency(recipe.totalCost || 0)})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                   
-                  <div className="col-span-2">
+                  <div className="w-full md:col-span-2 opacity-100 md:opacity-100">
                     <Label className="text-sm font-medium mb-1">Quantity</Label>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 w-full">
                       <Button
                         type="button"
                         variant="outline"
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={recipes.length === 0}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
@@ -410,7 +429,8 @@ const formatCurrency = (amount: number): string => {
                         type="text"
                         value={quantity}
                         readOnly
-                        className="text-center"
+                        className="text-center flex-1"
+                        disabled={recipes.length === 0}
                       />
                       <Button
                         type="button"
@@ -418,13 +438,14 @@ const formatCurrency = (amount: number): string => {
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => setQuantity(quantity + 1)}
+                        disabled={recipes.length === 0}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
                   
-                  <div className="col-span-3">
+                  <div className="w-full md:col-span-3">
                     <Label className="text-sm font-medium mb-1">Selling Price ($)</Label>
                     <Input
                       type="number"
@@ -432,11 +453,16 @@ const formatCurrency = (amount: number): string => {
                       placeholder="Auto (2.5x)"
                       value={sellingPrice || ''}
                       onChange={(e) => setSellingPrice(parseFloat(e.target.value) || 0)}
+                      disabled={recipes.length === 0}
                     />
                   </div>
                   
-                  <div className="col-span-2 flex items-end">
-                    <Button onClick={handleSubmit} className="w-full">
+                  <div className="w-full md:col-span-2 flex md:items-end">
+                    <Button
+                      onClick={handleSubmit}
+                      className="w-full"
+                      disabled={recipes.length === 0}
+                    >
                       Add
                     </Button>
                   </div>

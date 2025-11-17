@@ -46,6 +46,9 @@ export default function AppearanceSettings() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end mb-2">
+        <Button onClick={handleSave} size="lg" variant="default">Save Changes</Button>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
 import { 
   User, 
   Crown, 
@@ -41,11 +40,11 @@ export default function SettingsLayout() {
   }, [tabParam]);
 
   const tabs = [
-    { id: 'account', label: 'Account', icon: User },
-    { id: 'subscription', label: 'Subscription', icon: Crown },
     { id: 'business', label: 'Business', icon: Briefcase },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
+    { id: 'account', label: 'Account', icon: User },
+    { id: 'subscription', label: 'Subscription', icon: Crown },
     { id: 'data', label: 'Data & Privacy', icon: Database },
     { id: 'integrations', label: 'Integrations', icon: Plug },
     { id: 'appearance', label: 'Appearance', icon: Palette },
@@ -60,103 +59,78 @@ export default function SettingsLayout() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account and application preferences</p>
+          <p className="text-gray-600 mt-2">Manage your account and application preferenceddds</p>
         </div>
 
         {/* Settings Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          {/* Desktop Sidebar + Mobile Tabs */}
-          <div className="lg:grid lg:grid-cols-12 lg:gap-6">
-            {/* Sidebar Navigation - Desktop */}
-            <div className="hidden lg:block lg:col-span-3">
-              <Card className="p-2 sticky top-4">
-                <nav className="space-y-1">
-                  {tabs.map((tab) => {
-                    const Icon = tab.icon;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          activeTab === tab.id
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-gray-700 hover:bg-gray-100'
-                        } ${tab.id === 'danger' ? 'text-red-600 hover:bg-red-50' : ''}`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-                </nav>
-              </Card>
-            </div>
+          {/* Unified Tabs Row (mobile + desktop) */}
+          <div className="border-b border-gray-200 pb-3">
+            <TabsList className="flex w-full max-w-full overflow-x-auto gap-2 bg-transparent p-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isDanger = tab.id === 'danger';
+                return (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className={`flex items-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors data-[state=active]:bg-white data-[state=active]:shadow-sm border data-[state=active]:border-gray-200 bg-gray-100/70 hover:bg-gray-100 ${
+                      isDanger ? 'text-red-600 data-[state=active]:border-red-200 data-[state=active]:bg-red-50' : 'text-gray-700'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-1.5" />
+                    <span>{tab.label}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
 
-            {/* Mobile Tabs */}
-            <div className="lg:hidden mb-6">
-              <TabsList className="grid grid-cols-2 gap-2 h-auto">
-                {tabs.slice(0, 6).map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <TabsTrigger
-                      key={tab.id}
-                      value={tab.id}
-                      className="flex items-center gap-2 py-2"
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-            </div>
+          {/* Content Area */}
+          <div className="space-y-6">
+            <TabsContent value="business" className="mt-0">
+              <BusinessSettings />
+            </TabsContent>
 
-            {/* Content Area */}
-            <div className="lg:col-span-9">
-              <TabsContent value="account" className="mt-0">
-                <AccountSettings />
-              </TabsContent>
+            <TabsContent value="orders" className="mt-0">
+              <OrderSettings />
+            </TabsContent>
 
-              <TabsContent value="subscription" className="mt-0">
-                <SubscriptionSettings />
-              </TabsContent>
+            <TabsContent value="recipes" className="mt-0">
+              <RecipeSettings />
+            </TabsContent>
 
-              <TabsContent value="business" className="mt-0">
-                <BusinessSettings />
-              </TabsContent>
+            <TabsContent value="account" className="mt-0">
+              <AccountSettings />
+            </TabsContent>
 
-              <TabsContent value="orders" className="mt-0">
-                <OrderSettings />
-              </TabsContent>
+            <TabsContent value="subscription" className="mt-0">
+              <SubscriptionSettings />
+            </TabsContent>
 
-              <TabsContent value="recipes" className="mt-0">
-                <RecipeSettings />
-              </TabsContent>
+            <TabsContent value="data" className="mt-0">
+              <DataPrivacySettings />
+            </TabsContent>
 
-              <TabsContent value="data" className="mt-0">
-                <DataPrivacySettings />
-              </TabsContent>
+            <TabsContent value="integrations" className="mt-0">
+              <IntegrationsSettings />
+            </TabsContent>
 
-              <TabsContent value="integrations" className="mt-0">
-                <IntegrationsSettings />
-              </TabsContent>
+            <TabsContent value="appearance" className="mt-0">
+              <AppearanceSettings />
+            </TabsContent>
 
-              <TabsContent value="appearance" className="mt-0">
-                <AppearanceSettings />
-              </TabsContent>
+            <TabsContent value="notifications" className="mt-0">
+              <NotificationsSettings />
+            </TabsContent>
 
-              <TabsContent value="notifications" className="mt-0">
-                <NotificationsSettings />
-              </TabsContent>
+            <TabsContent value="help" className="mt-0">
+              <HelpSupportSettings />
+            </TabsContent>
 
-              <TabsContent value="help" className="mt-0">
-                <HelpSupportSettings />
-              </TabsContent>
-
-              <TabsContent value="danger" className="mt-0">
-                <DangerZoneSettings />
-              </TabsContent>
-            </div>
+            <TabsContent value="danger" className="mt-0">
+              <DangerZoneSettings />
+            </TabsContent>
           </div>
         </Tabs>
       </div>

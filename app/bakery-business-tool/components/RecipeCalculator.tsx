@@ -1922,7 +1922,7 @@ export default function RecipeCalculator() {
                   <Lightbulb className="h-4 w-4 mr-2" />
                   Pro Tips for Getting Started
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-blue-800 text-left">
                   <div>
                     <strong>Start Simple:</strong> Begin with 3-5 basic ingredients like flour, sugar, butter, eggs
                   </div>
@@ -1938,10 +1938,10 @@ export default function RecipeCalculator() {
                 </div>
               </div>
 
-              <div className="mt-6 flex gap-4 justify-center">
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                 <Button 
                   onClick={() => setIsAddRecipeOpen(true)} 
-                  className="bg-rose-500 hover:bg-rose-600"
+                  className="bg-rose-500 hover:bg-rose-600 w-full sm:w-auto"
                   size="lg"
                 >
                   <Plus className="h-5 w-5 mr-2" />
@@ -1951,6 +1951,7 @@ export default function RecipeCalculator() {
                   target="recipes"
                   buttonText="Load Sample Recipes"
                   size="lg"
+                  className="w-full sm:w-auto"
                 />
               </div>
             </div>

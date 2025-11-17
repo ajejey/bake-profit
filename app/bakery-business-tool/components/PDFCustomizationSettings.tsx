@@ -49,6 +49,15 @@ export default function PDFCustomizationSettings() {
   
   return (
     <div className="space-y-6">
+      <div className="flex justify-end mb-2 gap-2">
+        <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+          Cancel
+        </Button>
+        <Button size="lg" variant="default" onClick={handleSave}>
+          <Save className="mr-2 h-4 w-4" />
+          Save Settings
+        </Button>
+      </div>
       <div>
         <h3 className="text-lg font-medium">PDF Customization</h3>
         <p className="text-sm text-muted-foreground">
