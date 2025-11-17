@@ -1333,7 +1333,11 @@ export default function RecipeCalculator() {
                         <FormItem>
                           <FormLabel>Number of Servings/Yield</FormLabel>
                           <FormControl>
-                            <Input type="number" {...field} />
+                            <Input
+                              type="number"
+                              value={field.value ?? ''}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
