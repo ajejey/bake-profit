@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from '../hooks/useSyncedBakeryData'
 import type { Ingredient, Recipe, Order, Customer, InventoryItem } from '../types'
 
 interface SampleDataLoaderProps {
@@ -39,7 +39,7 @@ export function SampleDataLoader({
     addOrder, 
     addCustomer,
     updateStock 
-  } = useBakeryData()
+  } = useSyncedBakeryData()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLoadSampleData = async () => {

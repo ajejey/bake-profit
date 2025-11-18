@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useCallback } from 'react'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from './useSyncedBakeryData'
 import { v4 as uuidv4 } from 'uuid'
 import type { Customer, Order } from '../types'
 
@@ -18,7 +18,7 @@ export function useCustomers() {
     getCustomerByName,
     getCustomerById,
     orders 
-  } = useBakeryData()
+  } = useSyncedBakeryData()
 
   // Search customers by name
   const searchCustomers = useCallback((query: string) => {

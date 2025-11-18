@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useCallback } from 'react'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from './useSyncedBakeryData'
 import type { Ingredient } from '../types'
 
 /**
@@ -16,7 +16,7 @@ export function useIngredients() {
     deleteIngredient, 
     getIngredientById,
     recipes 
-  } = useBakeryData()
+  } = useSyncedBakeryData()
 
   // Check if ingredient is used in any recipes
   const isIngredientUsedInRecipes = useCallback((ingredientId: string) => {

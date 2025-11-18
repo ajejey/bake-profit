@@ -20,7 +20,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Decode JWT to get expiration time
+  const getTokenExpiration = (jwtToken: string): number | null => {
+    try {
+      const parts = jwtToken.split('.');
+      if (parts.length !== 3) return null;
+      const decoded = JSON.parse(atob(parts[1]));
+      return decoded.exp ? decoded.exp * 1000 : null; // Convert to milliseconds
+    } catch {
+      return null;
+    }
+  };
+
+  // Load user from localStorage on mount and auto-refresh if needed
   useEffect(() => {
     const storedToken = localStorage.getItem('auth_token');
     const storedUser = localStorage.getItem('auth_user');
@@ -28,9 +40,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (storedToken && storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        setToken(storedToken);
-        setUser(parsedUser);
-        setLoading(false);
+        
+        // Check if token is expired or expiring soon
+        const expirationTime = getTokenExpiration(storedToken);
+        const now = Date.now();
+        const fiveMinutes = 5 * 60 * 1000;
+        
+        if (expirationTime && expirationTime - now < fiveMinutes) {
+          // Token expired or expiring soon, try to refresh
+          console.log('Token expired or expiring soon, refreshing...');
+          fetch('/api/auth/refresh', { method: 'POST' })
+            .then(res => res.json())
+            .then((data: AuthResponse) => {
+              if (data.success && data.token && data.user) {
+                setToken(data.token);
+                setUser(data.user as User);
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('auth_user', JSON.stringify(data.user));
+                setLoading(false);
+              } else {
+                // Refresh failed, clear auth
+                console.log('Token refresh failed, clearing auth');
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                setLoading(false);
+              }
+            })
+            .catch(err => {
+              console.error('Token refresh failed:', err);
+              // Refresh failed, but keep user logged in if refresh token is still valid
+              // The refresh token cookie might still be valid
+              setToken(storedToken);
+              setUser(parsedUser);
+              setLoading(false);
+            });
+        } else {
+          // Token is still valid
+          setToken(storedToken);
+          setUser(parsedUser);
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Failed to parse stored user:', error);
         // Invalid stored data, clear everything
@@ -164,29 +213,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Decode JWT to get expiration time
-  const getTokenExpiration = (jwtToken: string): number | null => {
-    try {
-      const parts = jwtToken.split('.');
-      if (parts.length !== 3) return null;
-      const decoded = JSON.parse(atob(parts[1]));
-      return decoded.exp ? decoded.exp * 1000 : null; // Convert to milliseconds
-    } catch {
-      return null;
-    }
-  };
-
-  // Automatically refresh token before it expires
+  // Automatically refresh token before it expires (only when tab is active)
   useEffect(() => {
     if (!token) return;
 
     const expirationTime = getTokenExpiration(token);
     if (!expirationTime) return;
 
-    // Refresh 1 minute before expiration
-    const timeUntilRefresh = expirationTime - Date.now() - 60 * 1000;
+    // Refresh 1 day before expiration (for 7-day tokens)
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const timeUntilRefresh = expirationTime - Date.now() - oneDayInMs;
+    
     if (timeUntilRefresh <= 0) {
-      // Token already expired or expiring very soon, refresh immediately
+      // Token expiring within 1 day, refresh immediately
+      console.log('Token expiring soon, refreshing...');
       fetch('/api/auth/refresh', { method: 'POST' })
         .then(res => res.json())
         .then((data: AuthResponse) => {
@@ -201,8 +241,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Schedule refresh for 1 minute before expiration
+    // Schedule refresh for 1 day before expiration
     const timeout = setTimeout(() => {
+      console.log('Scheduled token refresh triggered');
       fetch('/api/auth/refresh', { method: 'POST' })
         .then(res => res.json())
         .then((data: AuthResponse) => {
@@ -212,20 +253,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem('auth_token', data.token);
             localStorage.setItem('auth_user', JSON.stringify(data.user));
           } else if (!data.success) {
-            // Refresh failed, clear auth
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('auth_user');
-            setToken(null);
-            setUser(null);
+            // Refresh failed, but don't clear auth yet
+            // User might still have valid refresh token
+            console.warn('Token refresh returned error, but keeping user logged in');
           }
         })
         .catch(err => {
           console.error('Token refresh failed:', err);
-          // On error, clear auth to force re-login
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('auth_user');
-          setToken(null);
-          setUser(null);
+          // Don't clear auth on network errors
+          // User can still use the app, refresh will retry on next load
         });
     }, timeUntilRefresh);
 

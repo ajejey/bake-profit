@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function SignupForm() {
   useRedirectIfAuthenticated();
@@ -18,6 +18,8 @@ export default function SignupForm() {
   const { signup } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -134,31 +136,59 @@ export default function SignupForm() {
 
       <div className="space-y-2">
         <Label htmlFor="password" className="text-sm sm:text-base">Password *</Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="••••••••"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          required
-          disabled={loading}
-          className="text-sm sm:text-base"
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="••••••••"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            disabled={loading}
+            className="text-sm sm:text-base pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
         <p className="text-xs text-gray-500">Must be at least 8 characters</p>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password *</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          value={formData.confirmPassword}
-          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-          required
-          disabled={loading}
-          className="text-sm sm:text-base"
-        />
+        <div className="relative">
+          <Input
+            id="confirmPassword"
+            type={showConfirmPassword ? 'text' : 'password'}
+            placeholder="••••••••"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            required
+            disabled={loading}
+            className="text-sm sm:text-base pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+          >
+            {showConfirmPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       </div>
 
       <Button

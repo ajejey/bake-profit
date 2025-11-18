@@ -158,6 +158,59 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     return () => window.removeEventListener('google-drive-data-loaded', handleGoogleDriveDataLoaded)
   }, [])
 
+  // Listen for MongoDB sync pull data and update IndexedDB
+  useEffect(() => {
+    const handlePulledData = async (event: Event) => {
+      const customEvent = event as CustomEvent
+      const data = customEvent.detail
+      
+      console.log('📥 Applying pulled data from MongoDB to IndexedDB')
+
+      try {
+        // Update state and IndexedDB with server data
+        if (data.recipes && Array.isArray(data.recipes)) {
+          setRecipes(data.recipes)
+          await StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(data.recipes))
+          console.log(`✅ Synced ${data.recipes.length} recipes from server`)
+        }
+        
+        if (data.orders && Array.isArray(data.orders)) {
+          setOrders(data.orders)
+          await StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(data.orders))
+          console.log(`✅ Synced ${data.orders.length} orders from server`)
+        }
+        
+        if (data.customers && Array.isArray(data.customers)) {
+          setCustomers(data.customers)
+          await StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(data.customers))
+          console.log(`✅ Synced ${data.customers.length} customers from server`)
+        }
+        
+        if (data.ingredients && Array.isArray(data.ingredients)) {
+          setIngredients(data.ingredients)
+          await StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(data.ingredients))
+          console.log(`✅ Synced ${data.ingredients.length} ingredients from server`)
+        }
+        
+        if (data.inventory && Array.isArray(data.inventory)) {
+          setInventory(data.inventory)
+          await StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(data.inventory))
+          console.log(`✅ Synced ${data.inventory.length} inventory items from server`)
+        }
+
+        console.log('✅ All pulled data applied to IndexedDB')
+      } catch (error) {
+        console.error('❌ Error applying pulled data:', error)
+      }
+    }
+
+    window.addEventListener('sync:pulled', handlePulledData)
+    
+    return () => {
+      window.removeEventListener('sync:pulled', handlePulledData)
+    }
+  }, [])
+
   // Auto-save recipes to IndexedDB
   useEffect(() => {
     if (!isLoading) {

@@ -36,7 +36,7 @@ export class SyncEngine {
    * Get sync metadata from localStorage
    */
   static getMetadata(): SyncMetadata {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
       return {
         lastSyncTimestamp: 0,
         lastPullTimestamp: 0,
@@ -44,16 +44,26 @@ export class SyncEngine {
       };
     }
 
-    const stored = localStorage.getItem(this.STORAGE_KEY);
-    if (!stored) {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (!stored) {
+        return {
+          lastSyncTimestamp: 0,
+          lastPullTimestamp: 0,
+          pendingOperations: [],
+        };
+      }
+
+      return JSON.parse(stored);
+    } catch (error) {
+      // Handle corrupted localStorage data
+      console.warn('Failed to parse sync metadata, returning default:', error);
       return {
         lastSyncTimestamp: 0,
         lastPullTimestamp: 0,
         pendingOperations: [],
       };
     }
-
-    return JSON.parse(stored);
   }
 
   /**
@@ -143,7 +153,7 @@ export class SyncEngine {
 
     if (pendingOps.length === 0) {
       console.log('📭 No pending operations to sync');
-      return true;
+      return false;
     }
 
     console.log(`📤 Pushing ${pendingOps.length} operations to server`);
@@ -206,10 +216,10 @@ export class SyncEngine {
         throw new Error(`Sync failed: ${response.statusText}`);
       }
 
-      // Mark operations as synced
-      pendingOps.forEach(op => {
-        op.synced = true;
-      });
+      // Remove synced operations from pending list
+      metadata.pendingOperations = metadata.pendingOperations.filter(
+        op => !pendingOps.includes(op)
+      );
 
       metadata.lastSyncTimestamp = Date.now();
       this.saveMetadata(metadata);

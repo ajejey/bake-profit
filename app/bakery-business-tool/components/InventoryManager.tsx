@@ -67,8 +67,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import SearchBar from './SearchBar'
-import FilterChips, { type FilterOption } from './FilterChips'
-import SortDropdown, { type SortOption } from './SortDropdown'
+import FilterChips from './FilterChips'
+import SortDropdown from './SortDropdown'
 
 // Form schemas
 const ingredientFormSchema = z.object({

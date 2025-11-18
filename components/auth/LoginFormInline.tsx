@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 
 interface LoginFormInlineProps {
   onSuccess?: () => void
@@ -23,6 +23,7 @@ export function LoginFormInline({
   const { login } = useAuth()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -80,15 +81,30 @@ export function LoginFormInline({
 
       <div className="space-y-2">
         <Label htmlFor="login-password">Password</Label>
-        <Input
-          id="login-password"
-          type="password"
-          placeholder="••••••••"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          required
-          disabled={loading}
-        />
+        <div className="relative">
+          <Input
+            id="login-password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="••••••••"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            disabled={loading}
+            className="pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       </div>
 
       <Button

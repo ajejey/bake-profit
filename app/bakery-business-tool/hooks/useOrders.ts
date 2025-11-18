@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from './useSyncedBakeryData'
 import type { Order } from '../types'
 import { useOrderSettings } from './useSettings'
 
@@ -18,7 +18,7 @@ export function useOrders() {
     getOrderById, 
     updateOrderStatus,
     recipes 
-  } = useBakeryData()
+  } = useSyncedBakeryData()
 
   const { settings } = useOrderSettings()
   console.log("Settings:", settings)

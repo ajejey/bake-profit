@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from './useSyncedBakeryData'
 import type { InventoryItem, InventoryAlert, ShoppingListItem, Order, Recipe, Ingredient } from '../types'
 
 /**
@@ -20,7 +20,7 @@ export function useInventory() {
     updateStock,
     getIngredientById,
     getRecipeById,
-  } = useBakeryData()
+  } = useSyncedBakeryData()
 
   /**
    * Get low stock items (below minimum threshold)

@@ -4,10 +4,10 @@ import { AuthTokenPayload } from '@/types/auth';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'your-super-secret-refresh-key-change-this-in-production';
 
-// Access token: short-lived (15 minutes)
-const ACCESS_TOKEN_EXPIRES_IN = '15m';
-// Refresh token: long-lived (7 days)
-const REFRESH_TOKEN_EXPIRES_IN = '7d';
+// Access token: 7 days (user-friendly, still secure with refresh token)
+const ACCESS_TOKEN_EXPIRES_IN = '7d';
+// Refresh token: 90 days (3 months - like Google)
+const REFRESH_TOKEN_EXPIRES_IN = '90d';
 
 /**
  * Generate an access token (short-lived, for API requests)

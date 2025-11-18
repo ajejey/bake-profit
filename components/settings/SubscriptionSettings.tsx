@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { useBakeryData } from '@/app/bakery-business-tool/contexts/BakeryDataContext';
+import { useSyncedBakeryData } from '@/app/bakery-business-tool/hooks/useSyncedBakeryData';
 import { SUBSCRIPTION_LIMITS } from '@/lib/subscription-limits';
 import { Crown, Check, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ import UsageIndicator from '@/components/subscription/UsageIndicator';
 
 export default function SubscriptionSettings() {
   const { tier } = useSubscription();
-  const { recipes, orders, customers, inventory } = useBakeryData();
+  const { recipes, orders, customers, inventory } = useSyncedBakeryData();
   const limits = SUBSCRIPTION_LIMITS[tier];
   const isPro = tier === 'pro';
 

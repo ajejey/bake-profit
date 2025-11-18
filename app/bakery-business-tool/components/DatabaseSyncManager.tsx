@@ -1,26 +1,38 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useDatabaseSync } from '../hooks/useDatabaseSync'
+import { useOptimizedSync } from '../hooks/useOptimizedSync'
 import { useAuth } from '@/contexts/AuthContext'
 
 /**
- * DatabaseSyncManager - Manages syncing of IndexedDB data to MongoDB
+ * DatabaseSyncManager - Manages bidirectional syncing between IndexedDB and MongoDB
  * This component should be placed high in the component tree (in ClientLayout)
- * It runs the sync hook and handles the sync lifecycle
+ * 
+ * Features:
+ * - Event sourcing with SyncEngine
+ * - Bidirectional sync (push local changes + pull server changes)
+ * - Initial sync on login
+ * - Periodic background sync
+ * - Offline queue with retry
  */
 export function DatabaseSyncManager() {
   const { token } = useAuth()
-  useDatabaseSync() // Hook runs automatically, no need to use return value
+  const { syncStatus } = useOptimizedSync() // Use optimized bidirectional sync
 
   // Log sync status for debugging
   useEffect(() => {
     if (token) {
-      console.log('✅ Database sync manager initialized')
+      console.log('✅ Optimized sync manager initialized', {
+        pendingOperations: syncStatus.pendingCount,
+        lastSyncAgo: syncStatus.lastSyncAgo,
+      })
     }
-  }, [token])
+  }, [token, syncStatus])
 
-  // The useDatabaseSync hook handles all the sync logic internally
-  // This component just ensures it's mounted and active
+  // The useOptimizedSync hook handles all the sync logic internally:
+  // - Initial sync on mount (pulls server data)
+  // - Push changes when data modified (3 second debounce)
+  // - Periodic push (every 1 minute if pending operations)
+  // - Periodic pull (every 5 minutes for cross-device sync)
   return null
 }

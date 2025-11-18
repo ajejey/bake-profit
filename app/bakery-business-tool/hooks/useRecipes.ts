@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useBakeryData } from '../contexts/BakeryDataContext'
+import { useSyncedBakeryData } from './useSyncedBakeryData'
 import type { Recipe } from '../types'
 
 /**
@@ -9,7 +9,7 @@ import type { Recipe } from '../types'
  * Provides clean API for working with recipes
  */
 export function useRecipes() {
-  const { recipes, addRecipe, updateRecipe, deleteRecipe, getRecipeById, ingredients } = useBakeryData()
+  const { recipes, addRecipe, updateRecipe, deleteRecipe, getRecipeById, ingredients } = useSyncedBakeryData()
 
   // Get recipe with full ingredient details
   const getRecipeWithIngredients = useMemo(() => {
