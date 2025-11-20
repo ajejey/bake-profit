@@ -23,6 +23,11 @@ export {
   useDefaultOrderStatus,
   useOrderPrefix,
   useDefaultLeadTime,
+  useRequirePhone,
+  useAutoSaveCustomers,
+  useShowCostBreakdown,
+  usePreferredWeightUnit,
+  usePreferredVolumeUnit,
   useFormattedDate,
   useFormattedTime,
 } from './useSettings'

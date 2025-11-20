@@ -38,9 +38,11 @@ export async function createUser(data: {
   google_id?: string;
   avatar_url?: string;
   email_verified?: boolean;
+  subscription_tier?: 'free' | 'pro';
+  subscription_status?: 'active' | 'canceled' | 'past_due';
 }): Promise<User> {
   await connectDB();
-  
+
   const user = await UserModel.create({
     email: data.email.toLowerCase(),
     password_hash: data.password_hash,
@@ -49,6 +51,8 @@ export async function createUser(data: {
     google_id: data.google_id,
     avatar_url: data.avatar_url,
     email_verified: data.email_verified || false,
+    subscription_tier: data.subscription_tier || 'free',
+    subscription_status: data.subscription_status || 'active',
   });
 
   return toUser(user.toObject());
@@ -59,11 +63,11 @@ export async function createUser(data: {
  */
 export async function findUserByEmail(email: string): Promise<(User & { password_hash?: string }) | null> {
   await connectDB();
-  
+
   const user = await UserModel.findOne({ email: email.toLowerCase() }).lean();
-  
+
   if (!user) return null;
-  
+
   return {
     ...toUser(user as IUser),
     password_hash: user.password_hash,
@@ -75,11 +79,11 @@ export async function findUserByEmail(email: string): Promise<(User & { password
  */
 export async function findUserById(id: string): Promise<User | null> {
   await connectDB();
-  
+
   const user = await UserModel.findById(id).lean();
-  
+
   if (!user) return null;
-  
+
   return toUser(user as IUser);
 }
 
@@ -88,11 +92,11 @@ export async function findUserById(id: string): Promise<User | null> {
  */
 export async function findUserByGoogleId(googleId: string): Promise<User | null> {
   await connectDB();
-  
+
   const user = await UserModel.findOne({ google_id: googleId }).lean();
-  
+
   if (!user) return null;
-  
+
   return toUser(user as IUser);
 }
 
@@ -101,7 +105,7 @@ export async function findUserByGoogleId(googleId: string): Promise<User | null>
  */
 export async function updateLastLogin(userId: string): Promise<void> {
   await connectDB();
-  
+
   await UserModel.findByIdAndUpdate(userId, {
     last_login_at: new Date(),
   });
@@ -112,7 +116,7 @@ export async function updateLastLogin(userId: string): Promise<void> {
  */
 export async function updateUser(userId: string, data: Partial<IUser>): Promise<User> {
   await connectDB();
-  
+
   const user = await UserModel.findByIdAndUpdate(
     userId,
     { $set: data },
@@ -135,7 +139,7 @@ export async function updateSubscriptionTier(
   status: 'active' | 'canceled' | 'past_due' = 'active'
 ): Promise<void> {
   await connectDB();
-  
+
   await UserModel.findByIdAndUpdate(userId, {
     subscription_tier: tier,
     subscription_status: status,
@@ -151,7 +155,7 @@ export async function updateUserResetToken(
   resetTokenExpires: Date
 ): Promise<void> {
   await connectDB();
-  
+
   await UserModel.findByIdAndUpdate(userId, {
     reset_token: resetToken,
     reset_token_expires: resetTokenExpires,
@@ -163,14 +167,14 @@ export async function updateUserResetToken(
  */
 export async function findUserByResetToken(resetToken: string): Promise<(User & { password_hash?: string }) | null> {
   await connectDB();
-  
+
   const user = await UserModel.findOne({
     reset_token: resetToken,
     reset_token_expires: { $gt: new Date() },
   }).lean();
-  
+
   if (!user) return null;
-  
+
   return {
     ...toUser(user as IUser),
     password_hash: user.password_hash,
@@ -182,7 +186,7 @@ export async function findUserByResetToken(resetToken: string): Promise<(User & 
  */
 export async function clearUserResetToken(userId: string): Promise<void> {
   await connectDB();
-  
+
   await UserModel.findByIdAndUpdate(userId, {
     reset_token: undefined,
     reset_token_expires: undefined,

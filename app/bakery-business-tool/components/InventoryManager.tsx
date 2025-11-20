@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useCurrencySymbol } from '../hooks'
+import { useCurrencySymbol, usePreferredWeightUnit } from '../hooks'
 
 
 import { Input } from '@/components/ui/input'
@@ -80,8 +80,10 @@ const ingredientFormSchema = z.object({
 
 export default function InventoryManager() {
   const { toast } = useToast()
-  const {symbol: currencySymbol} = useCurrencySymbol()
+  const { symbol: currencySymbol } = useCurrencySymbol()
+  const { unit: preferredWeightUnit } = usePreferredWeightUnit()
   console.log("currencySymbol ", currencySymbol)
+  console.log("preferredWeightUnit ", preferredWeightUnit)
   const {
     ingredients,
     addIngredient,
@@ -127,7 +129,7 @@ export default function InventoryManager() {
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
       name: '',
-      unit: 'g',
+      unit: preferredWeightUnit, // Dynamic based on user's weight system setting!
       packageSize: 0,
       packageCost: 0,
     },
@@ -149,7 +151,12 @@ export default function InventoryManager() {
     addIngredient(newIngredient) // Hook handles everything!
 
     setIsAddIngredientOpen(false)
-    ingredientForm.reset()
+    ingredientForm.reset({
+      name: '',
+      unit: preferredWeightUnit, // Maintain user's preferred unit
+      packageSize: 0,
+      packageCost: 0,
+    })
 
     toast({
       title: 'Ingredient added',
@@ -158,9 +165,9 @@ export default function InventoryManager() {
   }
 
   // Helper to format currency synchronously
-const formatCurrency = (amount: number): string => {
-  return `${currencySymbol}${amount.toFixed(2)}`
-}
+  const formatCurrency = (amount: number): string => {
+    return `${currencySymbol}${amount.toFixed(2)}`
+  }
 
   // Handle editing an ingredient
   const onEditIngredient = (data: z.infer<typeof ingredientFormSchema>) => {
@@ -408,7 +415,7 @@ const formatCurrency = (amount: number): string => {
         // Item box background
         doc.setFillColor(250, 250, 250)
         doc.rect(margin, yPosition - 4, contentWidth, 16, 'F')
-        
+
         // Item border
         doc.setDrawColor(220, 220, 220)
         doc.rect(margin, yPosition - 4, contentWidth, 16, 'S')
@@ -416,19 +423,19 @@ const formatCurrency = (amount: number): string => {
         // Item name (bold)
         doc.setFont('helvetica', 'bold')
         doc.text(item.ingredientName, margin + 3, yPosition)
-        
+
         // Buy amount (highlighted)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(color.r, color.g, color.b)
         const buyText = `Buy: ${item.deficit.toFixed(2)} ${item.unit}`
         doc.text(buyText, margin + 3, yPosition + 5)
-        
+
         // Details (normal)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(100, 100, 100)
         const detailsText = `Have: ${item.currentStock.toFixed(2)} ${item.unit}  •  Need: ${item.needed.toFixed(2)} ${item.unit}`
         doc.text(detailsText, margin + 3, yPosition + 10)
-        
+
         // Cost (right-aligned)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(0, 0, 0)
@@ -453,7 +460,7 @@ const formatCurrency = (amount: number): string => {
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(0, 0, 0)
     doc.text('Total Estimated Cost:', margin, yPosition)
-    
+
     const totalCost = shoppingList.reduce((sum, item) => sum + item.estimatedCost, 0)
     const totalText = `${String(currencySymbol)}${totalCost.toFixed(2)}`
     const totalWidth = doc.getTextWidth(totalText)
@@ -496,7 +503,7 @@ const formatCurrency = (amount: number): string => {
           <TabsTrigger value="inventory" className="relative">
             Inventory
             {alertCount > 0 && (
-              <Badge 
+              <Badge
                 variant={hasOutOfStock ? 'destructive' : 'default'}
                 className={cn(
                   'ml-2 h-5 min-w-5 px-1.5',
@@ -515,22 +522,341 @@ const formatCurrency = (amount: number): string => {
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">Ingredients</h2>
               <Dialog open={isAddIngredientOpen} onOpenChange={setIsAddIngredientOpen}>
-              <DialogTrigger asChild>
-                <Button className="flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add Ingredient
-                </Button>
-              </DialogTrigger>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Ingredient
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Ingredient</DialogTitle>
+                    <DialogDescription>
+                      Add a new ingredient with its cost information.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <Form {...ingredientForm}>
+                    <form onSubmit={ingredientForm.handleSubmit(onAddIngredient)} className="space-y-4">
+                      <FormField
+                        control={ingredientForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Ingredient Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="e.g., All-Purpose Flour"
+                                {...field}
+                                onChange={(e) => field.onChange(e.target.value)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={ingredientForm.control}
+                          name="packageSize"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Package Size</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={field.value}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={ingredientForm.control}
+                          name="unit"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Unit</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select unit" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="g">Grams (g)</SelectItem>
+                                  <SelectItem value="kg">Kilograms (kg)</SelectItem>
+                                  <SelectItem value="oz">Ounces (oz)</SelectItem>
+                                  <SelectItem value="lb">Pounds (lb)</SelectItem>
+                                  <SelectItem value="ml">Milliliters (ml)</SelectItem>
+                                  <SelectItem value="l">Liters (l)</SelectItem>
+                                  <SelectItem value="cup">Cups</SelectItem>
+                                  <SelectItem value="tbsp">Tablespoons</SelectItem>
+                                  <SelectItem value="tsp">Teaspoons</SelectItem>
+                                  <SelectItem value="unit">Units/Pieces</SelectItem>
+                                  <SelectItem value="dozen">Dozen</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={ingredientForm.control}
+                        name="packageCost"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Package Cost ($)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={field.value}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <DialogFooter>
+                        <Button type="submit">Add Ingredient</Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {/* Search and Filters */}
+            {ingredients.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <div className="space-y-4">
+                    <SearchBar
+                      value={searchTerm}
+                      onChange={setSearchTerm}
+                      placeholder="Search ingredients by name..."
+                      className="w-full"
+                    />
+
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <FilterChips
+                        options={[
+                          { id: 'all', label: 'All Units', count: ingredients.length },
+                          ...uniqueUnits.map(unit => ({
+                            id: unit,
+                            label: unit,
+                            count: ingredients.filter(i => i.unit === unit).length
+                          }))
+                        ]}
+                        activeFilter={filterUnit}
+                        onChange={setFilterUnit}
+                      />
+
+                      <SortDropdown
+                        options={[
+                          { id: 'name', label: 'Name (A-Z)' },
+                          { id: 'cost', label: 'Cost (High to Low)' },
+                          { id: 'unit', label: 'Unit' },
+                        ]}
+                        value={sortBy}
+                        onChange={(v) => setSortBy(v as any)}
+                      />
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            )}
+
+            {ingredients.length === 0 ? (
+              <Card className="border-2 border-dashed border-rose-200 bg-gradient-to-br from-rose-50 to-pink-50">
+                <CardContent className="pt-8 pb-8 px-6">
+                  <div className="text-center">
+                    <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-rose-100 flex items-center justify-center">
+                      <Package className="h-8 w-8 text-rose-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Build Your Ingredient Library</h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                      Start by adding your baking ingredients. We&apos;ll automatically calculate cost per unit and help you track inventory levels.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-6">
+                      <div className="bg-white rounded-lg p-4 shadow-sm border">
+                        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                          <Package className="h-5 w-5 text-blue-500 mr-2" />
+                          Required Information
+                        </h4>
+                        <ul className="text-sm text-gray-600 space-y-2 text-left">
+                          <li className="flex items-start">
+                            <span className="text-blue-500 mr-2">•</span>
+                            <span><strong>Ingredient name:</strong> e.g., &quot;All-Purpose Flour&quot;</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-blue-500 mr-2">•</span>
+                            <span><strong>Package size:</strong> How much you buy (e.g., 5kg bag)</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-blue-500 mr-2">•</span>
+                            <span><strong>Package cost:</strong> What you paid for the whole package</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-blue-500 mr-2">•</span>
+                            <span><strong>Unit:</strong> g, kg, cups, tbsp, etc.</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-white rounded-lg p-4 shadow-sm border">
+                        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                          <Calculator className="h-5 w-5 text-green-500 mr-2" />
+                          What You&apos;ll Get
+                        </h4>
+                        <ul className="text-sm text-gray-600 space-y-2 text-left">
+                          <li className="flex items-start">
+                            <span className="text-green-500 mr-2">•</span>
+                            <span><strong>Cost per unit:</strong> Automatically calculated</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-green-500 mr-2">•</span>
+                            <span><strong>Recipe costs:</strong> Precise ingredient costs</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-green-500 mr-2">•</span>
+                            <span><strong>Inventory tracking:</strong> Stock level monitoring</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-green-500 mr-2">•</span>
+                            <span><strong>Shopping lists:</strong> Auto-generated restock lists</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="bg-amber-50 rounded-lg p-4 max-w-2xl mx-auto text-left">
+                      <h4 className="font-medium text-amber-900 mb-2 flex items-center">
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        Quick Start Tips
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-amber-800">
+                        <div>
+                          <strong>Start with basics:</strong> Flour, sugar, butter, eggs, vanilla
+                        </div>
+                        <div>
+                          <strong>Be accurate:</strong> Use exact package weights from labels
+                        </div>
+                        <div>
+                          <strong>Include everything:</strong> Salt, baking powder, spices count too
+                        </div>
+                        <div>
+                          <strong>Update regularly:</strong> Adjust costs when prices change
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button
+                        onClick={() => setIsAddIngredientOpen(true)}
+                        className="bg-rose-600 hover:bg-rose-700 w-full sm:w-auto"
+                        size="lg"
+                      >
+                        <Plus className="h-5 w-5 mr-2" />
+                        Add Your First Ingredient
+                      </Button>
+                      <SampleDataLoader
+                        target="ingredients"
+                        buttonText="Load Sample Ingredients"
+                        size="lg"
+                        className="w-full sm:w-auto"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : filteredAndSortedIngredients.length === 0 ? (
+              <Card className="border-2 border-dashed">
+                <CardContent className="pt-6 text-center">
+                  <p className="text-gray-500 mb-2">No ingredients found</p>
+                  <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Unit</TableHead>
+                      <TableHead>Package Size</TableHead>
+                      <TableHead>Package Cost</TableHead>
+                      <TableHead>Cost per Unit</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredAndSortedIngredients.map((ingredient) => (
+                      <TableRow key={ingredient.id}>
+                        <TableCell>{ingredient.name}</TableCell>
+                        <TableCell>{ingredient.unit}</TableCell>
+                        <TableCell>{ingredient.packageSize} {ingredient.unit}</TableCell>
+                        <TableCell>{formatCurrency(ingredient.packageCost)}</TableCell>
+                        <TableCell>{formatCurrency(ingredient.cost)}/{ingredient.unit}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setEditingIngredient(ingredient)
+                                ingredientForm.reset({
+                                  name: ingredient.name,
+                                  unit: ingredient.unit,
+                                  packageSize: ingredient.packageSize,
+                                  packageCost: ingredient.packageCost,
+                                })
+                                setIsEditIngredientOpen(true)
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteIngredient(ingredient.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            <Dialog open={isEditIngredientOpen} onOpenChange={setIsEditIngredientOpen}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Ingredient</DialogTitle>
+                  <DialogTitle>Edit Ingredient</DialogTitle>
                   <DialogDescription>
-                    Add a new ingredient with its cost information.
+                    Update the ingredient information.
                   </DialogDescription>
                 </DialogHeader>
 
                 <Form {...ingredientForm}>
-                  <form onSubmit={ingredientForm.handleSubmit(onAddIngredient)} className="space-y-4">
+                  <form onSubmit={ingredientForm.handleSubmit(onEditIngredient)} className="space-y-4">
                     <FormField
                       control={ingredientForm.control}
                       name="name"
@@ -538,11 +864,7 @@ const formatCurrency = (amount: number): string => {
                         <FormItem>
                           <FormLabel>Ingredient Name</FormLabel>
                           <FormControl>
-                            <Input 
-                            placeholder="e.g., All-Purpose Flour" 
-                            {...field}
-                            onChange={(e) => field.onChange(e.target.value)}
-                            />
+                            <Input placeholder="e.g., All-Purpose Flour" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -557,9 +879,9 @@ const formatCurrency = (amount: number): string => {
                           <FormItem>
                             <FormLabel>Package Size</FormLabel>
                             <FormControl>
-                              <Input 
-                                type="number" 
-                                step="0.01" 
+                              <Input
+                                type="number"
+                                step="0.01"
                                 value={field.value}
                                 onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                               />
@@ -611,9 +933,9 @@ const formatCurrency = (amount: number): string => {
                         <FormItem>
                           <FormLabel>Package Cost ($)</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.01" 
+                            <Input
+                              type="number"
+                              step="0.01"
                               value={field.value}
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
@@ -624,327 +946,12 @@ const formatCurrency = (amount: number): string => {
                     />
 
                     <DialogFooter>
-                      <Button type="submit">Add Ingredient</Button>
+                      <Button type="submit">Update Ingredient</Button>
                     </DialogFooter>
                   </form>
                 </Form>
               </DialogContent>
             </Dialog>
-            </div>
-
-            {/* Search and Filters */}
-            {ingredients.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <div className="space-y-4">
-                    <SearchBar
-                      value={searchTerm}
-                      onChange={setSearchTerm}
-                      placeholder="Search ingredients by name..."
-                      className="w-full"
-                    />
-                    
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <FilterChips
-                        options={[
-                          { id: 'all', label: 'All Units', count: ingredients.length },
-                          ...uniqueUnits.map(unit => ({
-                            id: unit,
-                            label: unit,
-                            count: ingredients.filter(i => i.unit === unit).length
-                          }))
-                        ]}
-                        activeFilter={filterUnit}
-                        onChange={setFilterUnit}
-                      />
-                      
-                      <SortDropdown
-                        options={[
-                          { id: 'name', label: 'Name (A-Z)' },
-                          { id: 'cost', label: 'Cost (High to Low)' },
-                          { id: 'unit', label: 'Unit' },
-                        ]}
-                        value={sortBy}
-                        onChange={(v) => setSortBy(v as any)}
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-            )}
-
-          {ingredients.length === 0 ? (
-            <Card className="border-2 border-dashed border-rose-200 bg-gradient-to-br from-rose-50 to-pink-50">
-              <CardContent className="pt-8 pb-8 px-6">
-                <div className="text-center">
-                  <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-rose-100 flex items-center justify-center">
-                    <Package className="h-8 w-8 text-rose-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Build Your Ingredient Library</h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                    Start by adding your baking ingredients. We&apos;ll automatically calculate cost per unit and help you track inventory levels.
-                  </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-6">
-                    <div className="bg-white rounded-lg p-4 shadow-sm border">
-                      <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                        <Package className="h-5 w-5 text-blue-500 mr-2" />
-                        Required Information
-                      </h4>
-                      <ul className="text-sm text-gray-600 space-y-2 text-left">
-                        <li className="flex items-start">
-                          <span className="text-blue-500 mr-2">•</span>
-                          <span><strong>Ingredient name:</strong> e.g., &quot;All-Purpose Flour&quot;</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-blue-500 mr-2">•</span>
-                          <span><strong>Package size:</strong> How much you buy (e.g., 5kg bag)</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-blue-500 mr-2">•</span>
-                          <span><strong>Package cost:</strong> What you paid for the whole package</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-blue-500 mr-2">•</span>
-                          <span><strong>Unit:</strong> g, kg, cups, tbsp, etc.</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="bg-white rounded-lg p-4 shadow-sm border">
-                      <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                        <Calculator className="h-5 w-5 text-green-500 mr-2" />
-                        What You&apos;ll Get
-                      </h4>
-                      <ul className="text-sm text-gray-600 space-y-2 text-left">
-                        <li className="flex items-start">
-                          <span className="text-green-500 mr-2">•</span>
-                          <span><strong>Cost per unit:</strong> Automatically calculated</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-green-500 mr-2">•</span>
-                          <span><strong>Recipe costs:</strong> Precise ingredient costs</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-green-500 mr-2">•</span>
-                          <span><strong>Inventory tracking:</strong> Stock level monitoring</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-green-500 mr-2">•</span>
-                          <span><strong>Shopping lists:</strong> Auto-generated restock lists</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="bg-amber-50 rounded-lg p-4 max-w-2xl mx-auto text-left">
-                    <h4 className="font-medium text-amber-900 mb-2 flex items-center">
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                      Quick Start Tips
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-amber-800">
-                      <div>
-                        <strong>Start with basics:</strong> Flour, sugar, butter, eggs, vanilla
-                      </div>
-                      <div>
-                        <strong>Be accurate:</strong> Use exact package weights from labels
-                      </div>
-                      <div>
-                        <strong>Include everything:</strong> Salt, baking powder, spices count too
-                      </div>
-                      <div>
-                        <strong>Update regularly:</strong> Adjust costs when prices change
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button 
-                      onClick={() => setIsAddIngredientOpen(true)}
-                      className="bg-rose-600 hover:bg-rose-700 w-full sm:w-auto" 
-                      size="lg"
-                    >
-                      <Plus className="h-5 w-5 mr-2" />
-                      Add Your First Ingredient
-                    </Button>
-                    <SampleDataLoader 
-                      target="ingredients"
-                      buttonText="Load Sample Ingredients"
-                      size="lg"
-                      className="w-full sm:w-auto"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : filteredAndSortedIngredients.length === 0 ? (
-            <Card className="border-2 border-dashed">
-              <CardContent className="pt-6 text-center">
-                <p className="text-gray-500 mb-2">No ingredients found</p>
-                <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Unit</TableHead>
-                    <TableHead>Package Size</TableHead>
-                    <TableHead>Package Cost</TableHead>
-                    <TableHead>Cost per Unit</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredAndSortedIngredients.map((ingredient) => (
-                    <TableRow key={ingredient.id}>
-                      <TableCell>{ingredient.name}</TableCell>
-                      <TableCell>{ingredient.unit}</TableCell>
-                      <TableCell>{ingredient.packageSize} {ingredient.unit}</TableCell>
-                      <TableCell>{formatCurrency(ingredient.packageCost)}</TableCell>
-                      <TableCell>{formatCurrency(ingredient.cost)}/{ingredient.unit}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditingIngredient(ingredient)
-                              ingredientForm.reset({
-                                name: ingredient.name,
-                                unit: ingredient.unit,
-                                packageSize: ingredient.packageSize,
-                                packageCost: ingredient.packageCost,
-                              })
-                              setIsEditIngredientOpen(true)
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteIngredient(ingredient.id)}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-
-          <Dialog open={isEditIngredientOpen} onOpenChange={setIsEditIngredientOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Edit Ingredient</DialogTitle>
-                <DialogDescription>
-                  Update the ingredient information.
-                </DialogDescription>
-              </DialogHeader>
-
-              <Form {...ingredientForm}>
-                <form onSubmit={ingredientForm.handleSubmit(onEditIngredient)} className="space-y-4">
-                  <FormField
-                    control={ingredientForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ingredient Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., All-Purpose Flour" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={ingredientForm.control}
-                      name="packageSize"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Package Size</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              step="0.01" 
-                              value={field.value}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={ingredientForm.control}
-                      name="unit"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Unit</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select unit" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="g">Grams (g)</SelectItem>
-                              <SelectItem value="kg">Kilograms (kg)</SelectItem>
-                              <SelectItem value="oz">Ounces (oz)</SelectItem>
-                              <SelectItem value="lb">Pounds (lb)</SelectItem>
-                              <SelectItem value="ml">Milliliters (ml)</SelectItem>
-                              <SelectItem value="l">Liters (l)</SelectItem>
-                              <SelectItem value="cup">Cups</SelectItem>
-                              <SelectItem value="tbsp">Tablespoons</SelectItem>
-                              <SelectItem value="tsp">Teaspoons</SelectItem>
-                              <SelectItem value="unit">Units/Pieces</SelectItem>
-                              <SelectItem value="dozen">Dozen</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={ingredientForm.control}
-                    name="packageCost"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Package Cost ($)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
-                            value={field.value}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <DialogFooter>
-                    <Button type="submit">Update Ingredient</Button>
-                  </DialogFooter>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
           </div>
         </TabsContent>
 
@@ -1062,7 +1069,7 @@ const formatCurrency = (amount: number): string => {
                       <p className="text-gray-600 mb-6 max-w-md mx-auto">
                         Once you add ingredients, you can track stock levels, set minimum quantities, and get automatic alerts when running low.
                       </p>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
                         <div className="bg-white rounded-lg p-4 shadow-sm border">
                           <div className="flex items-center mb-2">
@@ -1072,9 +1079,9 @@ const formatCurrency = (amount: number): string => {
                           <p className="text-sm text-gray-600">
                             First, add your ingredients in the Ingredients tab with cost information.
                           </p>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="mt-3 w-full"
                             onClick={() => {
                               const tabs = document.querySelector('[role="tablist"]') as HTMLElement;
@@ -1135,12 +1142,12 @@ const formatCurrency = (amount: number): string => {
                       </div>
 
                       <div className="mt-6">
-                        <Button 
+                        <Button
                           onClick={() => {
                             const tabs = document.querySelector('[role="tablist"]') as HTMLElement;
                             const ingredientsTab = tabs?.querySelector('[role="tab"]:first-child') as HTMLElement;
                             ingredientsTab?.click();
-                          }} 
+                          }}
                           className="bg-green-600 hover:bg-green-700"
                           size="lg"
                         >

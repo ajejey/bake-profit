@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,30 @@ export default function RecipeSettings() {
   const [laborCostPerHour, setLaborCostPerHour] = useState('15');
   const [overheadPercentage, setOverheadPercentage] = useState('10');
   const [showCostBreakdown, setShowCostBreakdown] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const stored = await StorageAdapter.getItem('recipeSettings');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          console.log('Recipe settings loaded:', settings);
+          setDefaultServings(settings.defaultServings);
+          setLaborCostPerHour(settings.laborCostPerHour);
+          setOverheadPercentage(settings.overheadPercentage);
+          setShowCostBreakdown(settings.showCostBreakdown);
+        }
+      } catch (error) {
+        console.error('Error loading recipe settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const handleSave = async () => {
     await StorageAdapter.setItem('recipeSettings', JSON.stringify({
@@ -26,6 +50,35 @@ export default function RecipeSettings() {
     }));
     toast({ title: 'Settings saved', description: 'Recipe preferences updated.' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-64 bg-gray-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

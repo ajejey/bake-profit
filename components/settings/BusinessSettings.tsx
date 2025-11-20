@@ -50,7 +50,7 @@ export default function BusinessSettings() {
           setWeightSystem(settings.weightSystem);
           setVolumeSystem(settings.volumeSystem);
           setTemperature(settings.temperature);
-        } 
+        }
       } catch (error) {
         console.error('Error loading business settings:', error);
       } finally {
@@ -61,7 +61,7 @@ export default function BusinessSettings() {
     loadSettings();
   }, []);
 
-  const handleSave = async() => {
+  const handleSave = async () => {
     await StorageAdapter.setItem('businessSettings', JSON.stringify({
       currency,
       currencyPosition,
@@ -322,6 +322,9 @@ export default function BusinessSettings() {
                   <SelectItem value="both">Both</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-gray-500">
+                Your preferred unit will be pre-selected when adding ingredients
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -332,10 +335,13 @@ export default function BusinessSettings() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="metric">Metric (ml, l)</SelectItem>
-                  <SelectItem value="imperial">Imperial (cup, tbsp)</SelectItem>
+                  <SelectItem value="imperial">Imperial (cups, tbsp)</SelectItem>
                   <SelectItem value="both">Both</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-gray-500">
+                Preferred volume unit for liquid ingredients
+              </p>
             </div>
 
             <div className="space-y-2">

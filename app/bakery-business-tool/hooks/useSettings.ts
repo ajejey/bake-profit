@@ -163,3 +163,89 @@ export function useFormattedDate() {
 export function useFormattedTime() {
   return async (dateString: string) => formatTime(dateString)
 }
+
+export function useRequirePhone() {
+  const [requirePhone, setRequirePhone] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getOrderSettings().then(settings => {
+      setRequirePhone(settings.requirePhone)
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { requirePhone, loading }
+}
+
+export function useAutoSaveCustomers() {
+  const [autoSave, setAutoSave] = useState(true)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getOrderSettings().then(settings => {
+      setAutoSave(settings.autoSaveCustomers)
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { autoSave, loading }
+}
+
+export function useShowCostBreakdown() {
+  const [showBreakdown, setShowBreakdown] = useState(true)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getRecipeSettings().then(settings => {
+      setShowBreakdown(settings.showCostBreakdown)
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { showBreakdown, loading }
+}
+
+export function usePreferredWeightUnit() {
+  const [unit, setUnit] = useState('lb')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getBusinessSettings().then(settings => {
+      // Return preferred weight unit based on system
+      const preferredUnits: Record<string, string> = {
+        'metric': 'g',
+        'imperial': 'lb',
+        'both': 'g' // Default to metric if both
+      }
+      setUnit(preferredUnits[settings.weightSystem] || 'g')
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { unit, loading }
+}
+
+export function usePreferredVolumeUnit() {
+  const [unit, setUnit] = useState('cup')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getBusinessSettings().then(settings => {
+      const preferredUnits: Record<string, string> = {
+        'metric': 'ml',
+        'imperial': 'cup',
+        'both': 'ml'
+      }
+      setUnit(preferredUnits[settings.volumeSystem] || 'ml')
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { unit, loading }
+}

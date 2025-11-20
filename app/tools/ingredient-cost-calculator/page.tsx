@@ -43,18 +43,18 @@ export default function IngredientCostCalculator() {
   const router = useRouter()
   const { user } = useAuth()
   const [showSignupDialog, setShowSignupDialog] = useState(false)
-  
+
   const [ingredientName, setIngredientName] = useState('')
   const [packageSize, setPackageSize] = useState(0)
   const [packageUnit, setPackageUnit] = useState('lb')
   const [packageCost, setPackageCost] = useState(0)
-  
+
   const [recipeAmount, setRecipeAmount] = useState(0)
   const [recipeUnit, setRecipeUnit] = useState('cup')
-  
+
   // Ingredient density (for volume to weight conversion)
   const [ingredientType, setIngredientType] = useState('flour')
-  
+
   // Common ingredient densities (grams per cup)
   const DENSITIES: { [key: string]: number } = {
     'flour': 120,
@@ -113,10 +113,10 @@ export default function IngredientCostCalculator() {
     }
 
     // Convert both to grams
-    const packageGrams = packageType === 'weight' 
+    const packageGrams = packageType === 'weight'
       ? convertToBase(packageSize, packageUnit, 'weight')
       : convertToBase(packageSize, packageUnit, 'volume')
-    
+
     const recipeGrams = recipeType === 'weight'
       ? convertToBase(recipeAmount, recipeUnit, 'weight')
       : convertToBase(recipeAmount, recipeUnit, 'volume')
@@ -174,7 +174,7 @@ export default function IngredientCostCalculator() {
           <div className="flex-1 w-full">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">How Much Does Each Ingredient Really Cost?</h2>
             <p className="text-sm sm:text-base text-gray-700 mb-3">
-              You buy a 5 lb bag of flour for $12.99 - but how much does 2 cups cost? We&apos;ll figure it out! 
+              You buy a 5 lb bag of flour for $12.99 - but how much does 2 cups cost? We&apos;ll figure it out!
               This calculator converts between units and shows you the real cost of each ingredient in your recipes.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -421,8 +421,8 @@ export default function IngredientCostCalculator() {
 
                     <div className="pt-3 border-t border-green-200">
                       <p className="text-xs text-gray-600">
-                        <strong>Package Yield:</strong> {packageSize > 0 && recipeAmount > 0 
-                          ? `${(packageSize / recipeAmount).toFixed(1)} recipes` 
+                        <strong>Package Yield:</strong> {packageSize > 0 && recipeAmount > 0
+                          ? `${(packageSize / recipeAmount).toFixed(1)} recipes`
                           : 'N/A'}
                       </p>
                     </div>
@@ -512,7 +512,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Ingredient prices fluctuate. Update your costs monthly to ensure accurate recipe 
+                Ingredient prices fluctuate. Update your costs monthly to ensure accurate recipe
                 costing. Consider seasonal variations and bulk buying opportunities.
               </p>
             </CardContent>
@@ -524,7 +524,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Bulk buying reduces cost per unit, but only if you use it before expiration. 
+                Bulk buying reduces cost per unit, but only if you use it before expiration.
                 Calculate break-even point: (bulk price - regular price) ÷ amount saved.
               </p>
             </CardContent>
@@ -536,7 +536,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Add 5-10% to ingredient costs to account for spillage, spoilage, and testing. 
+                Add 5-10% to ingredient costs to account for spillage, spoilage, and testing.
                 This ensures your recipe costs reflect reality, not just theory.
               </p>
             </CardContent>
@@ -548,7 +548,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Use this calculator to compare costs between suppliers. Sometimes a larger package 
+                Use this calculator to compare costs between suppliers. Sometimes a larger package
                 from one supplier is cheaper per unit than a smaller package from another.
               </p>
             </CardContent>
@@ -568,7 +568,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Different ingredients have different densities. 1 cup of flour ≈ 120g, but 1 cup of 
+                Different ingredients have different densities. 1 cup of flour ≈ 120g, but 1 cup of
                 sugar ≈ 200g. Select the correct ingredient type in the calculator for accurate conversions.
               </p>
             </CardContent>
@@ -580,8 +580,8 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Knowing cost per unit (per cup, per gram, etc.) lets you quickly calculate recipe costs 
-                without doing math every time. It also helps you compare prices between different package 
+                Knowing cost per unit (per cup, per gram, etc.) lets you quickly calculate recipe costs
+                without doing math every time. It also helps you compare prices between different package
                 sizes and suppliers.
               </p>
             </CardContent>
@@ -593,7 +593,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Yes! Add shipping costs to the package cost for accurate per-unit pricing. If you buy 
+                Yes! Add shipping costs to the package cost for accurate per-unit pricing. If you buy
                 multiple items in one order, divide the shipping proportionally based on item weight or cost.
               </p>
             </CardContent>
@@ -605,7 +605,7 @@ export default function IngredientCostCalculator() {
             </CardHeader>
             <CardContent className="text-gray-600">
               <p>
-                Update costs monthly or whenever you notice significant price changes. Set a reminder to 
+                Update costs monthly or whenever you notice significant price changes. Set a reminder to
                 review costs quarterly at minimum. This ensures your recipe pricing stays profitable.
               </p>
             </CardContent>

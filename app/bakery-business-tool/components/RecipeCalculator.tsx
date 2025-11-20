@@ -47,20 +47,20 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { 
-  Trash2, 
-  Edit, 
-  Save, 
-  Copy, 
-  Clock, 
-  Thermometer, 
-  X, 
-  Scale, 
-  Package, 
-  Download, 
-  FileText, 
-  DollarSign, 
-  AlertTriangle 
+import {
+  Trash2,
+  Edit,
+  Save,
+  Copy,
+  Clock,
+  Thermometer,
+  X,
+  Scale,
+  Package,
+  Download,
+  FileText,
+  DollarSign,
+  AlertTriangle
 } from 'lucide-react'
 import { SampleDataLoader } from './SampleDataLoader'
 import SearchBar from './SearchBar'
@@ -122,14 +122,14 @@ const unitConversions: Record<string, Record<string, number>> = {
   kg: { g: 1000, kg: 1, oz: 35.274, lb: 2.20462 },
   oz: { g: 28.3495, kg: 0.0283495, oz: 1, lb: 0.0625 },
   lb: { g: 453.592, kg: 0.453592, oz: 16, lb: 1 },
-  
+
   // Volume conversions (FROM each unit TO other units)
   ml: { ml: 1, l: 0.001, cup: 0.00422675, tbsp: 0.067628, tsp: 0.202884 },
   l: { ml: 1000, l: 1, cup: 4.22675, tbsp: 67.628, tsp: 202.884 },
   cup: { ml: 236.588, l: 0.236588, cup: 1, tbsp: 16, tsp: 48 },
   tbsp: { ml: 14.7868, l: 0.0147868, cup: 0.0625, tbsp: 1, tsp: 3 },
   tsp: { ml: 4.92892, l: 0.00492892, cup: 0.0208333, tbsp: 0.333333, tsp: 1 },
-  
+
   // Count conversions
   unit: { unit: 1, dozen: 0.0833333 },
   dozen: { unit: 12, dozen: 1 },
@@ -379,7 +379,7 @@ export default function RecipeCalculator() {
 
     // Update recipe in-place (preserves createdAt)
     updateRecipe(editingRecipe.id, updates)
-    
+
     setIsEditRecipeOpen(false)
     setEditingRecipe(null)
     recipeForm.reset()
@@ -397,7 +397,7 @@ export default function RecipeCalculator() {
     setEditingRecipe(recipe)
     setRecipeIngredients(recipe.ingredients)
     setRecipeInstructions(recipe.instructions)
-    
+
     recipeForm.reset({
       name: recipe.name,
       description: recipe.description,
@@ -412,7 +412,7 @@ export default function RecipeCalculator() {
       coolTime: recipe.coolTime,
       temperature: recipe.temperature,
     })
-    
+
     setIsEditRecipeOpen(true)
   }
 
@@ -1854,7 +1854,7 @@ export default function RecipeCalculator() {
               <p className="text-gray-600 mb-6 max-w-md mx-auto">
                 Start building your recipe collection to calculate exact costs and profit margins for your baked goods.
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-6">
                 <div className="bg-white rounded-lg p-4 shadow-sm border">
                   <div className="flex items-center mb-2">
@@ -1869,9 +1869,9 @@ export default function RecipeCalculator() {
                     <li>• Package size and cost</li>
                     <li>• Cost per unit (auto-calculated)</li>
                   </ul>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="mt-3 w-full"
                     onClick={() => window.location.href = '/bakery-business-tool/inventory'}
                   >
@@ -1894,9 +1894,9 @@ export default function RecipeCalculator() {
                     <li>• Baking instructions</li>
                     <li>• Servings and timing</li>
                   </ul>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="mt-3 w-full"
                     onClick={() => setIsAddRecipeOpen(true)}
                   >
@@ -1947,15 +1947,15 @@ export default function RecipeCalculator() {
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-                <Button 
-                  onClick={() => setIsAddRecipeOpen(true)} 
+                <Button
+                  onClick={() => setIsAddRecipeOpen(true)}
                   className="bg-rose-500 hover:bg-rose-600 w-full sm:w-auto"
                   size="lg"
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Create Your First Recipe
                 </Button>
-                <SampleDataLoader 
+                <SampleDataLoader
                   target="recipes"
                   buttonText="Load Sample Recipes"
                   size="lg"
@@ -2298,8 +2298,8 @@ export default function RecipeCalculator() {
               <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
                 <button
                   className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${scaleMethod === 'servings'
-                      ? 'bg-white shadow-sm text-gray-900'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white shadow-sm text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900'
                     }`}
                   onClick={() => setScaleMethod('servings')}
                 >
@@ -2307,8 +2307,8 @@ export default function RecipeCalculator() {
                 </button>
                 <button
                   className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${scaleMethod === 'factor'
-                      ? 'bg-white shadow-sm text-gray-900'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white shadow-sm text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900'
                     }`}
                   onClick={() => setScaleMethod('factor')}
                 >

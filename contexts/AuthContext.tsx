@@ -8,6 +8,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<AuthResponse>;
+  loginWithGoogle: (credential: string) => Promise<AuthResponse>;
   signup: (email: string, password: string, name?: string, businessName?: string) => Promise<AuthResponse>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -36,16 +37,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('auth_token');
     const storedUser = localStorage.getItem('auth_user');
-    
+
     if (storedToken && storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        
+
         // Check if token is expired or expiring soon
         const expirationTime = getTokenExpiration(storedToken);
         const now = Date.now();
         const fiveMinutes = 5 * 60 * 1000;
-        
+
         if (expirationTime && expirationTime - now < fiveMinutes) {
           // Token expired or expiring soon, try to refresh
           console.log('Token expired or expiring soon, refreshing...');
@@ -158,10 +159,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async (credential: string): Promise<AuthResponse> => {
+    try {
+      const response = await fetch('/api/auth/google/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential }),
+      });
+
+      const data: AuthResponse = await response.json();
+
+      if (data.success && data.token && data.user) {
+        setToken(data.token);
+        setUser(data.user as User);
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('auth_user', JSON.stringify(data.user));
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Google login error:', error);
+      return {
+        success: false,
+        error: 'An error occurred during Google login',
+      };
+    }
+  };
+
   const signup = async (
-    email: string, 
-    password: string, 
-    name?: string, 
+    email: string,
+    password: string,
+    name?: string,
     businessName?: string
   ): Promise<AuthResponse> => {
     try {
@@ -170,11 +200,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          email, 
-          password, 
-          name, 
-          business_name: businessName 
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          business_name: businessName
         }),
       });
 
@@ -202,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    
+
     // Call logout API (optional, for session cleanup)
     fetch('/api/auth/logout', { method: 'POST' }).catch(console.error);
   };
@@ -223,7 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Refresh 1 day before expiration (for 7-day tokens)
     const oneDayInMs = 24 * 60 * 60 * 1000;
     const timeUntilRefresh = expirationTime - Date.now() - oneDayInMs;
-    
+
     if (timeUntilRefresh <= 0) {
       // Token expiring within 1 day, refresh immediately
       console.log('Token expiring soon, refreshing...');
@@ -275,6 +305,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         loading,
         login,
+        loginWithGoogle,
         signup,
         logout,
         refreshUser,
