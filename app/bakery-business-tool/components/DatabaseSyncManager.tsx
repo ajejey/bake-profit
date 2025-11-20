@@ -17,17 +17,14 @@ import { useAuth } from '@/contexts/AuthContext'
  */
 export function DatabaseSyncManager() {
   const { token } = useAuth()
-  const { syncStatus } = useOptimizedSync() // Use optimized bidirectional sync
+  useOptimizedSync() // Use optimized bidirectional sync
 
-  // Log sync status for debugging
+  // Log once when sync manager mounts with auth
   useEffect(() => {
     if (token) {
-      console.log('✅ Optimized sync manager initialized', {
-        pendingOperations: syncStatus.pendingCount,
-        lastSyncAgo: syncStatus.lastSyncAgo,
-      })
+      console.log('✅ Optimized sync manager initialized')
     }
-  }, [token, syncStatus])
+  }, [token])
 
   // The useOptimizedSync hook handles all the sync logic internally:
   // - Initial sync on mount (pulls server data)

@@ -164,18 +164,18 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
       const customEvent = event as CustomEvent
       const data = customEvent.detail
       
-      console.log('📥 [BakeryDataContext] Received sync:pulled event with data:', {
+      if (!data) {
+        console.warn('⚠️ sync:pulled event received but data is null/undefined')
+        return
+      }
+
+      console.log('📥 Syncing data from server:', {
         recipes: data?.recipes?.length || 0,
         orders: data?.orders?.length || 0,
         customers: data?.customers?.length || 0,
         ingredients: data?.ingredients?.length || 0,
         inventory: data?.inventory?.length || 0,
       })
-
-      if (!data) {
-        console.warn('⚠️ sync:pulled event received but data is null/undefined')
-        return
-      }
 
       try {
         // Helper function to normalize MongoDB documents (convert _id to id)
@@ -191,48 +191,41 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
           const normalized = data.recipes.map(normalizeDoc)
           setRecipes(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(normalized))
-          console.log(`✅ Synced ${normalized.length} recipes from server to state + IndexedDB`)
         }
         
         if (data.orders && Array.isArray(data.orders) && data.orders.length > 0) {
           const normalized = data.orders.map(normalizeDoc)
           setOrders(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(normalized))
-          console.log(`✅ Synced ${normalized.length} orders from server to state + IndexedDB`)
         }
         
         if (data.customers && Array.isArray(data.customers) && data.customers.length > 0) {
           const normalized = data.customers.map(normalizeDoc)
           setCustomers(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(normalized))
-          console.log(`✅ Synced ${normalized.length} customers from server to state + IndexedDB`)
         }
         
         if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
           const normalized = data.ingredients.map(normalizeDoc)
           setIngredients(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(normalized))
-          console.log(`✅ Synced ${normalized.length} ingredients from server to state + IndexedDB`)
         }
         
         if (data.inventory && Array.isArray(data.inventory) && data.inventory.length > 0) {
           const normalized = data.inventory.map(normalizeDoc)
           setInventory(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(normalized))
-          console.log(`✅ Synced ${normalized.length} inventory items from server to state + IndexedDB`)
         }
 
-        console.log('✅ All pulled data applied to React state and IndexedDB')
+        console.log('✅ Sync complete: Data applied to IndexedDB and UI')
       } catch (error) {
         console.error('❌ Error applying pulled data:', error)
       }
     }
 
-    console.log('🎧 [BakeryDataContext] Setting up sync:pulled event listener')
     window.addEventListener('sync:pulled', handlePulledData)
     
     return () => {
-      console.log('🔇 [BakeryDataContext] Removing sync:pulled event listener')
       window.removeEventListener('sync:pulled', handlePulledData)
     }
   }, [])

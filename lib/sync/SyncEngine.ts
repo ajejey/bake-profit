@@ -239,8 +239,6 @@ export class SyncEngine {
    * Pull latest data from server
    */
   static async pull(token: string, userId: string): Promise<any | null> {
-    console.log('📥 [SyncEngine] Pulling latest data from server for user:', userId);
-
     try {
       const response = await fetch('/api/sync', {
         method: 'GET',
@@ -255,24 +253,13 @@ export class SyncEngine {
 
       const result = await response.json();
       
-      console.log('📦 [SyncEngine] API response:', {
-        success: result.success,
-        hasData: !!result.data,
-        recipes: result.data?.recipes?.length || 0,
-        orders: result.data?.orders?.length || 0,
-        customers: result.data?.customers?.length || 0,
-        ingredients: result.data?.ingredients?.length || 0,
-        inventory: result.data?.inventory?.length || 0,
-      });
-      
       const metadata = this.getMetadata();
       metadata.lastPullTimestamp = Date.now();
       this.saveMetadata(metadata);
 
-      console.log('✅ [SyncEngine] Pull sync successful, returning data');
       return result.data;
     } catch (error) {
-      console.error('❌ [SyncEngine] Pull sync failed:', error);
+      console.error('❌ Pull sync failed:', error);
       return null;
     }
   }
