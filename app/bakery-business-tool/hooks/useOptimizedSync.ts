@@ -35,25 +35,42 @@ export function useOptimizedSync() {
    */
   const performSync = useCallback(async () => {
     if (!token || !user?.email) {
-      console.log('⏸️ Sync skipped: No auth token or user');
+      console.log('⏸️ [useOptimizedSync] Sync skipped: No auth token or user');
       return;
     }
 
+    console.log('🔄 [useOptimizedSync] Starting full bidirectional sync...');
     setSyncStatus(prev => ({ ...prev, isSyncing: true }));
 
     try {
       const result = await SyncEngine.sync(token, user.email);
       
-      if (result.pushed && result.pulled) {
-        console.log('✅ Full sync completed');
-        
-        // If we pulled new data, dispatch event for UI to update
-        if (result.pulled) {
-          window.dispatchEvent(new CustomEvent('sync:pulled', { detail: result.pulled }));
-        }
+      console.log('📊 [useOptimizedSync] Sync result:', {
+        pushed: result.pushed,
+        hasPulledData: !!result.pulled,
+        pulledDataKeys: result.pulled ? Object.keys(result.pulled) : [],
+      });
+      
+      // If we pulled new data, dispatch event for UI to update
+      if (result.pulled) {
+        console.log('📤 [useOptimizedSync] Dispatching sync:pulled event with data:', {
+          recipes: result.pulled.recipes?.length || 0,
+          orders: result.pulled.orders?.length || 0,
+          customers: result.pulled.customers?.length || 0,
+          ingredients: result.pulled.ingredients?.length || 0,
+          inventory: result.pulled.inventory?.length || 0,
+        });
+        window.dispatchEvent(new CustomEvent('sync:pulled', { detail: result.pulled }));
+        console.log('✅ [useOptimizedSync] sync:pulled event dispatched');
+      } else {
+        console.log('⚠️ [useOptimizedSync] No data pulled from server (result.pulled is null)');
+      }
+      
+      if (result.pushed || result.pulled) {
+        console.log('✅ [useOptimizedSync] Full sync completed successfully');
       }
     } catch (error) {
-      console.error('❌ Sync error:', error);
+      console.error('❌ [useOptimizedSync] Sync error:', error);
     } finally {
       setSyncStatus(prev => ({ ...prev, isSyncing: false }));
       updateStatus();
@@ -84,15 +101,19 @@ export function useOptimizedSync() {
   const pullChanges = useCallback(async () => {
     if (!token || !user?.email) return;
 
+    console.log('🔽 [useOptimizedSync] Starting pull-only sync...');
     setSyncStatus(prev => ({ ...prev, isSyncing: true }));
 
     try {
       const data = await SyncEngine.pull(token, user.email);
       if (data) {
+        console.log('📤 [useOptimizedSync] Dispatching sync:pulled event (pull-only)');
         window.dispatchEvent(new CustomEvent('sync:pulled', { detail: data }));
+      } else {
+        console.log('⚠️ [useOptimizedSync] Pull returned no data');
       }
     } catch (error) {
-      console.error('❌ Pull error:', error);
+      console.error('❌ [useOptimizedSync] Pull error:', error);
     } finally {
       setSyncStatus(prev => ({ ...prev, isSyncing: false }));
       updateStatus();

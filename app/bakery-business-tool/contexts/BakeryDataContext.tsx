@@ -164,49 +164,75 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
       const customEvent = event as CustomEvent
       const data = customEvent.detail
       
-      console.log('📥 Applying pulled data from MongoDB to IndexedDB')
+      console.log('📥 [BakeryDataContext] Received sync:pulled event with data:', {
+        recipes: data?.recipes?.length || 0,
+        orders: data?.orders?.length || 0,
+        customers: data?.customers?.length || 0,
+        ingredients: data?.ingredients?.length || 0,
+        inventory: data?.inventory?.length || 0,
+      })
+
+      if (!data) {
+        console.warn('⚠️ sync:pulled event received but data is null/undefined')
+        return
+      }
 
       try {
-        // Update state and IndexedDB with server data
-        if (data.recipes && Array.isArray(data.recipes)) {
-          setRecipes(data.recipes)
-          await StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(data.recipes))
-          console.log(`✅ Synced ${data.recipes.length} recipes from server`)
-        }
-        
-        if (data.orders && Array.isArray(data.orders)) {
-          setOrders(data.orders)
-          await StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(data.orders))
-          console.log(`✅ Synced ${data.orders.length} orders from server`)
-        }
-        
-        if (data.customers && Array.isArray(data.customers)) {
-          setCustomers(data.customers)
-          await StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(data.customers))
-          console.log(`✅ Synced ${data.customers.length} customers from server`)
-        }
-        
-        if (data.ingredients && Array.isArray(data.ingredients)) {
-          setIngredients(data.ingredients)
-          await StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(data.ingredients))
-          console.log(`✅ Synced ${data.ingredients.length} ingredients from server`)
-        }
-        
-        if (data.inventory && Array.isArray(data.inventory)) {
-          setInventory(data.inventory)
-          await StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(data.inventory))
-          console.log(`✅ Synced ${data.inventory.length} inventory items from server`)
+        // Helper function to normalize MongoDB documents (convert _id to id)
+        const normalizeDoc = (doc: Record<string, unknown>) => {
+          if (!doc) return doc
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { _id, __v, ...rest } = doc
+          return { ...rest, id: doc.id || doc._id }
         }
 
-        console.log('✅ All pulled data applied to IndexedDB')
+        // Update state and IndexedDB with server data
+        if (data.recipes && Array.isArray(data.recipes) && data.recipes.length > 0) {
+          const normalized = data.recipes.map(normalizeDoc)
+          setRecipes(normalized)
+          await StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(normalized))
+          console.log(`✅ Synced ${normalized.length} recipes from server to state + IndexedDB`)
+        }
+        
+        if (data.orders && Array.isArray(data.orders) && data.orders.length > 0) {
+          const normalized = data.orders.map(normalizeDoc)
+          setOrders(normalized)
+          await StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(normalized))
+          console.log(`✅ Synced ${normalized.length} orders from server to state + IndexedDB`)
+        }
+        
+        if (data.customers && Array.isArray(data.customers) && data.customers.length > 0) {
+          const normalized = data.customers.map(normalizeDoc)
+          setCustomers(normalized)
+          await StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(normalized))
+          console.log(`✅ Synced ${normalized.length} customers from server to state + IndexedDB`)
+        }
+        
+        if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
+          const normalized = data.ingredients.map(normalizeDoc)
+          setIngredients(normalized)
+          await StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(normalized))
+          console.log(`✅ Synced ${normalized.length} ingredients from server to state + IndexedDB`)
+        }
+        
+        if (data.inventory && Array.isArray(data.inventory) && data.inventory.length > 0) {
+          const normalized = data.inventory.map(normalizeDoc)
+          setInventory(normalized)
+          await StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(normalized))
+          console.log(`✅ Synced ${normalized.length} inventory items from server to state + IndexedDB`)
+        }
+
+        console.log('✅ All pulled data applied to React state and IndexedDB')
       } catch (error) {
         console.error('❌ Error applying pulled data:', error)
       }
     }
 
+    console.log('🎧 [BakeryDataContext] Setting up sync:pulled event listener')
     window.addEventListener('sync:pulled', handlePulledData)
     
     return () => {
+      console.log('🔇 [BakeryDataContext] Removing sync:pulled event listener')
       window.removeEventListener('sync:pulled', handlePulledData)
     }
   }, [])
