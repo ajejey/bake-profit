@@ -72,7 +72,7 @@ export default function GoogleLoginButton() {
 
     return (
         <GoogleOAuthProvider clientId={clientId}>
-            <div className="w-full">
+            <div className="w-full flex justify-center">
                 <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
