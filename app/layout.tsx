@@ -22,7 +22,7 @@ const raleway = Raleway({
 });
 
 const lora = Lora({
-  weight: [ '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   subsets: ["latin"],
   variable: "--font-lora",
   display: 'swap',
@@ -122,6 +122,40 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Organization Schema */}
+        <Script id="organization-schema" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'BakeProfit',
+            url: 'https://bakeprofit.vercel.app',
+            logo: 'https://bakeprofit.vercel.app/logo.png',
+            description: 'Free bakery management software for home bakers. Calculate recipe costs, price cakes & cupcakes, track orders, manage inventory.',
+            sameAs: [
+              'https://twitter.com/bakeprofit',
+            ],
+          })}
+        </Script>
+
+        {/* Website Schema with Search */}
+        <Script id="website-schema" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'BakeProfit',
+            url: 'https://bakeprofit.vercel.app',
+            description: 'Free bakery management software for home bakers',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'https://bakeprofit.vercel.app/blog?search={search_term_string}',
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          })}
+        </Script>
+
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-PZSZZY8MQQ"
