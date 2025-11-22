@@ -2,6 +2,7 @@ import mongoose, { Schema, Model } from 'mongoose';
 
 export interface IIngredient {
   _id: string;
+  id?: string; // Optional: Preserves original ID for sample data compatibility
   userId: string;
   name: string;
   cost: number;
@@ -21,6 +22,10 @@ const IngredientSchema = new Schema<IIngredient>(
     _id: {
       type: String,
       required: false,
+    },
+    id: {
+      type: String,
+      required: false, // Optional: Preserves original ID for sample data
     },
     userId: {
       type: String,

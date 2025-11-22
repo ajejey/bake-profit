@@ -19,10 +19,21 @@ export function useSyncedBakeryData() {
   }
 
   const updateRecipe = (id: string, recipe: Partial<Recipe>) => {
+    // IMPORTANT: Get the current recipe BEFORE updating
+    // because context.updateRecipe uses setState which is async
+    const currentRecipe = context.getRecipeById(id)
+
+    // Update in context
     context.updateRecipe(id, recipe)
-    const fullRecipe = context.getRecipeById(id)
-    if (fullRecipe) {
-      SyncEngine.recordOperation('recipe', id, 'update', fullRecipe)
+
+    // Build the full updated recipe for sync
+    if (currentRecipe) {
+      const fullUpdatedRecipe = {
+        ...currentRecipe,
+        ...recipe,
+        updatedAt: new Date().toISOString()
+      }
+      SyncEngine.recordOperation('recipe', id, 'update', fullUpdatedRecipe)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
@@ -41,10 +52,16 @@ export function useSyncedBakeryData() {
   }
 
   const updateOrder = (id: string, order: Partial<Order>) => {
+    const currentOrder = context.getOrderById(id)
     context.updateOrder(id, order)
-    const fullOrder = context.getOrderById(id)
-    if (fullOrder) {
-      SyncEngine.recordOperation('order', id, 'update', fullOrder)
+
+    if (currentOrder) {
+      const fullUpdatedOrder = {
+        ...currentOrder,
+        ...order,
+        updatedAt: new Date().toISOString()
+      }
+      SyncEngine.recordOperation('order', id, 'update', fullUpdatedOrder)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
@@ -56,10 +73,16 @@ export function useSyncedBakeryData() {
   }
 
   const updateOrderStatus = (id: string, status: Order['status']) => {
+    const currentOrder = context.getOrderById(id)
     context.updateOrderStatus(id, status)
-    const fullOrder = context.getOrderById(id)
-    if (fullOrder) {
-      SyncEngine.recordOperation('order', id, 'update', fullOrder)
+
+    if (currentOrder) {
+      const fullUpdatedOrder = {
+        ...currentOrder,
+        status,
+        updatedAt: new Date().toISOString()
+      }
+      SyncEngine.recordOperation('order', id, 'update', fullUpdatedOrder)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
@@ -72,10 +95,15 @@ export function useSyncedBakeryData() {
   }
 
   const updateCustomer = (id: string, customer: Partial<Customer>) => {
+    const currentCustomer = context.getCustomerById(id)
     context.updateCustomer(id, customer)
-    const fullCustomer = context.getCustomerById(id)
-    if (fullCustomer) {
-      SyncEngine.recordOperation('customer', id, 'update', fullCustomer)
+
+    if (currentCustomer) {
+      const fullUpdatedCustomer = {
+        ...currentCustomer,
+        ...customer
+      }
+      SyncEngine.recordOperation('customer', id, 'update', fullUpdatedCustomer)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
@@ -94,10 +122,15 @@ export function useSyncedBakeryData() {
   }
 
   const updateIngredient = (id: string, ingredient: Partial<Ingredient>) => {
+    const currentIngredient = context.getIngredientById(id)
     context.updateIngredient(id, ingredient)
-    const fullIngredient = context.getIngredientById(id)
-    if (fullIngredient) {
-      SyncEngine.recordOperation('ingredient', id, 'update', fullIngredient)
+
+    if (currentIngredient) {
+      const fullUpdatedIngredient = {
+        ...currentIngredient,
+        ...ingredient
+      }
+      SyncEngine.recordOperation('ingredient', id, 'update', fullUpdatedIngredient)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
@@ -116,19 +149,31 @@ export function useSyncedBakeryData() {
   }
 
   const updateInventoryItem = (ingredientId: string, item: Partial<InventoryItem>) => {
+    const currentItem = context.getInventoryItem(ingredientId)
     context.updateInventoryItem(ingredientId, item)
-    const fullItem = context.getInventoryItem(ingredientId)
-    if (fullItem) {
-      SyncEngine.recordOperation('inventory', ingredientId, 'update', fullItem)
+
+    if (currentItem) {
+      const fullUpdatedItem = {
+        ...currentItem,
+        ...item,
+        lastUpdated: new Date().toISOString()
+      }
+      SyncEngine.recordOperation('inventory', ingredientId, 'update', fullUpdatedItem)
       window.dispatchEvent(new Event('data:changed'))
     }
   }
 
   const updateStock = (ingredientId: string, quantity: number) => {
+    const currentItem = context.getInventoryItem(ingredientId)
     context.updateStock(ingredientId, quantity)
-    const fullItem = context.getInventoryItem(ingredientId)
-    if (fullItem) {
-      SyncEngine.recordOperation('inventory', ingredientId, 'update', fullItem)
+
+    if (currentItem) {
+      const fullUpdatedItem = {
+        ...currentItem,
+        currentStock: quantity,
+        lastUpdated: new Date().toISOString()
+      }
+      SyncEngine.recordOperation('inventory', ingredientId, 'update', fullUpdatedItem)
       window.dispatchEvent(new Event('data:changed'))
     }
   }

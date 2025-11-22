@@ -14,42 +14,42 @@ interface BakeryDataContextType {
   ingredients: Ingredient[]
   inventory: InventoryItem[]
   recipeCategories: RecipeCategory[]
-  
+
   // Recipe Actions
   addRecipe: (recipe: Recipe) => void
   updateRecipe: (id: string, recipe: Partial<Recipe>) => void
   deleteRecipe: (id: string) => void
   getRecipeById: (id: string) => Recipe | undefined
-  
+
   // Order Actions
   addOrder: (order: Order) => void
   updateOrder: (id: string, order: Partial<Order>) => void
   deleteOrder: (id: string) => void
   getOrderById: (id: string) => Order | undefined
   updateOrderStatus: (id: string, status: Order['status']) => void
-  
+
   // Customer Actions
   addCustomer: (customer: Customer) => void
   updateCustomer: (id: string, customer: Partial<Customer>) => void
   deleteCustomer: (id: string) => void
   getCustomerByName: (name: string) => Customer | undefined
   getCustomerById: (id: string) => Customer | undefined
-  
+
   // Ingredient Actions
   addIngredient: (ingredient: Ingredient) => void
   updateIngredient: (id: string, ingredient: Partial<Ingredient>) => void
   deleteIngredient: (id: string) => void
   getIngredientById: (id: string) => Ingredient | undefined
-  
+
   // Inventory Actions
   addInventoryItem: (item: InventoryItem) => void
   updateInventoryItem: (ingredientId: string, item: Partial<InventoryItem>) => void
   getInventoryItem: (ingredientId: string) => InventoryItem | undefined
   updateStock: (ingredientId: string, quantity: number) => void
-  
+
   // Category Actions
   registerCategory: (category: RecipeCategory) => void
-  
+
   // Utility
   isLoading: boolean
   clearAllData: () => void
@@ -84,7 +84,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
       try {
         // Migrate from localStorage on first load
         // await migrateFromLocalStorage()
-        
+
         const loadedRecipes = await StorageAdapter.getItem(STORAGE_KEYS.recipes)
         const loadedOrders = await StorageAdapter.getItem(STORAGE_KEYS.orders)
         const loadedCustomers = await StorageAdapter.getItem(STORAGE_KEYS.customers)
@@ -108,7 +108,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
           })
           setRecipes(migratedRecipes)
         }
-        
+
         if (loadedOrders) setOrders(JSON.parse(loadedOrders))
         if (loadedCustomers) setCustomers(JSON.parse(loadedCustomers))
         if (loadedIngredients) setIngredients(JSON.parse(loadedIngredients))
@@ -132,7 +132,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const handleGoogleDriveDataLoaded = async () => {
       console.log('📥 Google Drive data loaded, reloading UI...')
-      
+
       try {
         const loadedRecipes = await StorageAdapter.getItem(STORAGE_KEYS.recipes)
         const loadedOrders = await StorageAdapter.getItem(STORAGE_KEYS.orders)
@@ -163,7 +163,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     const handlePulledData = async (event: Event) => {
       const customEvent = event as CustomEvent
       const data = customEvent.detail
-      
+
       if (!data) {
         console.warn('⚠️ sync:pulled event received but data is null/undefined')
         return
@@ -178,11 +178,14 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
       })
 
       try {
-        // Helper function to normalize MongoDB documents (convert _id to id)
+        // Helper function to normalize MongoDB documents
+        // IMPORTANT: Preserve original 'id' field if it exists (for sample data compatibility)
+        // Only use '_id' as fallback if 'id' doesn't exist
         const normalizeDoc = (doc: Record<string, unknown>) => {
           if (!doc) return doc
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { _id, __v, ...rest } = doc
+          // Use existing 'id' field if present, otherwise use '_id'
           return { ...rest, id: doc.id || doc._id }
         }
 
@@ -192,25 +195,25 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
           setRecipes(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.recipes, JSON.stringify(normalized))
         }
-        
+
         if (data.orders && Array.isArray(data.orders) && data.orders.length > 0) {
           const normalized = data.orders.map(normalizeDoc)
           setOrders(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.orders, JSON.stringify(normalized))
         }
-        
+
         if (data.customers && Array.isArray(data.customers) && data.customers.length > 0) {
           const normalized = data.customers.map(normalizeDoc)
           setCustomers(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.customers, JSON.stringify(normalized))
         }
-        
+
         if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
           const normalized = data.ingredients.map(normalizeDoc)
           setIngredients(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.ingredients, JSON.stringify(normalized))
         }
-        
+
         if (data.inventory && Array.isArray(data.inventory) && data.inventory.length > 0) {
           const normalized = data.inventory.map(normalizeDoc)
           setInventory(normalized)
@@ -224,7 +227,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     }
 
     window.addEventListener('sync:pulled', handlePulledData)
-    
+
     return () => {
       window.removeEventListener('sync:pulled', handlePulledData)
     }
@@ -292,7 +295,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   const updateRecipe = useCallback((id: string, updates: Partial<Recipe>) => {
-    setRecipes(prev => prev.map(recipe => 
+    setRecipes(prev => prev.map(recipe =>
       recipe.id === id ? { ...recipe, ...updates, updatedAt: new Date().toISOString() } : recipe
     ))
   }, [])
@@ -311,7 +314,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   const updateOrder = useCallback((id: string, updates: Partial<Order>) => {
-    setOrders(prev => prev.map(order => 
+    setOrders(prev => prev.map(order =>
       order.id === id ? { ...order, ...updates, updatedAt: new Date().toISOString() } : order
     ))
   }, [])
@@ -334,7 +337,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   const updateCustomer = useCallback((id: string, updates: Partial<Customer>) => {
-    setCustomers(prev => prev.map(customer => 
+    setCustomers(prev => prev.map(customer =>
       customer.id === id ? { ...customer, ...updates } : customer
     ))
   }, [])
@@ -357,7 +360,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   const updateIngredient = useCallback((id: string, updates: Partial<Ingredient>) => {
-    setIngredients(prev => prev.map(ingredient => 
+    setIngredients(prev => prev.map(ingredient =>
       ingredient.id === id ? { ...ingredient, ...updates } : ingredient
     ))
   }, [])
@@ -376,9 +379,9 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   const updateInventoryItem = useCallback((ingredientId: string, updates: Partial<InventoryItem>) => {
-    setInventory(prev => prev.map(item => 
-      item.ingredientId === ingredientId 
-        ? { ...item, ...updates, lastUpdated: new Date().toISOString() } 
+    setInventory(prev => prev.map(item =>
+      item.ingredientId === ingredientId
+        ? { ...item, ...updates, lastUpdated: new Date().toISOString() }
         : item
     ))
   }, [])
@@ -391,7 +394,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     setInventory(prev => {
       const existing = prev.find(item => item.ingredientId === ingredientId)
       if (existing) {
-        return prev.map(item => 
+        return prev.map(item =>
           item.ingredientId === ingredientId
             ? { ...item, currentStock: quantity, lastUpdated: new Date().toISOString() }
             : item
@@ -421,7 +424,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
       // Check if category already exists (case-insensitive)
       const exists = prev.some(cat => cat.toLowerCase() === category.toLowerCase())
       if (exists) return prev
-      
+
       // Add new category and sort alphabetically
       return [...prev, category].sort()
     })

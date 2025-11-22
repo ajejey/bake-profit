@@ -168,6 +168,7 @@ export default function RecipeCalculator() {
   const {
     ingredients,
     safeDeleteIngredient,
+    getIngredientById,
   } = useIngredients()
 
   const {
@@ -514,7 +515,7 @@ export default function RecipeCalculator() {
 
   // Get ingredient name by ID
   const getIngredientName = (id: string): string => {
-    const ingredient = ingredients.find(ing => ing.id === id)
+    const ingredient = getIngredientById(id)
     return ingredient ? ingredient.name : 'Unknown'
   }
 
@@ -2283,187 +2284,232 @@ export default function RecipeCalculator() {
       <Dialog open={isScaleDialogOpen} onOpenChange={setIsScaleDialogOpen}>
         <DialogContent className="max-w-[95vw] lg:max-w-7xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Scale className="h-5 w-5" />
-              Scale Recipe: {recipeToScale?.name}
+            <DialogTitle className="flex items-center gap-2 text-2xl">
+              <Scale className="h-6 w-6 text-blue-600" />
+              Scale Recipe
             </DialogTitle>
-            <DialogDescription>
-              Adjust recipe quantities for different batch sizes or servings
+            <DialogDescription className="text-base">
+              {recipeToScale?.name}
             </DialogDescription>
           </DialogHeader>
 
           {recipeToScale && (
             <div className="space-y-6">
-              {/* Scale Method Selector */}
-              <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
-                <button
-                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${scaleMethod === 'servings'
-                    ? 'bg-white shadow-sm text-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  onClick={() => setScaleMethod('servings')}
-                >
-                  By Servings
-                </button>
-                <button
-                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${scaleMethod === 'factor'
-                    ? 'bg-white shadow-sm text-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  onClick={() => setScaleMethod('factor')}
-                >
-                  By Factor
-                </button>
-              </div>
-
-              {/* Input Section */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Original</label>
-                  <div className="p-3 bg-gray-50 rounded-md">
-                    <div className="text-2xl font-bold">{recipeToScale.servings}</div>
-                    <div className="text-xs text-gray-600">servings</div>
+              {/* Main Scaling Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Left Side: INPUT */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">1</div>
+                    Choose how to scale
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {scaleMethod === 'servings' ? 'Target Servings' : 'Scale Factor'}
-                  </label>
-                  {scaleMethod === 'servings' ? (
-                    <Input
-                      type="number"
-                      min="1"
-                      value={targetServings}
-                      onChange={(e) => setTargetServings(parseInt(e.target.value) || 1)}
-                      className="text-2xl font-bold h-auto py-3"
-                    />
-                  ) : (
-                    <div className="space-y-2">
-                      <Input
-                        type="number"
-                        step="0.1"
-                        min="0.1"
-                        value={scaleFactor}
-                        onChange={(e) => setScaleFactor(parseFloat(e.target.value) || 1)}
-                        className="text-2xl font-bold h-auto py-3"
-                      />
-                      <div className="flex gap-1">
-                        {[0.5, 1, 2, 3, 4].map((factor) => (
-                          <Button
-                            key={factor}
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setScaleFactor(factor)}
-                            className="flex-1"
-                          >
-                            {factor}x
-                          </Button>
-                        ))}
+                  {/* Method Toggle */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${scaleMethod === 'servings'
+                        ? 'border-blue-600 bg-blue-50 shadow-sm'
+                        : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      onClick={() => setScaleMethod('servings')}
+                    >
+                      <Package className={`h-5 w-5 ${scaleMethod === 'servings' ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <span className={`text-sm font-medium ${scaleMethod === 'servings' ? 'text-blue-900' : 'text-gray-600'}`}>
+                        By Servings
+                      </span>
+                    </button>
+                    <button
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${scaleMethod === 'factor'
+                        ? 'border-blue-600 bg-blue-50 shadow-sm'
+                        : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      onClick={() => setScaleMethod('factor')}
+                    >
+                      <Calculator className={`h-5 w-5 ${scaleMethod === 'factor' ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <span className={`text-sm font-medium ${scaleMethod === 'factor' ? 'text-blue-900' : 'text-gray-600'}`}>
+                        By Multiplier
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mt-6 mb-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">2</div>
+                    Set your target
+                  </div>
+
+                  {/* Scaling Input */}
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
+                    <div className="grid grid-cols-5 gap-3 items-center">
+                      {/* Original */}
+                      <div className="col-span-2 text-center">
+                        <div className="text-xs text-gray-500 mb-1 uppercase tracking-wide">Original</div>
+                        <div className="text-3xl font-bold text-gray-900">{recipeToScale.servings}</div>
+                        <div className="text-xs text-gray-600 mt-1">servings</div>
+                      </div>
+
+                      {/* Arrow */}
+                      <div className="flex justify-center">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span className="text-blue-600 font-bold">→</span>
+                        </div>
+                      </div>
+
+                      {/* Target */}
+                      <div className="col-span-2 text-center">
+                        <div className="text-xs text-gray-500 mb-1 uppercase tracking-wide">Target</div>
+                        {scaleMethod === 'servings' ? (
+                          <>
+                            <Input
+                              type="number"
+                              min="1"
+                              value={targetServings}
+                              onChange={(e) => setTargetServings(parseInt(e.target.value) || 1)}
+                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-blue-300 focus:border-blue-500"
+                            />
+                            <div className="text-xs text-gray-600 mt-1">servings</div>
+                          </>
+                        ) : (
+                          <>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              min="0.1"
+                              value={scaleFactor}
+                              onChange={(e) => setScaleFactor(parseFloat(e.target.value) || 1)}
+                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-blue-300 focus:border-blue-500"
+                            />
+                            <div className="text-xs text-gray-600 mt-1">multiplier</div>
+                          </>
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
 
-              {/* Scale Factor Display */}
-              <div className="flex items-center justify-center gap-2 py-2">
-                <div className="text-sm text-gray-600">Scaling by</div>
-                <div className="px-3 py-1 bg-blue-100 text-blue-900 rounded-full font-bold">
-                  {(scaleMethod === 'servings'
-                    ? targetServings / recipeToScale.servings
-                    : scaleFactor
-                  ).toFixed(2)}x
-                </div>
-                <div className="text-sm text-gray-600">
-                  ({recipeToScale.servings} → {getScaledTotals().servings} servings)
-                </div>
-              </div>
-
-              {/* Preview Section */}
-              <div className="border rounded-lg p-4 bg-blue-50">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <Calculator className="h-4 w-4" />
-                  Scaled Recipe Preview
-                </h4>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <div className="text-xs text-gray-600">Servings</div>
-                    <div className="text-lg font-bold">{getScaledTotals().servings}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-600">Total Cost</div>
-                    <div className="text-lg font-bold text-green-600">
-                      ${getScaledTotals().totalCost.toFixed(2)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-600">Cost/Serving</div>
-                    <div className="text-lg font-bold">
-                      ${getScaledTotals().costPerServing.toFixed(2)}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Scaled Ingredients */}
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-gray-700">Ingredients:</div>
-                  <div className="max-h-48 overflow-y-auto space-y-1">
-                    {getScaledIngredients().map((ing, index) => {
-                      const ingredientName = getIngredientName(ing.ingredientId)
-                      const formattedQuantity = formatQuantity(ing.quantity, ing.unit, ingredientName)
-
-                      return (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center p-2 bg-white rounded text-sm"
-                        >
-                          <span className="text-gray-700">
-                            {ingredientName}
-                          </span>
-                          <div className="flex items-center gap-3">
-                            <span className="font-medium">
-                              {formattedQuantity} {ing.unit}
-                            </span>
-                            <span className="text-gray-500 text-xs">
-                              ${ing.cost.toFixed(2)}
-                            </span>
-                          </div>
+                    {/* Quick Presets for Factor */}
+                    {scaleMethod === 'factor' && (
+                      <div className="mt-4 pt-4 border-t border-gray-300">
+                        <div className="text-xs text-gray-600 mb-2">Quick presets:</div>
+                        <div className="grid grid-cols-5 gap-2">
+                          {[0.5, 1, 2, 3, 4].map((factor) => (
+                            <Button
+                              key={factor}
+                              size="sm"
+                              variant={scaleFactor === factor ? "default" : "outline"}
+                              onClick={() => setScaleFactor(factor)}
+                              className="text-xs"
+                            >
+                              {factor}×
+                            </Button>
+                          ))}
                         </div>
-                      )
-                    })}
+                      </div>
+                    )}
+
+                    {/* Scale Indicator */}
+                    <div className="mt-4 pt-4 border-t border-gray-300">
+                      <div className="flex items-center justify-center gap-2">
+                        <Scale className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm text-gray-600">Scaling by</span>
+                        <span className="px-3 py-1 bg-blue-600 text-white rounded-full font-bold text-sm">
+                          {(scaleMethod === 'servings'
+                            ? targetServings / recipeToScale.servings
+                            : scaleFactor
+                          ).toFixed(2)}×
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Info Box */}
-              <div className="space-y-2">
-                {getScaledIngredients().some(ing => {
-                  const name = getIngredientName(ing.ingredientId)
-                  return ing.unit === 'unit' && name.toLowerCase().includes('egg')
-                }) && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-sm text-blue-900">
-                        🥚 <strong>Smart Egg Rounding:</strong> Eggs are automatically rounded to practical fractions (1/4, 1/2, 3/4) for easier measuring.
-                      </p>
+                {/* Right Side: PREVIEW */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
+                    <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs">✓</div>
+                    Live Preview
+                  </div>
+
+                  {/* Cost Summary Cards */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
+                      <div className="text-xs text-blue-700 font-medium mb-1">Servings</div>
+                      <div className="text-2xl font-bold text-blue-900">{getScaledTotals().servings}</div>
                     </div>
-                  )}
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-900">
-                    💡 <strong>Tip:</strong> Scaling saves a new recipe to your catalog. The original recipe remains unchanged.
-                  </p>
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 border border-green-200">
+                      <div className="text-xs text-green-700 font-medium mb-1">Total Cost</div>
+                      <div className="text-xl font-bold text-green-900">
+                        {formatCurrency(getScaledTotals().totalCost)}
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-3 border border-purple-200">
+                      <div className="text-xs text-purple-700 font-medium mb-1">Per Serving</div>
+                      <div className="text-xl font-bold text-purple-900">
+                        {formatCurrency(getScaledTotals().costPerServing)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Ingredients List */}
+                  <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                      <div className="flex items-center gap-2">
+                        <ListChecks className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm font-semibold text-gray-700">
+                          Ingredients ({getScaledIngredients().length})
+                        </span>
+                      </div>
+                    </div>
+                    <div className="max-h-[280px] overflow-y-auto">
+                      {getScaledIngredients().map((ing, index) => {
+                        const ingredientName = getIngredientName(ing.ingredientId)
+                        const formattedQuantity = formatQuantity(ing.quantity, ing.unit, ingredientName)
+                        const isEgg = ing.unit === 'unit' && ingredientName.toLowerCase().includes('egg')
+
+                        return (
+                          <div
+                            key={index}
+                            className={`flex items-center justify-between px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                              }`}
+                          >
+                            <div className="flex items-center gap-2 flex-1">
+                              {isEgg && <span className="text-lg">🥚</span>}
+                              <span className="text-sm text-gray-800">{ingredientName}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="text-sm font-semibold text-gray-900 min-w-[80px] text-right">
+                                {formattedQuantity} {ing.unit}
+                              </span>
+                              <span className="text-xs text-gray-500 min-w-[50px] text-right">
+                                {formatCurrency(ing.cost)}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Smart Tips */}
+                  {getScaledIngredients().some(ing => {
+                    const name = getIngredientName(ing.ingredientId)
+                    return ing.unit === 'unit' && name.toLowerCase().includes('egg')
+                  }) && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                        <p className="text-xs text-blue-900">
+                          <strong>🥚 Smart rounding:</strong> Eggs rounded to ¼, ½, ¾ fractions
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
           )}
 
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 mt-6 pt-4 border-t">
             <Button variant="outline" onClick={() => setIsScaleDialogOpen(false)}>
               Cancel
             </Button>
             <Button onClick={handleSaveScaledRecipe} className="bg-blue-600 hover:bg-blue-700">
               <Save className="h-4 w-4 mr-2" />
-              Save Scaled Recipe
+              Save as New Recipe
             </Button>
           </DialogFooter>
         </DialogContent>

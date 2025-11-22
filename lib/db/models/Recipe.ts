@@ -10,6 +10,7 @@ export interface IRecipeIngredient {
 
 export interface IRecipe {
   _id: string;
+  id?: string; // Optional: Preserves original ID for sample data compatibility
   userId: string;
   name: string;
   description?: string;
@@ -17,24 +18,24 @@ export interface IRecipe {
   ingredients: IRecipeIngredient[];
   instructions: string[];
   servings: number;
-  
+
   // Timing (all in minutes)
   prepTime?: number;
   cookTime?: number;
   coolTime?: number;
   laborTime: number;
-  
+
   // Costs
   laborCost: number;
   overheadCost: number;
   totalCost: number;
   costPerServing: number;
-  
+
   // Additional details
   temperature?: string;
   notes: string;
   image?: string;
-  
+
   // Metadata
   created_at: Date;
   updated_at: Date;
@@ -72,6 +73,10 @@ const RecipeSchema = new Schema<IRecipe>(
       type: String,
       required: true,
       index: true,
+    },
+    id: {
+      type: String,
+      required: false, // Optional: Preserves original ID for sample data
     },
     name: {
       type: String,

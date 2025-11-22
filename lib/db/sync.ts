@@ -30,6 +30,7 @@ export interface SyncPayload {
 
 /**
  * Process recipe changes
+ * IMPORTANT: Preserves the original 'id' field for sample data compatibility
  */
 export async function syncRecipes(userId: string, changes: SyncChange<IRecipe>[]): Promise<void> {
   await connectDB();
@@ -45,11 +46,17 @@ export async function syncRecipes(userId: string, changes: SyncChange<IRecipe>[]
         case 'create':
         case 'update':
           if (change.data) {
-            // Use replaceOne with upsert for both create and update
-            // This handles the case where the document may or may not exist
+            // Preserve the original 'id' field if it exists (important for sample data)
+            const dataToSave = {
+              ...change.data,
+              _id: docId,
+              id: change.data.id || docId, // Preserve 'id' field
+              userId
+            };
+
             await db.replaceOne(
-              { _id: docId } as any, // Only filter by _id, not userId
-              { ...change.data, _id: docId, userId } as any,
+              { _id: docId } as any,
+              dataToSave as any,
               { upsert: true }
             );
           }
@@ -140,6 +147,7 @@ export async function syncCustomers(userId: string, changes: SyncChange<ICustome
 
 /**
  * Process ingredient changes
+ * IMPORTANT: Preserves the original 'id' field for sample data compatibility
  */
 export async function syncIngredients(userId: string, changes: SyncChange<IIngredient>[]): Promise<void> {
   await connectDB();
@@ -155,9 +163,17 @@ export async function syncIngredients(userId: string, changes: SyncChange<IIngre
         case 'create':
         case 'update':
           if (change.data) {
+            // Preserve the original 'id' field if it exists (important for sample data)
+            const dataToSave = {
+              ...change.data,
+              _id: docId,
+              id: change.data.id || docId, // Preserve 'id' field
+              userId
+            };
+
             await db.replaceOne(
               { _id: docId } as any,
-              { ...change.data, _id: docId, userId } as any,
+              dataToSave as any,
               { upsert: true }
             );
           }
