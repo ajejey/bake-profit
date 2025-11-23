@@ -2300,7 +2300,7 @@ export default function RecipeCalculator() {
                 {/* Left Side: INPUT */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">1</div>
+                    <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs">1</div>
                     Choose how to scale
                   </div>
 
@@ -2308,24 +2308,24 @@ export default function RecipeCalculator() {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${scaleMethod === 'servings'
-                        ? 'border-blue-600 bg-blue-50 shadow-sm'
+                        ? 'border-rose-600 bg-rose-50 shadow-sm'
                         : 'border-gray-200 hover:border-gray-300'
                         }`}
                       onClick={() => setScaleMethod('servings')}
                     >
-                      <Package className={`h-5 w-5 ${scaleMethod === 'servings' ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <Package className={`h-5 w-5 ${scaleMethod === 'servings' ? 'text-rose-600' : 'text-gray-400'}`} />
                       <span className={`text-sm font-medium ${scaleMethod === 'servings' ? 'text-blue-900' : 'text-gray-600'}`}>
                         By Servings
                       </span>
                     </button>
                     <button
                       className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${scaleMethod === 'factor'
-                        ? 'border-blue-600 bg-blue-50 shadow-sm'
+                        ? 'border-rose-600 bg-rose-50 shadow-sm'
                         : 'border-gray-200 hover:border-gray-300'
                         }`}
                       onClick={() => setScaleMethod('factor')}
                     >
-                      <Calculator className={`h-5 w-5 ${scaleMethod === 'factor' ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <Calculator className={`h-5 w-5 ${scaleMethod === 'factor' ? 'text-rose-600' : 'text-gray-400'}`} />
                       <span className={`text-sm font-medium ${scaleMethod === 'factor' ? 'text-blue-900' : 'text-gray-600'}`}>
                         By Multiplier
                       </span>
@@ -2333,7 +2333,7 @@ export default function RecipeCalculator() {
                   </div>
 
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 mt-6 mb-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">2</div>
+                    <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs">2</div>
                     Set your target
                   </div>
 
@@ -2349,8 +2349,8 @@ export default function RecipeCalculator() {
 
                       {/* Arrow */}
                       <div className="flex justify-center">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                          <span className="text-blue-600 font-bold">→</span>
+                        <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center">
+                          <span className="text-rose-600 font-bold">→</span>
                         </div>
                       </div>
 
@@ -2364,7 +2364,7 @@ export default function RecipeCalculator() {
                               min="1"
                               value={targetServings}
                               onChange={(e) => setTargetServings(parseInt(e.target.value) || 1)}
-                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-blue-300 focus:border-blue-500"
+                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-rose-300 focus:border-rose-500"
                             />
                             <div className="text-xs text-gray-600 mt-1">servings</div>
                           </>
@@ -2376,7 +2376,7 @@ export default function RecipeCalculator() {
                               min="0.1"
                               value={scaleFactor}
                               onChange={(e) => setScaleFactor(parseFloat(e.target.value) || 1)}
-                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-blue-300 focus:border-blue-500"
+                              className="text-3xl font-bold h-auto py-2 text-center border-2 border-rose-300 focus:border-rose-500"
                             />
                             <div className="text-xs text-gray-600 mt-1">multiplier</div>
                           </>
@@ -2407,9 +2407,9 @@ export default function RecipeCalculator() {
                     {/* Scale Indicator */}
                     <div className="mt-4 pt-4 border-t border-gray-300">
                       <div className="flex items-center justify-center gap-2">
-                        <Scale className="h-4 w-4 text-blue-600" />
+                        <Scale className="h-4 w-4 text-rose-600" />
                         <span className="text-sm text-gray-600">Scaling by</span>
-                        <span className="px-3 py-1 bg-blue-600 text-white rounded-full font-bold text-sm">
+                        <span className="px-3 py-1 bg-rose-600 text-white rounded-full font-bold text-sm">
                           {(scaleMethod === 'servings'
                             ? targetServings / recipeToScale.servings
                             : scaleFactor
@@ -2429,9 +2429,9 @@ export default function RecipeCalculator() {
 
                   {/* Cost Summary Cards */}
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
-                      <div className="text-xs text-blue-700 font-medium mb-1">Servings</div>
-                      <div className="text-2xl font-bold text-blue-900">{getScaledTotals().servings}</div>
+                    <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-lg p-3 border border-rose-200">
+                      <div className="text-xs text-rose-700 font-medium mb-1">Servings</div>
+                      <div className="text-2xl font-bold text-rose-900">{getScaledTotals().servings}</div>
                     </div>
                     <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 border border-green-200">
                       <div className="text-xs text-green-700 font-medium mb-1">Total Cost</div>
@@ -2492,8 +2492,8 @@ export default function RecipeCalculator() {
                     const name = getIngredientName(ing.ingredientId)
                     return ing.unit === 'unit' && name.toLowerCase().includes('egg')
                   }) && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-                        <p className="text-xs text-blue-900">
+                      <div className="bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+                        <p className="text-xs text-rose-900">
                           <strong>🥚 Smart rounding:</strong> Eggs rounded to ¼, ½, ¾ fractions
                         </p>
                       </div>
@@ -2507,7 +2507,7 @@ export default function RecipeCalculator() {
             <Button variant="outline" onClick={() => setIsScaleDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveScaledRecipe} className="bg-blue-600 hover:bg-blue-700">
+            <Button variant="default" onClick={handleSaveScaledRecipe}>
               <Save className="h-4 w-4 mr-2" />
               Save as New Recipe
             </Button>

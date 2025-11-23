@@ -61,6 +61,7 @@ import { useToast } from '@/hooks/use-toast'
 import type { Ingredient, ShoppingListItem } from '../types'
 import { cn } from '@/lib/utils'
 import jsPDF from 'jspdf'
+import { HelpTooltip } from './HelpTooltip'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useForm } from 'react-hook-form'
@@ -117,6 +118,9 @@ export default function InventoryManager() {
   const [showShoppingList, setShowShoppingList] = useState(false)
   const [editingMinStock, setEditingMinStock] = useState<string | null>(null)
   const [minStockValue, setMinStockValue] = useState<number>(0)
+  const [restockingItem, setRestockingItem] = useState<{ ingredientId: string; ingredientName: string; unit: string; packageSize: number } | null>(null)
+  const [restockPackages, setRestockPackages] = useState<number>(1)
+  const [customRestockAmount, setCustomRestockAmount] = useState<number>(0)
 
   // Search, Filter, Sort state for Ingredients tab
   const [searchTerm, setSearchTerm] = useState('')
@@ -259,7 +263,7 @@ export default function InventoryManager() {
       case 'out':
         return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Out of Stock</Badge>
       default:
-        return <Badge variant="outline"><AlertCircle className="h-3 w-3 mr-1" />Not Tracked</Badge>
+        return <Badge variant="outline"><AlertCircle className="h-3 w-3 mr-1" />Tracking Not Started</Badge>
     }
   }
 
@@ -315,6 +319,42 @@ export default function InventoryManager() {
       description: 'You can now track stock levels for this ingredient.',
     })
   }
+
+  // Handle restock - opens dialog with package-based input
+  const handleRestock = (ingredientId: string) => {
+    const ingredient = ingredients.find(ing => ing.id === ingredientId)
+    if (!ingredient) return
+
+    setRestockingItem({
+      ingredientId,
+      ingredientName: ingredient.name,
+      unit: ingredient.unit,
+      packageSize: ingredient.packageSize || 1
+    })
+    setRestockPackages(1)
+    setCustomRestockAmount(0)
+  }
+
+  // Handle confirm restock
+  const handleConfirmRestock = () => {
+    if (!restockingItem) return
+
+    const amount = customRestockAmount > 0
+      ? customRestockAmount
+      : restockPackages * restockingItem.packageSize
+
+    adjustStock(restockingItem.ingredientId, amount)
+
+    toast({
+      title: 'Stock restocked',
+      description: `Added ${amount.toFixed(1)} ${restockingItem.unit} to ${restockingItem.ingredientName}`,
+    })
+
+    setRestockingItem(null)
+    setRestockPackages(1)
+    setCustomRestockAmount(0)
+  }
+
 
   // Handle export shopping list to clipboard
   const handleExportShoppingList = () => {
@@ -517,7 +557,7 @@ export default function InventoryManager() {
         </TabsList>
 
         {/* Ingredients Tab - Will be moved from RecipeCalculator */}
-        <TabsContent value="ingredients" className="mt-6">
+        <TabsContent value="ingredients" className="mt-6 px-2 md:px-0">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">Ingredients</h2>
@@ -792,31 +832,74 @@ export default function InventoryManager() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Unit</TableHead>
-                      <TableHead>Package Size</TableHead>
-                      <TableHead>Package Cost</TableHead>
-                      <TableHead>Cost per Unit</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredAndSortedIngredients.map((ingredient) => (
-                      <TableRow key={ingredient.id}>
-                        <TableCell>{ingredient.name}</TableCell>
-                        <TableCell>{ingredient.unit}</TableCell>
-                        <TableCell>{ingredient.packageSize} {ingredient.unit}</TableCell>
-                        <TableCell>{formatCurrency(ingredient.packageCost)}</TableCell>
-                        <TableCell>{formatCurrency(ingredient.cost)}/{ingredient.unit}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
+              <>
+                {/* Desktop Table View - Hidden on Mobile */}
+                <div className="hidden md:block rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Unit</TableHead>
+                        <TableHead>Package Size</TableHead>
+                        <TableHead>Package Cost</TableHead>
+                        <TableHead>Cost per Unit</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAndSortedIngredients.map((ingredient) => (
+                        <TableRow key={ingredient.id}>
+                          <TableCell>{ingredient.name}</TableCell>
+                          <TableCell>{ingredient.unit}</TableCell>
+                          <TableCell>{ingredient.packageSize} {ingredient.unit}</TableCell>
+                          <TableCell>{formatCurrency(ingredient.packageCost)}</TableCell>
+                          <TableCell>{formatCurrency(ingredient.cost)}/{ingredient.unit}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  setEditingIngredient(ingredient)
+                                  ingredientForm.reset({
+                                    name: ingredient.name,
+                                    unit: ingredient.unit,
+                                    packageSize: ingredient.packageSize,
+                                    packageCost: ingredient.packageCost,
+                                  })
+                                  setIsEditIngredientOpen(true)
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDeleteIngredient(ingredient.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Mobile Card View - Visible on Mobile Only */}
+                <div className="md:hidden space-y-3">
+                  {filteredAndSortedIngredients.map((ingredient) => (
+                    <Card key={ingredient.id} className="overflow-hidden py-4">
+                      <CardContent className="px-4">
+                        {/* Header with Name and Actions */}
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-semibold text-lg">{ingredient.name}</h3>
+                          <div className="flex gap-1">
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="h-8 w-8"
                               onClick={() => {
                                 setEditingIngredient(ingredient)
                                 ingredientForm.reset({
@@ -833,17 +916,38 @@ export default function InventoryManager() {
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="h-8 w-8"
                               onClick={() => handleDeleteIngredient(ingredient.id)}
                             >
                               <Trash2 className="h-4 w-4 text-red-500" />
                             </Button>
                           </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                        </div>
+
+                        {/* Ingredient Details Grid */}
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Unit</div>
+                            <div className="font-medium">{ingredient.unit}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Package Size</div>
+                            <div className="font-medium">{ingredient.packageSize} {ingredient.unit}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Package Cost</div>
+                            <div className="font-semibold text-green-600">{formatCurrency(ingredient.packageCost)}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 mb-1">Cost per Unit</div>
+                            <div className="font-semibold text-blue-600">{formatCurrency(ingredient.cost)}/{ingredient.unit}</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
             )}
 
             <Dialog open={isEditIngredientOpen} onOpenChange={setIsEditIngredientOpen}>
@@ -958,63 +1062,52 @@ export default function InventoryManager() {
 
         {/* Stock Levels Tab - Current inventory content */}
         <TabsContent value="inventory" className="mt-6 space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Tracked Items</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{inventory.length}</div>
-                <p className="text-xs text-muted-foreground">
-                  {uninitializedIngredients.length} not tracked
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Alerts</CardTitle>
-                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{alertCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  {hasOutOfStock ? 'Some items out of stock' : hasLowStock ? 'Low stock warnings' : 'All good'}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingOrdersCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  Orders to fulfill
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Shopping List</CardTitle>
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={handleGenerateShoppingList}
-                  className="w-full"
-                  size="sm"
-                >
-                  Generate List
-                </Button>
-              </CardContent>
-            </Card>
+          {/* Header with Generate Shopping List Button */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <h2 className="text-2xl font-bold">Inventory</h2>
+            <Button
+              onClick={handleGenerateShoppingList}
+              className="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 w-full sm:w-auto"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Generate Shopping List
+            </Button>
           </div>
+
+          {/* Manual Inventory Explanation Banner */}
+          <Card className="border-blue-200 bg-blue-50">
+            <CardContent className="px-2 md:px-6">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-blue-900 mb-2">How Inventory Tracking Works</h3>
+                  <div className="text-sm text-blue-800 space-y-2">
+                    <p>
+                      <strong>Manual tracking:</strong> This tab tracks your physical stock. Numbers change when <strong>YOU</strong> update them after using or buying ingredients.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                      <div className="flex items-start gap-2">
+                        <span className="text-blue-600">•</span>
+                        <span><strong>After baking:</strong> Click "Used" to reduce stock</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-blue-600">•</span>
+                        <span><strong>After shopping:</strong> Click "Restock" to add stock</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-blue-600">•</span>
+                        <span><strong>Set alerts:</strong> Get notified when stock runs low</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-blue-600">•</span>
+                        <span><strong>Shopping lists:</strong> See what you need for pending orders</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Alerts Section */}
           {alerts.length > 0 && (
@@ -1057,7 +1150,7 @@ export default function InventoryManager() {
               <CardTitle>Ingredient Stock Levels</CardTitle>
               <CardDescription>Manage your ingredient inventory</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-2 md:px-6">
               {inventoryWithDetails.length === 0 && uninitializedIngredients.length === 0 ? (
                 <Card className="border-2 border-dashed border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
                   <CardContent className="pt-8 pb-8 px-6">
@@ -1159,42 +1252,240 @@ export default function InventoryManager() {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Ingredient</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Current Stock</TableHead>
-                        <TableHead>Min Stock</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {inventoryWithDetails.map((item) => (
-                        <TableRow key={item.ingredientId}>
-                          <TableCell className="font-medium">
-                            {item.ingredientName}
-                          </TableCell>
-                          <TableCell>
+                <>
+                  {/* Desktop Table View - Hidden on Mobile */}
+                  <div className="hidden md:block rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Ingredient</TableHead>
+                          <TableHead>
+                            <HelpTooltip content="Shows current stock status based on your alert level">
+                              Status
+                            </HelpTooltip>
+                          </TableHead>
+                          <TableHead>
+                            <HelpTooltip content="Your current physical stock on hand. Update this manually after using or buying ingredients.">
+                              Current Stock
+                            </HelpTooltip>
+                          </TableHead>
+                          <TableHead>
+                            <HelpTooltip content="Get notified when stock drops below this level. Set this based on your typical weekly usage.">
+                              Low Stock Alert
+                            </HelpTooltip>
+                          </TableHead>
+                          <TableHead>
+                            <HelpTooltip content="Update stock after using ingredients (click 'Used') or after purchasing (click 'Restock')">
+                              Actions
+                            </HelpTooltip>
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {inventoryWithDetails.map((item) => (
+                          <TableRow key={item.ingredientId}>
+                            <TableCell className="font-medium">
+                              {item.ingredientName}
+                            </TableCell>
+                            <TableCell>
+                              {getStatusBadge(getInventoryStatus(item.ingredientId))}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-2">
+                                {/* Value */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg font-semibold">
+                                    {item.currentStock.toFixed(1)}
+                                  </span>
+                                  <span className="text-sm text-gray-500">{item.unit}</span>
+                                </div>
+
+                                {/* Visual Progress Bar */}
+                                <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div
+                                    className={cn(
+                                      "h-full transition-all",
+                                      item.currentStock >= item.minStock
+                                        ? "bg-green-500"
+                                        : item.currentStock > 0
+                                          ? "bg-yellow-500"
+                                          : "bg-red-500"
+                                    )}
+                                    style={{
+                                      width: `${Math.min((item.currentStock / Math.max(item.minStock, 1)) * 100, 100)}%`
+                                    }}
+                                  />
+                                  {/* Alert level marker */}
+                                  {item.minStock > 0 && (
+                                    <div
+                                      className="absolute top-0 h-full w-0.5 bg-gray-400"
+                                      style={{ right: '0%' }}
+                                      title={`Alert level: ${item.minStock} ${item.unit}`}
+                                    />
+                                  )}
+                                </div>
+
+                                {/* Context */}
+                                <div className="text-xs text-gray-500">
+                                  {item.currentStock >= item.minStock
+                                    ? `${((item.currentStock / Math.max(item.minStock, 1)) * 100).toFixed(0)}% of alert level`
+                                    : item.minStock > 0
+                                      ? `Need ${(item.minStock - item.currentStock).toFixed(1)} ${item.unit} more`
+                                      : 'No alert level set'
+                                  }
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {editingMinStock === item.ingredientId ? (
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="number"
+                                    value={minStockValue}
+                                    onChange={(e) => setMinStockValue(parseFloat(e.target.value) || 0)}
+                                    className="w-20"
+                                    autoFocus
+                                  />
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleSetMinStock(item.ingredientId)}
+                                  >
+                                    Save
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setEditingMinStock(null)}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    setEditingMinStock(item.ingredientId)
+                                    setMinStockValue(item.minStock)
+                                  }}
+                                  className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                                >
+                                  {item.minStock} {item.unit}
+                                  <Settings className="h-3 w-3" />
+                                </button>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleAdjustStock(item.ingredientId, -(item.ingredient?.packageSize || 1))}
+                                  disabled={item.currentStock === 0}
+                                  title="Reduce stock after using ingredients"
+                                >
+                                  <Minus className="h-4 w-4 mr-1" />
+                                  Used
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleRestock(item.ingredientId)}
+                                  className="bg-green-600 hover:bg-green-700"
+                                  title="Add stock after purchasing"
+                                >
+                                  <Plus className="h-4 w-4 mr-1" />
+                                  Restock
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+
+                        {/* Uninitialized ingredients */}
+                        {uninitializedIngredients.map((ingredient) => (
+                          <TableRow key={ingredient.id} className="bg-gray-50">
+                            <TableCell className="font-medium text-gray-600">
+                              {ingredient.name}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                <AlertCircle className="h-3 w-3 mr-1" />
+                                Tracking Not Started
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-gray-400">-</TableCell>
+                            <TableCell className="text-gray-400">-</TableCell>
+                            <TableCell>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleInitializeInventory(ingredient.id)}
+                              >
+                                <TrendingDown className="h-4 w-4 mr-1" />
+                                Start Tracking
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Card View - Visible on Mobile Only */}
+                  <div className="md:hidden space-y-4">
+                    {inventoryWithDetails.map((item) => (
+                      <Card key={item.ingredientId} className="overflow-hidden">
+                        <CardContent>
+                          {/* Header with Name and Status */}
+                          <div className="flex items-start justify-between mb-3">
+                            <h3 className="font-semibold text-lg">{item.ingredientName}</h3>
                             {getStatusBadge(getInventoryStatus(item.ingredientId))}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg font-semibold">
+                          </div>
+
+                          {/* Current Stock with Progress Bar */}
+                          <div className="mb-4">
+                            <div className="flex items-baseline gap-2 mb-2">
+                              <span className="text-2xl font-bold">
                                 {item.currentStock.toFixed(1)}
                               </span>
                               <span className="text-sm text-gray-500">{item.unit}</span>
                             </div>
-                          </TableCell>
-                          <TableCell>
+
+                            {/* Progress Bar */}
+                            <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-1">
+                              <div
+                                className={cn(
+                                  "h-full transition-all",
+                                  item.currentStock >= item.minStock
+                                    ? "bg-green-500"
+                                    : item.currentStock > 0
+                                      ? "bg-yellow-500"
+                                      : "bg-red-500"
+                                )}
+                                style={{
+                                  width: `${Math.min((item.currentStock / Math.max(item.minStock, 1)) * 100, 100)}%`
+                                }}
+                              />
+                            </div>
+
+                            <div className="text-xs text-gray-500">
+                              {item.currentStock >= item.minStock
+                                ? `${((item.currentStock / Math.max(item.minStock, 1)) * 100).toFixed(0)}% of alert level`
+                                : item.minStock > 0
+                                  ? `Need ${(item.minStock - item.currentStock).toFixed(1)} ${item.unit} more`
+                                  : 'No alert level set'
+                              }
+                            </div>
+                          </div>
+
+                          {/* Alert Level */}
+                          <div className="mb-4 pb-4 border-b">
+                            <div className="text-xs text-gray-500 mb-1">Low Stock Alert</div>
                             {editingMinStock === item.ingredientId ? (
                               <div className="flex items-center gap-2">
                                 <Input
                                   type="number"
                                   value={minStockValue}
                                   onChange={(e) => setMinStockValue(parseFloat(e.target.value) || 0)}
-                                  className="w-20"
+                                  className="flex-1"
                                   autoFocus
                                 />
                                 <Button
@@ -1208,7 +1499,7 @@ export default function InventoryManager() {
                                   variant="ghost"
                                   onClick={() => setEditingMinStock(null)}
                                 >
-                                  Cancel
+                                  <X className="h-4 w-4" />
                                 </Button>
                               </div>
                             ) : (
@@ -1217,67 +1508,198 @@ export default function InventoryManager() {
                                   setEditingMinStock(item.ingredientId)
                                   setMinStockValue(item.minStock)
                                 }}
-                                className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                                className="flex items-center gap-1 text-sm font-medium text-gray-900 hover:text-gray-700"
                               >
                                 {item.minStock} {item.unit}
                                 <Settings className="h-3 w-3" />
                               </button>
                             )}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                onClick={() => handleAdjustStock(item.ingredientId, -1)}
-                                disabled={item.currentStock === 0}
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                onClick={() => handleAdjustStock(item.ingredientId, 1)}
-                              >
-                                <Plus className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                          </div>
 
-                      {/* Uninitialized ingredients */}
-                      {uninitializedIngredients.map((ingredient) => (
-                        <TableRow key={ingredient.id} className="bg-gray-50">
-                          <TableCell className="font-medium text-gray-600">
-                            {ingredient.name}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              <AlertCircle className="h-3 w-3 mr-1" />
-                              Not Tracked
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-gray-400">-</TableCell>
-                          <TableCell className="text-gray-400">-</TableCell>
-                          <TableCell>
+                          {/* Actions */}
+                          <div className="flex gap-2">
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleInitializeInventory(ingredient.id)}
+                              onClick={() => handleAdjustStock(item.ingredientId, -(item.ingredient?.packageSize || 1))}
+                              disabled={item.currentStock === 0}
+                              className="flex-1"
                             >
-                              <TrendingDown className="h-4 w-4 mr-1" />
-                              Start Tracking
+                              <Minus className="h-4 w-4 mr-1" />
+                              Used
                             </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                            <Button
+                              size="sm"
+                              onClick={() => handleRestock(item.ingredientId)}
+                              className="flex-1 bg-green-600 hover:bg-green-700"
+                            >
+                              <Plus className="h-4 w-4 mr-1" />
+                              Restock
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+
+                    {/* Uninitialized ingredients on mobile */}
+                    {uninitializedIngredients.map((ingredient) => (
+                      <Card key={ingredient.id} className="bg-gray-50">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-semibold text-gray-600">{ingredient.name}</h3>
+                            <Badge variant="outline">
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                              Not Started
+                            </Badge>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleInitializeInventory(ingredient.id)}
+                            className="w-full"
+                          >
+                            <TrendingDown className="h-4 w-4 mr-1" />
+                            Start Tracking
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
+
+          {/* Quick Restock Dialog */}
+          <Dialog open={!!restockingItem} onOpenChange={(open) => !open && setRestockingItem(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Package className="h-5 w-5 text-green-600" />
+                  Restock: {restockingItem?.ingredientName}
+                </DialogTitle>
+                <DialogDescription>
+                  Add stock after purchasing ingredients
+                </DialogDescription>
+              </DialogHeader>
+
+              {restockingItem && (
+                <div className="space-y-4">
+                  {/* Package-based input */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Number of Packages</label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={() => setRestockPackages(Math.max(1, restockPackages - 1))}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <Input
+                        type="number"
+                        min="1"
+                        value={restockPackages}
+                        onChange={(e) => setRestockPackages(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-20 text-center"
+                      />
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={() => setRestockPackages(restockPackages + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      <span className="text-sm text-gray-500">
+                        × {restockingItem.packageSize} {restockingItem.unit} per package
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Calculation preview */}
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="text-sm text-green-900 space-y-1">
+                      <div className="flex justify-between">
+                        <span>This will add:</span>
+                        <span className="font-semibold">
+                          {(restockPackages * restockingItem.packageSize).toFixed(1)} {restockingItem.unit}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>New total:</span>
+                        <span className="font-semibold">
+                          {(() => {
+                            const currentItem = inventoryWithDetails.find(i => i.ingredientId === restockingItem.ingredientId)
+                            const newTotal = (currentItem?.currentStock || 0) + (restockPackages * restockingItem.packageSize)
+                            return `${newTotal.toFixed(1)} ${restockingItem.unit}`
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick actions */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Quick Actions</label>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRestockPackages(1)}
+                      >
+                        +1 Package
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRestockPackages(2)}
+                      >
+                        +2 Packages
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRestockPackages(5)}
+                      >
+                        +5 Packages
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Custom amount option */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Or enter custom amount</label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={customRestockAmount || ''}
+                        onChange={(e) => setCustomRestockAmount(parseFloat(e.target.value) || 0)}
+                        placeholder="Custom amount"
+                      />
+                      <span className="text-sm text-gray-500">{restockingItem.unit}</span>
+                    </div>
+                    {customRestockAmount > 0 && (
+                      <p className="text-xs text-gray-500">
+                        Custom amount will override package calculation
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setRestockingItem(null)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleConfirmRestock} className="bg-green-600 hover:bg-green-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Stock
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           {/* Shopping List Dialog */}
           <Dialog open={showShoppingList} onOpenChange={setShowShoppingList}>
