@@ -39,17 +39,9 @@ import {
   AlertCircle,
   TrendingDown,
   Download,
-  Calendar,
   Edit,
   Trash2,
-  Save,
-  Copy,
-  Clock,
-  Thermometer,
   X,
-  Scale,
-  FileText,
-  DollarSign,
   ClipboardList,
   TrendingUp,
   Lightbulb,
@@ -1088,11 +1080,11 @@ export default function InventoryManager() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
                       <div className="flex items-start gap-2">
                         <span className="text-blue-600">•</span>
-                        <span><strong>After baking:</strong> Click "Used" to reduce stock</span>
+                        <span><strong>After baking:</strong> Click &quot;Used&quot; to reduce stock</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-blue-600">•</span>
-                        <span><strong>After shopping:</strong> Click "Restock" to add stock</span>
+                        <span><strong>After shopping:</strong> Click &quot;Restock&quot; to add stock</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="text-blue-600">•</span>
