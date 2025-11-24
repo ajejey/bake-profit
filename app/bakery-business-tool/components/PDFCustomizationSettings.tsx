@@ -15,7 +15,7 @@ import { PAYMENT_TERMS } from '../types'
 export default function PDFCustomizationSettings() {
   const { toast } = useToast()
   const { customization, saveCustomization } = usePDFCustomization()
-  
+
   const [formData, setFormData] = useState({
     businessName: customization.businessName || '',
     businessAddress: customization.businessAddress || '',
@@ -30,7 +30,7 @@ export default function PDFCustomizationSettings() {
     defaultTerms: customization.defaultTerms || '',
     footerText: customization.footerText || 'Thank you for your business!'
   })
-  
+
   const handleSave = () => {
     try {
       saveCustomization(formData)
@@ -46,7 +46,7 @@ export default function PDFCustomizationSettings() {
       })
     }
   }
-  
+
   return (
     <div className="space-y-6">
       <div className="flex justify-end mb-2 gap-2">
@@ -64,7 +64,7 @@ export default function PDFCustomizationSettings() {
           Customize how your PDFs (invoices, orders, recipes) appear
         </p>
       </div>
-      
+
       {/* Business Information */}
       <Card>
         <CardHeader>
@@ -90,7 +90,7 @@ export default function PDFCustomizationSettings() {
               />
             </div>
           </div>
-          
+
           <div>
             <Label>Business Address</Label>
             <Input
@@ -99,7 +99,7 @@ export default function PDFCustomizationSettings() {
               placeholder="123 Main Street, City, State 12345"
             />
           </div>
-          
+
           <div className="grid grid-cols-3 gap-4">
             <div>
               <Label>Phone</Label>
@@ -129,7 +129,7 @@ export default function PDFCustomizationSettings() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Invoice Defaults */}
       <Card>
         <CardHeader>
@@ -177,7 +177,7 @@ export default function PDFCustomizationSettings() {
               />
             </div>
           </div>
-          
+
           <div>
             <Label>Default Invoice Notes</Label>
             <Textarea
@@ -187,7 +187,7 @@ export default function PDFCustomizationSettings() {
               rows={2}
             />
           </div>
-          
+
           <div>
             <Label>Default Terms & Conditions</Label>
             <Textarea
@@ -199,7 +199,7 @@ export default function PDFCustomizationSettings() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* PDF Layout */}
       <Card>
         <CardHeader>
@@ -220,7 +220,7 @@ export default function PDFCustomizationSettings() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         <Button variant="outline" onClick={() => window.location.reload()}>

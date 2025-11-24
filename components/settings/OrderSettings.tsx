@@ -63,6 +63,27 @@ export default function OrderSettings() {
     loadSettings();
   }, []);
 
+  // Auto-save settings when any value changes (with debounce)
+  useEffect(() => {
+    // Don't auto-save during initial load
+    if (isLoading) return;
+
+    const timeoutId = setTimeout(async () => {
+      await StorageAdapter.setItem('orderSettings', JSON.stringify({
+        defaultStatus,
+        autoIncrement,
+        orderPrefix,
+        leadTime,
+        requirePhone,
+        autoSaveCustomers,
+      }));
+
+      console.log('Order settings auto-saved');
+    }, 1000); // 1 second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [defaultStatus, autoIncrement, orderPrefix, leadTime, requirePhone, autoSaveCustomers, isLoading]);
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -108,9 +129,12 @@ export default function OrderSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end mb-2">
-        <Button onClick={handleSave} size="lg" variant="default">
-          Save Changes
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-sm text-gray-500">
+          Changes are auto-saved
+        </p>
+        <Button onClick={handleSave} size="sm" variant="outline">
+          Save Now
         </Button>
       </div>
       <Card>
@@ -133,8 +157,9 @@ export default function OrderSettings() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="new">New</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="ready">Ready</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -216,8 +241,8 @@ export default function OrderSettings() {
       </Card>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} size="lg">
-          Save Changes
+        <Button onClick={handleSave} size="sm" variant="outline">
+          Save Now
         </Button>
       </div>
     </div>

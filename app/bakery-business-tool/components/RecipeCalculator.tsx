@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { ChefHat, ListChecks, ClipboardList, Calculator, Lightbulb, Plus } from 'lucide-react'
 import {
   Card,
@@ -159,9 +159,9 @@ export default function RecipeCalculator() {
   const { checkLimit } = useSubscription()
 
   // Load default settings
-  const { servings: defaultServings } = useDefaultServings()
-  const { laborCost: defaultLaborCost } = useDefaultLaborCost()
-  const { overhead: defaultOverhead } = useDefaultOverhead()
+  const { servings: defaultServings, loading: servingsLoading } = useDefaultServings()
+  const { laborCost: defaultLaborCost, loading: laborCostLoading } = useDefaultLaborCost()
+  const { overhead: defaultOverhead, loading: overheadLoading } = useDefaultOverhead()
   const { symbol: currencySymbol = '$' } = useCurrencySymbol()
 
   // Use custom hooks for data management
@@ -215,6 +215,23 @@ export default function RecipeCalculator() {
       notes: '',
     },
   })
+
+  // Update form defaults when settings load
+  useEffect(() => {
+    const allLoaded = !servingsLoading && !laborCostLoading && !overheadLoading
+    if (allLoaded) {
+      // Only update if form is in initial state (no recipe open)
+      if (!isAddRecipeOpen && !isEditRecipeOpen) {
+        const currentValues = recipeForm.getValues()
+        // Only update if values haven't been changed by user
+        if (!currentValues.name) {
+          recipeForm.setValue('servings', defaultServings)
+          recipeForm.setValue('laborCost', defaultLaborCost)
+          recipeForm.setValue('overheadCost', defaultOverhead)
+        }
+      }
+    }
+  }, [defaultServings, defaultLaborCost, defaultOverhead, servingsLoading, laborCostLoading, overheadLoading, recipeForm, isAddRecipeOpen, isEditRecipeOpen])
 
 
   // Helper to format currency synchronously (uses default $ symbol if not loaded yet)

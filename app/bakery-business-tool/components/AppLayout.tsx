@@ -19,6 +19,7 @@ import {
   Settings as SettingsIcon,
   LogOut,
   Download,
+  Calendar,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -52,7 +53,7 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       // Fetch the sample data file
       const response = await fetch('/sample-bakery-data.json')
       const data = await response.json()
-      
+
       // Load sample data into localStorage
       await StorageAdapter.setItem('bakery-ingredients', JSON.stringify(data.ingredients))
       await StorageAdapter.setItem('bakery-recipes', JSON.stringify(data.recipes))
@@ -61,12 +62,12 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       await StorageAdapter.setItem('bakery-customers', JSON.stringify(data.customers))
 
       localStorage.setItem('sampleDataLoaded', 'true')
-      
+
       toast({
         title: '🎉 Sample data loaded!',
         description: 'Your bakery now has recipes, orders, and customers. Explore all features!',
       })
-      
+
       setIsSampleDataLoaded(true)
       setTimeout(() => window.location.reload(), 1000)
     } catch (error) {
@@ -101,6 +102,13 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       icon: <ShoppingCart className="h-5 w-5" />,
       href: '/bakery-business-tool/orders',
     },
+    // {
+    //   id: 'calendar',
+    //   name: 'Calendar',
+    //   shortName: 'Calendar',
+    //   icon: <Calendar className="h-5 w-5" />,
+    //   href: '/bakery-business-tool/calendar',
+    // },
     {
       id: 'recipes',
       name: 'Recipes',
@@ -202,7 +210,7 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
                   <span className="mr-3">{item.icon}</span>
                   <span className="font-medium flex-1">{item.name}</span>
                   {item.id === 'inventory' && alertCount > 0 && (
-                    <Badge 
+                    <Badge
                       variant={hasOutOfStock ? 'destructive' : 'default'}
                       className={cn(
                         'ml-2',
@@ -220,15 +228,15 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
           {/* Load Sample Data Button */}
           {isSampleDataLoaded ? null : (
             <div className="p-4 border-t">
-            <Button
-              variant="default"
-              className="w-full flex items-center justify-center bg-rose-500 text-white hover:text-white hover:bg-rose-600 ripple-glow"
-              onClick={handleLoadSampleData}
-            >
-              <Download className="h-4 w-4 mr-2 icon-glow" />
-              Load Sample Data
-            </Button>
-          </div>
+              <Button
+                variant="default"
+                className="w-full flex items-center justify-center bg-rose-500 text-white hover:text-white hover:bg-rose-600 ripple-glow"
+                onClick={handleLoadSampleData}
+              >
+                <Download className="h-4 w-4 mr-2 icon-glow" />
+                Load Sample Data
+              </Button>
+            </div>
           )}
 
           {/* Logout button */}
@@ -288,8 +296,8 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
               {/* Contact Info - Desktop */}
               <div className="hidden sm:flex items-center gap-2 text-gray-600">
                 <span className="font-medium">Need help?</span>
-                <a 
-                  href="mailto:thebakeprofit@gmail.com" 
+                <a
+                  href="mailto:thebakeprofit@gmail.com"
                   className="text-rose-600 hover:text-rose-700 hover:underline font-medium"
                 >
                   thebakeprofit@gmail.com
@@ -298,20 +306,20 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
 
               {/* Navigation Links - Desktop only */}
               <div className="hidden sm:flex items-center gap-4">
-                <a 
-                  href="/blog" 
+                <a
+                  href="/blog"
                   className="text-gray-600 hover:text-rose-600 hover:underline"
                 >
                   Blog
                 </a>
-                <a 
-                  href="/tools" 
+                <a
+                  href="/tools"
                   className="text-gray-600 hover:text-rose-600 hover:underline"
                 >
                   Tools
                 </a>
-                <a 
-                  href="/contact" 
+                <a
+                  href="/contact"
                   className="text-gray-600 hover:text-rose-600 hover:underline"
                 >
                   Contact
@@ -324,8 +332,8 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
 
               {/* Mobile-optimized minimal footer */}
               <div className="sm:hidden text-center text-xs">
-                <a 
-                  href="mailto:thebakeprofit@gmail.com" 
+                <a
+                  href="mailto:thebakeprofit@gmail.com"
                   className="text-rose-600 hover:text-rose-700"
                 >
                   Need help? thebakeprofit@gmail.com

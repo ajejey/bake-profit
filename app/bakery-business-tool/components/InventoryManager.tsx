@@ -74,7 +74,7 @@ const ingredientFormSchema = z.object({
 export default function InventoryManager() {
   const { toast } = useToast()
   const { symbol: currencySymbol } = useCurrencySymbol()
-  const { unit: preferredWeightUnit } = usePreferredWeightUnit()
+  const { unit: preferredWeightUnit, loading: weightUnitLoading } = usePreferredWeightUnit()
   console.log("currencySymbol ", currencySymbol)
   console.log("preferredWeightUnit ", preferredWeightUnit)
   const {
@@ -130,6 +130,19 @@ export default function InventoryManager() {
       packageCost: 0,
     },
   })
+
+  console.log("preferredWeightUnit", preferredWeightUnit)
+
+  // Update form when preferredWeightUnit changes (after settings load)
+  React.useEffect(() => {
+    if (!weightUnitLoading && preferredWeightUnit) {
+      // Only update if the form's current unit value doesn't match the preferred unit
+      const currentUnit = ingredientForm.getValues('unit')
+      if (!currentUnit || currentUnit !== preferredWeightUnit) {
+        ingredientForm.setValue('unit', preferredWeightUnit)
+      }
+    }
+  }, [preferredWeightUnit, weightUnitLoading, ingredientForm])
 
   // Handle adding a new ingredient
   const onAddIngredient = (data: z.infer<typeof ingredientFormSchema>) => {
@@ -616,7 +629,7 @@ export default function InventoryManager() {
                               <FormLabel>Unit</FormLabel>
                               <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                               >
                                 <FormControl>
                                   <SelectTrigger>
@@ -995,7 +1008,7 @@ export default function InventoryManager() {
                             <FormLabel>Unit</FormLabel>
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              value={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>

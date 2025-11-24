@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useOrders, useRecipes, useCustomers, useInventory, useCurrencySymbol } from '../hooks'
 import { useAuth } from '@/contexts/AuthContext'
+import DashboardCalendarWidget from './Calendar/DashboardCalendarWidget'
 
 
 // Helper to format date
@@ -13,13 +14,13 @@ const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
-import { 
-  Plus, 
-  Package, 
-  DollarSign, 
-  TrendingUp, 
-  ChefHat, 
-  Users, 
+import {
+  Plus,
+  Package,
+  DollarSign,
+  TrendingUp,
+  ChefHat,
+  Users,
   Calendar,
   Clock,
   CheckCircle2,
@@ -36,15 +37,15 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ onNavigate }: DashboardProps) {
-  const { 
-    orders, 
-    ordersDueToday, 
-    ordersDueThisWeek, 
+  const {
+    orders,
+    ordersDueToday,
+    ordersDueThisWeek,
     pendingOrders,
-    totalRevenue, 
-    totalProfit 
+    totalRevenue,
+    totalProfit
   } = useOrders()
-  
+
   const { recipes } = useRecipes()
   const { user } = useAuth()
   const { customers, topCustomers } = useCustomers()
@@ -70,32 +71,32 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   }
 
   // Get today's date
-  const today = new Date().toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    month: 'long', 
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
     day: 'numeric',
     year: 'numeric'
   })
 
   // Helper to format currency synchronously
-const formatCurrency = (amount: number): string => {
-  return `${currencySymbol}${amount.toFixed(2)}`
-}
+  const formatCurrency = (amount: number): string => {
+    return `${currencySymbol}${amount.toFixed(2)}`
+  }
 
   return (
     <div className="space-y-6">
       {/* Greeting */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">
-          Welcome back, {user?.name || 'Baker'}! 
-        </h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-3">
+        Welcome back, {user?.name || 'Baker'}!
+      </h1>
 
       {/* Quick Actions */}
       <Card>
         <CardContent>
           <div className="grid grid-cols-3 gap-3">
             <Link href="/bakery-business-tool/orders">
-              <Button 
-                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
+              <Button
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer"
                 size="lg"
               >
                 <Plus className="h-5 w-5" />
@@ -103,9 +104,9 @@ const formatCurrency = (amount: number): string => {
               </Button>
             </Link>
             <Link href="/bakery-business-tool/recipes">
-              <Button 
-                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
-                variant="outline" 
+              <Button
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer"
+                variant="outline"
                 size="lg"
               >
                 <ChefHat className="h-5 w-5" />
@@ -113,9 +114,9 @@ const formatCurrency = (amount: number): string => {
               </Button>
             </Link>
             <Link href="/bakery-business-tool/inventory" className="relative">
-              <Button 
-                className="h-20 flex flex-col gap-2 w-full cursor-pointer" 
-                variant="outline" 
+              <Button
+                className="h-20 flex flex-col gap-2 w-full cursor-pointer"
+                variant="outline"
                 size="lg"
               >
                 <Package className="h-5 w-5" />
@@ -185,7 +186,7 @@ const formatCurrency = (amount: number): string => {
         </Card>
       )}
 
-            {/* Key Stats */}
+      {/* Key Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Orders Today */}
         <Card className="gap-2">
@@ -242,6 +243,16 @@ const formatCurrency = (amount: number): string => {
         </Card>
       </div>
 
+      {/* Calendar Widget - Upcoming Orders */}
+      {/* <DashboardCalendarWidget
+        orders={ordersDueThisWeek}
+        onDateClick={(date) => {
+          // Navigate to orders tab with date filter
+          onNavigate('order-tracker')
+        }}
+        onViewAllClick={() => onNavigate('calendar')}
+      /> */}
+
       {/* Inventory Alerts */}
       {alerts.length > 0 && (
         <Card className="border-yellow-200 bg-yellow-50">
@@ -260,11 +271,10 @@ const formatCurrency = (amount: number): string => {
           <CardContent>
             <div className="space-y-2">
               {alerts.slice(0, 3).map((alert, index) => (
-                <div 
+                <div
                   key={index}
-                  className={`flex items-start gap-3 p-3 rounded-md ${
-                    alert.severity === 'error' ? 'bg-red-100 border border-red-200' : 'bg-yellow-100 border border-yellow-200'
-                  }`}
+                  className={`flex items-start gap-3 p-3 rounded-md ${alert.severity === 'error' ? 'bg-red-100 border border-red-200' : 'bg-yellow-100 border border-yellow-200'
+                    }`}
                 >
                   {alert.severity === 'error' ? (
                     <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
@@ -272,9 +282,8 @@ const formatCurrency = (amount: number): string => {
                     <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
                   )}
                   <div className="flex-1">
-                    <p className={`text-sm font-medium ${
-                      alert.severity === 'error' ? 'text-red-900' : 'text-yellow-900'
-                    }`}>
+                    <p className={`text-sm font-medium ${alert.severity === 'error' ? 'text-red-900' : 'text-yellow-900'
+                      }`}>
                       {alert.message}
                     </p>
                   </div>
@@ -285,8 +294,8 @@ const formatCurrency = (amount: number): string => {
                   And {alerts.length - 3} more alert{alerts.length - 3 !== 1 ? 's' : ''}...
                 </p>
               )}
-              <Button 
-                className="w-full mt-3" 
+              <Button
+                className="w-full mt-3"
                 variant="outline"
                 onClick={() => onNavigate('inventory-manager')}
               >

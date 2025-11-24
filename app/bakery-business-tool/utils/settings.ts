@@ -27,7 +27,7 @@ export interface OrderSettings {
 export interface RecipeSettings {
   defaultServings: string;
   laborCostPerHour: string;
-  overheadPercentage: string;
+  overheadCost: string;
   showCostBreakdown: boolean;
 }
 
@@ -58,10 +58,10 @@ export async function getBusinessSettings(): Promise<BusinessSettings> {
   if (typeof window === 'undefined') {
     return getDefaultBusinessSettings();
   }
-  
+
   const stored = await StorageAdapter.getItem('businessSettings');
   if (!stored) return getDefaultBusinessSettings();
-  
+
   try {
     return { ...getDefaultBusinessSettings(), ...JSON.parse(stored) };
   } catch {
@@ -74,10 +74,10 @@ export async function getOrderSettings(): Promise<OrderSettings> {
   if (typeof window === 'undefined') {
     return getDefaultOrderSettings();
   }
-  
+
   const stored = await StorageAdapter.getItem('orderSettings');
   if (!stored) return getDefaultOrderSettings();
-  
+
   try {
     return { ...getDefaultOrderSettings(), ...JSON.parse(stored) };
   } catch {
@@ -90,10 +90,10 @@ export async function getRecipeSettings(): Promise<RecipeSettings> {
   if (typeof window === 'undefined') {
     return getDefaultRecipeSettings();
   }
-  
+
   const stored = await StorageAdapter.getItem('recipeSettings');
   if (!stored) return getDefaultRecipeSettings();
-  
+
   try {
     return { ...getDefaultRecipeSettings(), ...JSON.parse(stored) };
   } catch {
@@ -106,10 +106,10 @@ export async function getAppearanceSettings(): Promise<AppearanceSettings> {
   if (typeof window === 'undefined') {
     return getDefaultAppearanceSettings();
   }
-  
+
   const stored = await StorageAdapter.getItem('appearanceSettings');
   if (!stored) return getDefaultAppearanceSettings();
-  
+
   try {
     return { ...getDefaultAppearanceSettings(), ...JSON.parse(stored) };
   } catch {
@@ -122,10 +122,10 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
   if (typeof window === 'undefined') {
     return getDefaultNotificationSettings();
   }
-  
+
   const stored = await StorageAdapter.getItem('notificationSettings');
   if (!stored) return getDefaultNotificationSettings();
-  
+
   try {
     return { ...getDefaultNotificationSettings(), ...JSON.parse(stored) };
   } catch {
@@ -190,7 +190,7 @@ function getDefaultRecipeSettings(): RecipeSettings {
   return {
     defaultServings: '12',
     laborCostPerHour: '15',
-    overheadPercentage: '10',
+    overheadCost: '10',
     showCostBreakdown: true,
   };
 }
@@ -215,7 +215,7 @@ export async function formatCurrency(amount: number): Promise<string> {
   const settings = await getBusinessSettings();
   const symbol = CURRENCY_SYMBOLS[settings.currency] || '$';
   const formatted = amount.toFixed(2);
-  
+
   return settings.currencyPosition === 'after'
     ? `${formatted} ${symbol}`
     : `${symbol}${formatted}`;
@@ -231,13 +231,13 @@ export async function getCurrencySymbol(): Promise<string> {
 export async function formatDate(dateString: string): Promise<string> {
   const settings = await getBusinessSettings();
   const date = new Date(dateString);
-  
+
   if (isNaN(date.getTime())) return dateString;
-  
+
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
-  
+
   switch (settings.dateFormat) {
     case 'DD/MM/YYYY':
       return `${day}/${month}/${year}`;
@@ -253,21 +253,21 @@ export async function formatDate(dateString: string): Promise<string> {
 export async function formatTime(dateString: string): Promise<string> {
   const settings = await getBusinessSettings();
   const date = new Date(dateString);
-  
+
   if (isNaN(date.getTime())) return dateString;
-  
+
   if (settings.timeFormat === '24') {
-    return date.toLocaleTimeString('en-US', { 
-      hour12: false, 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
-  
-  return date.toLocaleTimeString('en-US', { 
-    hour12: true, 
-    hour: 'numeric', 
-    minute: '2-digit' 
+
+  return date.toLocaleTimeString('en-US', {
+    hour12: true,
+    hour: 'numeric',
+    minute: '2-digit'
   });
 }
 
@@ -289,10 +289,10 @@ export async function getDefaultLaborCost(): Promise<number> {
   return parseFloat(settings.laborCostPerHour) || 15;
 }
 
-// Get default overhead percentage
+// Get default overhead cost
 export async function getDefaultOverhead(): Promise<number> {
   const settings = await getRecipeSettings();
-  return parseFloat(settings.overheadPercentage) || 10;
+  return parseFloat(settings.overheadCost) || 10;
 }
 
 // Get default servings
@@ -305,11 +305,11 @@ export async function getDefaultServings(): Promise<number> {
 export async function getDefaultOrderStatus(): Promise<'new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled'> {
   const settings = await getOrderSettings();
   const status = settings.defaultStatus || 'new';
-  
+
   // Ensure the status is one of the valid order statuses
-  const validStatuses: readonly ('new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled')[] = 
+  const validStatuses: readonly ('new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled')[] =
     ['new', 'in-progress', 'ready', 'delivered', 'cancelled'] as const;
-  
+
   const typedStatus = status as 'new' | 'in-progress' | 'ready' | 'delivered' | 'cancelled';
   return validStatuses.includes(typedStatus) ? typedStatus : 'new';
 }

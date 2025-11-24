@@ -14,7 +14,7 @@ export default function RecipeSettings() {
   const { toast } = useToast();
   const [defaultServings, setDefaultServings] = useState('12');
   const [laborCostPerHour, setLaborCostPerHour] = useState('15');
-  const [overheadPercentage, setOverheadPercentage] = useState('10');
+  const [overheadCost, setOverheadCost] = useState('10');
   const [showCostBreakdown, setShowCostBreakdown] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,7 +28,7 @@ export default function RecipeSettings() {
           console.log('Recipe settings loaded:', settings);
           setDefaultServings(settings.defaultServings);
           setLaborCostPerHour(settings.laborCostPerHour);
-          setOverheadPercentage(settings.overheadPercentage);
+          setOverheadCost(settings.overheadCost || '10');
           setShowCostBreakdown(settings.showCostBreakdown);
         }
       } catch (error) {
@@ -41,11 +41,30 @@ export default function RecipeSettings() {
     loadSettings();
   }, []);
 
+  // Auto-save settings when any value changes (with debounce)
+  useEffect(() => {
+    // Don't auto-save during initial load
+    if (isLoading) return;
+
+    const timeoutId = setTimeout(async () => {
+      await StorageAdapter.setItem('recipeSettings', JSON.stringify({
+        defaultServings,
+        laborCostPerHour,
+        overheadCost,
+        showCostBreakdown,
+      }));
+
+      console.log('Recipe settings auto-saved');
+    }, 1000); // 1 second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [defaultServings, laborCostPerHour, overheadCost, showCostBreakdown, isLoading]);
+
   const handleSave = async () => {
     await StorageAdapter.setItem('recipeSettings', JSON.stringify({
       defaultServings,
       laborCostPerHour,
-      overheadPercentage,
+      overheadCost,
       showCostBreakdown,
     }));
     toast({ title: 'Settings saved', description: 'Recipe preferences updated.' });
@@ -82,8 +101,11 @@ export default function RecipeSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end mb-2">
-        <Button onClick={handleSave} size="lg" variant="default">Save Changes</Button>
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-sm text-gray-500">
+          💾 Changes are auto-saved
+        </p>
+        <Button onClick={handleSave} size="sm" variant="outline">Save Now</Button>
       </div>
       <Card>
         <CardHeader>
@@ -104,8 +126,9 @@ export default function RecipeSettings() {
               <Input id="laborCost" type="number" value={laborCostPerHour} onChange={(e) => setLaborCostPerHour(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="overhead">Overhead Percentage (%)</Label>
-              <Input id="overhead" type="number" value={overheadPercentage} onChange={(e) => setOverheadPercentage(e.target.value)} />
+              <Label htmlFor="overhead">Default Overhead Cost ($)</Label>
+              <Input id="overhead" type="number" step="0.01" value={overheadCost} onChange={(e) => setOverheadCost(e.target.value)} />
+              <p className="text-xs text-gray-500">Default overhead cost per recipe</p>
             </div>
           </div>
           <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -118,7 +141,7 @@ export default function RecipeSettings() {
         </CardContent>
       </Card>
       <div className="flex justify-end">
-        <Button onClick={handleSave} size="lg">Save Changes</Button>
+        <Button onClick={handleSave} size="sm" variant="outline">Save Now</Button>
       </div>
     </div>
   );

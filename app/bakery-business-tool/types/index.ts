@@ -32,24 +32,24 @@ export interface Recipe {
   ingredients: RecipeIngredient[]
   instructions: string[]       // Step-by-step baking instructions
   servings: number
-  
+
   // Timing (all in minutes)
   prepTime?: number           // Preparation time
   cookTime?: number          // Baking/cooking time (also called bakeTime)
   coolTime?: number          // Cooling time before serving
   laborTime: number          // Total labor time (for cost calculation)
-  
+
   // Costs
   laborCost: number
   overheadCost: number
   totalCost: number           // Calculated: ingredients + labor + overhead
   costPerServing: number      // Calculated: totalCost / servings
-  
+
   // Additional details
   temperature?: string        // Baking temperature (e.g., "350°F" or "180°C")
   notes: string              // Baker notes, tips, variations
   image?: string             // Recipe photo URL (future)
-  
+
   // Metadata
   createdAt: string
   updatedAt: string
@@ -78,6 +78,12 @@ export interface Order {
   orderDate: string         // ISO date string
   deliveryDate: string      // ISO date string
   deliveryTime?: string     // Optional time
+
+  // Calendar & Production Planning
+  productionDate?: string       // When baking needs to happen (usually 1-2 days before delivery)
+  productionDuration?: number   // Estimated production hours (calculated from recipes)
+  deliveryTimeSlot?: 'morning' | 'afternoon' | 'evening' | 'custom'  // Time slot for delivery
+
   totalCost: number         // Sum of all item costs
   totalRevenue: number      // What customer pays
   totalProfit: number       // Revenue - Cost
@@ -239,23 +245,23 @@ export interface Invoice {
   id: string
   invoiceNumber: string    // e.g., "INV-2025-001"
   orderId?: string        // Optional link to order
-  
+
   // Customer info
   customerId?: string
   customerName: string
   customerEmail?: string
   customerPhone?: string
   customerAddress?: string
-  
+
   // Invoice details
   invoiceDate: string     // ISO date string
   dueDate: string        // ISO date string
   paymentTerms: 'due-on-receipt' | 'net-7' | 'net-15' | 'net-30' | 'net-60' | 'custom'
   customPaymentTerms?: string  // If paymentTerms is 'custom'
-  
+
   // Items
   items: InvoiceItem[]
-  
+
   // Calculations
   subtotal: number
   taxRate: number        // Percentage (e.g., 8 for 8%)
@@ -263,19 +269,19 @@ export interface Invoice {
   discount: number       // Amount
   discountPercentage?: number  // Optional percentage
   total: number          // subtotal + taxAmount - discount
-  
+
   // Payment
   paymentStatus: 'unpaid' | 'partial' | 'paid' | 'overdue'
   amountPaid: number
   amountDue: number      // total - amountPaid
   paymentMethod?: string
   paymentDate?: string   // ISO date string when paid
-  
+
   // Additional info
   notes?: string         // Internal notes
   terms?: string         // Terms and conditions
   footer?: string        // Footer text (e.g., "Thank you for your business!")
-  
+
   // Metadata
   createdAt: string
   updatedAt: string
@@ -301,6 +307,24 @@ export const INVOICE_STATUSES = [
   { value: 'overdue', label: 'Overdue', color: 'red' },
 ] as const
 
+// Delivery time slot options
+export const DELIVERY_TIME_SLOTS = [
+  { value: 'morning', label: 'Morning (8am - 12pm)' },
+  { value: 'afternoon', label: 'Afternoon (12pm - 5pm)' },
+  { value: 'evening', label: 'Evening (5pm - 8pm)' },
+  { value: 'custom', label: 'Custom Time' },
+] as const
+
+// Calendar Settings
+export interface CalendarSettings {
+  weekStartsOn: 0 | 1          // 0 = Sunday, 1 = Monday
+  defaultProductionLeadTime: number  // Days before delivery to bake
+  dailyCapacityHours: number   // Maximum production hours per day
+  blockedDates: string[]       // ISO date strings of unavailable dates
+  showProductionDates: boolean // Whether to show production dates in calendar
+  enableCapacityWarnings: boolean  // Show warnings when approaching capacity
+}
+
 // PDF Customization Settings
 export interface PDFCustomization {
   // Business Information
@@ -310,24 +334,24 @@ export interface PDFCustomization {
   businessEmail?: string
   businessWebsite?: string
   taxId?: string          // Tax ID / EIN / VAT number
-  
+
   // Branding
   logoUrl?: string        // URL or base64 data URL
   primaryColor?: string   // Hex color (e.g., "#f43f5e")
   accentColor?: string    // Hex color for accents
-  
+
   // Layout preferences
   showLogo: boolean
   showBusinessInfo: boolean
   footerText?: string     // Custom footer text
-  
+
   // Invoice specific
   invoicePrefix: string   // e.g., "INV-"
   defaultPaymentTerms: Invoice['paymentTerms']
   defaultTaxRate: number
   defaultNotes?: string
   defaultTerms?: string
-  
+
   // Metadata
   createdAt: string
   updatedAt: string

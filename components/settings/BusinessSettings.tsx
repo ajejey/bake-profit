@@ -61,6 +61,45 @@ export default function BusinessSettings() {
     loadSettings();
   }, []);
 
+  // Auto-save settings when any value changes (with debounce)
+  useEffect(() => {
+    // Don't auto-save during initial load
+    if (isLoading) return;
+
+    const timeoutId = setTimeout(async () => {
+      await StorageAdapter.setItem('businessSettings', JSON.stringify({
+        currency,
+        currencyPosition,
+        defaultMarkup,
+        taxRate,
+        dateFormat,
+        timeFormat,
+        timezone,
+        weekStart,
+        weightSystem,
+        volumeSystem,
+        temperature,
+      }));
+
+      console.log('Settings auto-saved');
+    }, 1000); // 1 second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [
+    currency,
+    currencyPosition,
+    defaultMarkup,
+    taxRate,
+    dateFormat,
+    timeFormat,
+    timezone,
+    weekStart,
+    weightSystem,
+    volumeSystem,
+    temperature,
+    isLoading
+  ]);
+
   const handleSave = async () => {
     await StorageAdapter.setItem('businessSettings', JSON.stringify({
       currency,
@@ -145,9 +184,12 @@ export default function BusinessSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end mb-2">
-        <Button onClick={handleSave} size="lg" variant="default">
-          Save All Changes
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-sm text-gray-500">
+          💾 Changes are auto-saved
+        </p>
+        <Button onClick={handleSave} size="sm" variant="outline">
+          Save Now
         </Button>
       </div>
       {/* Currency & Pricing */}
@@ -362,8 +404,8 @@ export default function BusinessSettings() {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} size="lg">
-          Save All Changes
+        <Button onClick={handleSave} size="sm" variant="outline">
+          Save Now
         </Button>
       </div>
     </div>
