@@ -46,18 +46,18 @@ export default function OrderTracker() {
   const { checkLimit } = useSubscription()
   const { symbol: currencySymbol = '$' } = useCurrencySymbol()
   console.log("currencySymbol in OrderTracker", currencySymbol)
-  
+
   // Use custom hooks for data access
   const { orders, addOrder, updateOrderStatus, deleteOrder, getNextOrderNumber } = useOrders()
   const { recipes } = useRecipes()
   const { saveCustomer, addCustomer } = useCustomers()
-  
+
   // UI State
   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false)
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'date' | 'total' | 'customer'>('date')
-  
+
   // Form state
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [deliveryDate, setDeliveryDate] = useState('')
@@ -68,9 +68,9 @@ export default function OrderTracker() {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([])
 
   // Helper to format currency synchronously
-const formatCurrency = (amount: number): string => {
-  return `${currencySymbol}${amount.toFixed(2)}`
-}
+  const formatCurrency = (amount: number): string => {
+    return `${currencySymbol}${amount.toFixed(2)}`
+  }
 
   // Handle creating a new customer from selector
   const handleCreateNewCustomer = (name: string, phone?: string) => {
@@ -95,7 +95,7 @@ const formatCurrency = (amount: number): string => {
   // Handle Add Order button click with limit check
   const handleAddOrderClick = async () => {
     const limitCheck = await checkLimit('orders');
-    
+
     if (!limitCheck.allowed) {
       toast({
         title: 'Order limit reached',
@@ -104,7 +104,7 @@ const formatCurrency = (amount: number): string => {
       });
       return;
     }
-    
+
     setIsAddOrderOpen(true);
   };
 
@@ -141,7 +141,7 @@ const formatCurrency = (amount: number): string => {
     }
 
     setOrderItems([...orderItems, newItem])
-    
+
     // Reset item form
     setSelectedRecipeId('')
     setQuantity(1)
@@ -213,10 +213,10 @@ const formatCurrency = (amount: number): string => {
     }
 
     addOrder(newOrder)
-    
+
     // Update customer with new order
     saveCustomer(selectedCustomer.name, selectedCustomer.phone, orderId, totalRevenue)
-    
+
     // Reset form
     setSelectedCustomer(null)
     setDeliveryDate('')
@@ -253,10 +253,10 @@ const formatCurrency = (amount: number): string => {
   // Handle PDF export
   const handleExportPDF = (order: Order, type: 'confirmation' | 'kitchen' | 'delivery' | 'packing') => {
     const customer = null // Could fetch from customers if needed
-    
+
     let pdf
     let typeName = ''
-    
+
     switch (type) {
       case 'confirmation':
         pdf = generateOrderConfirmation(order, customer, { currencySymbol })
@@ -275,10 +275,10 @@ const formatCurrency = (amount: number): string => {
         typeName = 'Packing Slip'
         break
     }
-    
+
     const filename = getOrderPDFFilename(order, type)
     pdf.save(filename)
-    
+
     toast({
       title: 'PDF Downloaded',
       description: `${typeName} has been saved as PDF.`,
@@ -290,7 +290,7 @@ const formatCurrency = (amount: number): string => {
     let filtered = orders.filter(order => {
       // Search filter
       const searchLower = searchTerm.toLowerCase()
-      const matchesSearch = 
+      const matchesSearch =
         order.orderNumber.toLowerCase().includes(searchLower) ||
         order.customerName.toLowerCase().includes(searchLower) ||
         order.customerPhone?.includes(searchTerm)
@@ -340,7 +340,7 @@ const formatCurrency = (amount: number): string => {
           <h2 className="text-2xl font-bold">Order Tracker</h2>
           <p className="text-gray-600">Manage customer orders and track delivery status</p>
         </div>
-        
+
         <Dialog open={isAddOrderOpen} onOpenChange={setIsAddOrderOpen}>
           <DialogTrigger asChild>
             <Button size="lg" onClick={handleAddOrderClick}>
@@ -378,7 +378,7 @@ const formatCurrency = (amount: number): string => {
               {/* Add Items */}
               <div className="border-t pt-4">
                 <h3 className="font-semibold mb-3">Order Items</h3>
-                
+
                 <div className="space-y-3 mb-3 md:grid md:grid-cols-12 md:gap-2 md:space-y-0">
                   <div className="w-full md:col-span-5">
                     <Label className="text-sm font-medium mb-1">Recipe</Label>
@@ -411,7 +411,7 @@ const formatCurrency = (amount: number): string => {
                       </Select>
                     )}
                   </div>
-                  
+
                   <div className="w-full md:col-span-2 opacity-100 md:opacity-100">
                     <Label className="text-sm font-medium mb-1">Quantity</Label>
                     <div className="flex items-center gap-1 w-full">
@@ -444,9 +444,9 @@ const formatCurrency = (amount: number): string => {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <div className="w-full md:col-span-3">
-                    <Label className="text-sm font-medium mb-1">Selling Price ($)</Label>
+                    <Label className="text-sm font-medium mb-1">Selling Price ({currencySymbol})</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -456,7 +456,7 @@ const formatCurrency = (amount: number): string => {
                       disabled={recipes.length === 0}
                     />
                   </div>
-                  
+
                   <div className="w-full md:col-span-2 flex md:items-end">
                     <Button
                       onClick={handleSubmit}
@@ -491,7 +491,7 @@ const formatCurrency = (amount: number): string => {
                         </Button>
                       </div>
                     ))}
-                    
+
                     <div className="border-t pt-2 mt-2">
                       <div className="flex justify-between text-sm mb-1">
                         <span>Total Cost:</span>
@@ -541,7 +541,7 @@ const formatCurrency = (amount: number): string => {
                 placeholder="Search by order number, customer name, or phone..."
                 className="w-full"
               />
-              
+
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <FilterChips
                   options={[
@@ -554,7 +554,7 @@ const formatCurrency = (amount: number): string => {
                   activeFilter={filterStatus}
                   onChange={setFilterStatus}
                 />
-                
+
                 <SortDropdown
                   options={[
                     { id: 'date', label: 'Date (Newest)' },

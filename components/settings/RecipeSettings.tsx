@@ -9,9 +9,11 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ChefHat } from 'lucide-react';
 import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
+import { useCurrencySymbol } from '@/app/bakery-business-tool/hooks';
 
 export default function RecipeSettings() {
   const { toast } = useToast();
+  const { symbol: currencySymbol } = useCurrencySymbol()
   const [defaultServings, setDefaultServings] = useState('12');
   const [laborCostPerHour, setLaborCostPerHour] = useState('15');
   const [overheadCost, setOverheadCost] = useState('10');
@@ -122,11 +124,11 @@ export default function RecipeSettings() {
               <Input id="defaultServings" type="number" value={defaultServings} onChange={(e) => setDefaultServings(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="laborCost">Labor Cost per Hour ($)</Label>
+              <Label htmlFor="laborCost">Labor Cost per Hour ({currencySymbol})</Label>
               <Input id="laborCost" type="number" value={laborCostPerHour} onChange={(e) => setLaborCostPerHour(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="overhead">Default Overhead Cost ($)</Label>
+              <Label htmlFor="overhead">Default Overhead Cost ({currencySymbol})</Label>
               <Input id="overhead" type="number" step="0.01" value={overheadCost} onChange={(e) => setOverheadCost(e.target.value)} />
               <p className="text-xs text-gray-500">Default overhead cost per recipe</p>
             </div>

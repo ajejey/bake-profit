@@ -661,7 +661,7 @@ export default function InventoryManager() {
                         name="packageCost"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Package Cost ($)</FormLabel>
+                            <FormLabel>Package Cost ({currencySymbol})</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -1040,7 +1040,7 @@ export default function InventoryManager() {
                       name="packageCost"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Package Cost ($)</FormLabel>
+                          <FormLabel>Package Cost {currencySymbol}</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
