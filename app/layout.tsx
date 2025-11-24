@@ -180,7 +180,7 @@ export default function RootLayout({
             {children}
           </SubscriptionProvider>
         </AuthProvider>
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

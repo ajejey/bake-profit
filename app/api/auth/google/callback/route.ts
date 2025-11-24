@@ -4,6 +4,10 @@ import { findUserByEmail, findUserByGoogleId, createUser, updateUser } from '@/l
 import { generateTokenPair } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
 
+interface GoogleAuthResponse extends AuthResponse {
+    isNewUser?: boolean;
+}
+
 const client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -47,6 +51,7 @@ export async function POST(request: NextRequest) {
 
         // Check if user exists by Google ID
         let user = await findUserByGoogleId(googleId);
+        let isNewUser = false;
 
         if (!user) {
             // Check if user exists by email (might have signed up with password)
@@ -62,6 +67,7 @@ export async function POST(request: NextRequest) {
                 });
             } else {
                 // Create new user with Google account
+                isNewUser = true;
                 user = await createUser({
                     email: email.toLowerCase(),
                     google_id: googleId,
@@ -94,12 +100,13 @@ export async function POST(request: NextRequest) {
         delete (userWithoutPassword as Record<string, unknown>).google_refresh_token;
 
         // Set refresh token as httpOnly cookie
-        const response = NextResponse.json<AuthResponse>(
+        const response = NextResponse.json<GoogleAuthResponse>(
             {
                 success: true,
                 user: userWithoutPassword,
                 token: accessToken,
                 message: 'Google login successful',
+                isNewUser,
             },
             { status: 200 }
         );

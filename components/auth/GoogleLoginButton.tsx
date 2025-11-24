@@ -26,10 +26,28 @@ export default function GoogleLoginButton() {
             const result = await loginWithGoogle(credentialResponse.credential);
 
             if (result.success) {
-                toast({
-                    title: 'Welcome!',
-                    description: 'You have successfully logged in with Google.',
-                });
+                // Send welcome email if this is a new user
+                const isNewUser = (result as unknown as { isNewUser?: boolean }).isNewUser;
+                if (isNewUser && result.user) {
+                    fetch('/api/auth/send-welcome-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: result.user.email,
+                            name: result.user.name || 'there'
+                        })
+                    }).catch(err => console.error('Failed to send welcome email:', err));
+
+                    toast({
+                        title: 'Account created!',
+                        description: 'Welcome to BakeProfit! Check your email for a getting started guide.',
+                    });
+                } else {
+                    toast({
+                        title: 'Welcome!',
+                        description: 'You have successfully logged in with Google.',
+                    });
+                }
 
                 // Check for redirect parameter
                 const redirectUrl = searchParams.get('redirect');
