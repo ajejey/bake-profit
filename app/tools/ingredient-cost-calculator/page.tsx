@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Package, DollarSign, Save, Share2, Printer, Calculator } from 'lucide-react'
+import { Package, DollarSign, Save, Share2, Printer, Calculator, Lightbulb, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
@@ -38,11 +38,101 @@ const UNIT_TYPES = {
   count: ['unit', 'dozen'],
 }
 
+interface ExampleIngredient {
+  name: string
+  description: string
+  ingredientName: string
+  packageSize: number
+  packageUnit: string
+  packageCost: number
+  recipeAmount: number
+  recipeUnit: string
+  ingredientType: string
+  explanation: string
+}
+
+const EXAMPLE_INGREDIENTS: ExampleIngredient[] = [
+  {
+    name: 'Butter (Common)',
+    description: 'Standard butter package calculation',
+    ingredientName: 'Butter',
+    packageSize: 1,
+    packageUnit: 'lb',
+    packageCost: 4.50,
+    recipeAmount: 0.5,
+    recipeUnit: 'cup',
+    ingredientType: 'butter',
+    explanation: 'Butter is $4.50/lb (454g). Half a cup (113.5g) costs $1.12. This is a common ingredient - knowing this cost helps price recipes accurately.',
+  },
+  {
+    name: 'All-Purpose Flour',
+    description: 'Bulk flour bag costing',
+    ingredientName: 'All-Purpose Flour',
+    packageSize: 5,
+    packageUnit: 'lb',
+    packageCost: 4.99,
+    recipeAmount: 2,
+    recipeUnit: 'cup',
+    ingredientType: 'flour',
+    explanation: 'A 5lb bag costs $4.99. Two cups (240g) costs only $0.52. Flour is cheap! This shows why ingredient costs are often lower than you think.',
+  },
+  {
+    name: 'Vanilla Extract',
+    description: 'Expensive ingredient per unit',
+    ingredientName: 'Pure Vanilla Extract',
+    packageSize: 2,
+    packageUnit: 'fl oz',
+    packageCost: 12.99,
+    recipeAmount: 1,
+    recipeUnit: 'tsp',
+    ingredientType: 'vanilla',
+    explanation: 'Vanilla is expensive! A 2oz bottle costs $12.99. Just 1 tsp costs $1.08. Small amounts of premium ingredients add up - factor them into your pricing!',
+  },
+  {
+    name: 'Cocoa Powder',
+    description: 'Specialty ingredient calculation',
+    ingredientName: 'Cocoa Powder',
+    packageSize: 8,
+    packageUnit: 'oz',
+    packageCost: 8.99,
+    recipeAmount: 0.75,
+    recipeUnit: 'cup',
+    ingredientType: 'cocoa-powder',
+    explanation: 'An 8oz container costs $8.99. Using 3/4 cup (64g) costs $2.53. Cocoa is pricey - chocolate recipes need higher pricing to maintain margins.',
+  },
+  {
+    name: 'Eggs (by unit)',
+    description: 'Count-based ingredient',
+    ingredientName: 'Large Eggs',
+    packageSize: 1,
+    packageUnit: 'dozen',
+    packageCost: 4.99,
+    recipeAmount: 3,
+    recipeUnit: 'unit',
+    ingredientType: 'eggs',
+    explanation: 'A dozen eggs costs $4.99. Three eggs cost $1.25. Count-based ingredients are easy - just divide package cost by quantity!',
+  },
+  {
+    name: 'Premium Sugar',
+    description: 'Organic/specialty pricing',
+    ingredientName: 'Organic Cane Sugar',
+    packageSize: 2,
+    packageUnit: 'lb',
+    packageCost: 6.99,
+    recipeAmount: 1,
+    recipeUnit: 'cup',
+    ingredientType: 'sugar',
+    explanation: 'Organic sugar costs $6.99 for 2lb. One cup (200g) costs $0.77. Premium ingredients cost more - make sure your pricing reflects the quality!',
+  },
+]
+
 export default function IngredientCostCalculator() {
   const { toast } = useToast()
   const router = useRouter()
   const { user } = useAuth()
   const [showSignupDialog, setShowSignupDialog] = useState(false)
+  const [showExampleBanner, setShowExampleBanner] = useState(false)
+  const [currentExample, setCurrentExample] = useState<string>('')
 
   const [ingredientName, setIngredientName] = useState('')
   const [packageSize, setPackageSize] = useState(0)
@@ -160,6 +250,35 @@ export default function IngredientCostCalculator() {
     window.print()
   }
 
+  const loadExample = (example: ExampleIngredient) => {
+    setIngredientName(example.ingredientName)
+    setPackageSize(example.packageSize)
+    setPackageUnit(example.packageUnit)
+    setPackageCost(example.packageCost)
+    setRecipeAmount(example.recipeAmount)
+    setRecipeUnit(example.recipeUnit)
+    setIngredientType(example.ingredientType)
+    setCurrentExample(example.name)
+    setShowExampleBanner(true)
+    
+    toast({
+      title: '📊 Example loaded!',
+      description: `Loaded: ${example.name}`,
+    })
+  }
+
+  const clearExample = () => {
+    setIngredientName('')
+    setPackageSize(0)
+    setPackageUnit('lb')
+    setPackageCost(0)
+    setRecipeAmount(0)
+    setRecipeUnit('cup')
+    setIngredientType('flour')
+    setCurrentExample('')
+    setShowExampleBanner(false)
+  }
+
   return (
     <CalculatorLayout
       title="Free Ingredient Cost Calculator"
@@ -190,6 +309,66 @@ export default function IngredientCostCalculator() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Example Banner */}
+      {showExampleBanner && currentExample && (
+        <div className="max-w-4xl mx-auto mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              <Lightbulb className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">
+                  Example: {currentExample}
+                </h3>
+                <p className="text-sm text-amber-800">
+                  {EXAMPLE_INGREDIENTS.find(i => i.name === currentExample)?.explanation}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearExample}
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Example Ingredients */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-900">
+              <Lightbulb className="h-5 w-5" />
+              Try an Example Ingredient
+            </CardTitle>
+            <p className="text-sm text-blue-700 mt-1">
+              Not sure how to use this? Load a common ingredient example to see how the calculator works
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {EXAMPLE_INGREDIENTS.map((ingredient) => (
+                <button
+                  key={ingredient.name}
+                  onClick={() => loadExample(ingredient)}
+                  className="text-left p-4 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group"
+                >
+                  <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">
+                    {ingredient.name}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    {ingredient.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Trash2, Calculator, Save, Share2, Printer, DollarSign, Check } from 'lucide-react'
+import { Plus, Trash2, Calculator, Save, Share2, Printer, DollarSign, Check, Lightbulb, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
@@ -34,6 +34,91 @@ const UNITS = [
   'g', 'kg', 'oz', 'lb', 'ml', 'l', 'cup', 'tbsp', 'tsp', 'unit', 'dozen'
 ]
 
+interface ExampleRecipe {
+  name: string
+  description: string
+  recipeName: string
+  servings: number
+  ingredients: Omit<Ingredient, 'id' | 'cost'>[]
+  laborCost: number
+  overheadCost: number
+  desiredProfit: number
+  explanation: string
+}
+
+const EXAMPLE_RECIPES: ExampleRecipe[] = [
+  {
+    name: 'Chocolate Cake',
+    description: 'Classic layer cake with proper costing',
+    recipeName: 'Chocolate Layer Cake',
+    servings: 12,
+    ingredients: [
+      { name: 'All-Purpose Flour', amount: 2, unit: 'cup', packageSize: 2270, packageCost: 4.99 },
+      { name: 'Cocoa Powder', amount: 0.75, unit: 'cup', packageSize: 226, packageCost: 8.99 },
+      { name: 'Sugar', amount: 2, unit: 'cup', packageSize: 2000, packageCost: 3.49 },
+      { name: 'Eggs', amount: 3, unit: 'unit', packageSize: 12, packageCost: 4.99 },
+      { name: 'Butter', amount: 0.5, unit: 'cup', packageSize: 454, packageCost: 4.50 },
+      { name: 'Milk', amount: 1, unit: 'cup', packageSize: 1000, packageCost: 3.99 },
+    ],
+    laborCost: 15.00,
+    overheadCost: 3.00,
+    desiredProfit: 50,
+    explanation: 'This cake costs ~$12 to make. With 50% profit margin, sell for $36 ($3/slice). Notice how ingredient costs are only part of the total - labor and overhead matter!',
+  },
+  {
+    name: 'Artisan Sourdough',
+    description: 'High-labor bread with premium pricing',
+    recipeName: 'Artisan Sourdough Loaf',
+    servings: 1,
+    ingredients: [
+      { name: 'Bread Flour', amount: 500, unit: 'g', packageSize: 2270, packageCost: 6.99 },
+      { name: 'Sourdough Starter', amount: 100, unit: 'g', packageSize: 500, packageCost: 2.00 },
+      { name: 'Salt', amount: 10, unit: 'g', packageSize: 1000, packageCost: 1.99 },
+      { name: 'Water', amount: 350, unit: 'ml', packageSize: 1000, packageCost: 0.00 },
+    ],
+    laborCost: 8.00,
+    overheadCost: 2.00,
+    desiredProfit: 60,
+    explanation: 'Sourdough has low ingredient cost ($2) but HIGH labor (fermentation, shaping). With $8 labor, total cost is $12. At 60% margin, sell for $30/loaf. Time-intensive products need higher margins.',
+  },
+  {
+    name: 'Sugar Cookies (Dozen)',
+    description: 'Simple recipe with good margins',
+    recipeName: 'Classic Sugar Cookies',
+    servings: 12,
+    ingredients: [
+      { name: 'All-Purpose Flour', amount: 2.5, unit: 'cup', packageSize: 2270, packageCost: 4.99 },
+      { name: 'Butter', amount: 1, unit: 'cup', packageSize: 454, packageCost: 4.50 },
+      { name: 'Sugar', amount: 1, unit: 'cup', packageSize: 2000, packageCost: 3.49 },
+      { name: 'Eggs', amount: 2, unit: 'unit', packageSize: 12, packageCost: 4.99 },
+      { name: 'Vanilla Extract', amount: 1, unit: 'tsp', packageSize: 59, packageCost: 6.99 },
+    ],
+    laborCost: 10.00,
+    overheadCost: 2.00,
+    desiredProfit: 55,
+    explanation: 'Cookies are efficient! Ingredients cost ~$4, labor $10, total $16. With 55% margin, sell for $35/dozen ($2.92 each). Great for volume sales at markets.',
+  },
+  {
+    name: 'Gourmet Cupcakes',
+    description: 'Premium product with decoration costs',
+    recipeName: 'Vanilla Bean Cupcakes',
+    servings: 12,
+    ingredients: [
+      { name: 'Cake Flour', amount: 1.5, unit: 'cup', packageSize: 907, packageCost: 5.99 },
+      { name: 'Sugar', amount: 1, unit: 'cup', packageSize: 2000, packageCost: 3.49 },
+      { name: 'Butter', amount: 0.5, unit: 'cup', packageSize: 454, packageCost: 4.50 },
+      { name: 'Eggs', amount: 2, unit: 'unit', packageSize: 12, packageCost: 4.99 },
+      { name: 'Vanilla Bean', amount: 1, unit: 'unit', packageSize: 2, packageCost: 12.99 },
+      { name: 'Buttercream Frosting', amount: 2, unit: 'cup', packageSize: 4, packageCost: 8.00 },
+      { name: 'Decorations', amount: 12, unit: 'unit', packageSize: 24, packageCost: 6.99 },
+    ],
+    laborCost: 18.00,
+    overheadCost: 4.00,
+    desiredProfit: 65,
+    explanation: 'Premium cupcakes cost ~$15 in ingredients (vanilla bean, decorations). With labor, total is $37. At 65% margin, sell for $105/dozen ($8.75 each). Premium ingredients justify premium prices!',
+  },
+]
+
 import { Suspense } from 'react'
 
 function RecipeCostCalculatorContent() {
@@ -49,6 +134,8 @@ function RecipeCostCalculatorContent() {
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [showSignupDialog, setShowSignupDialog] = useState(false)
+  const [showExampleBanner, setShowExampleBanner] = useState(false)
+  const [currentExample, setCurrentExample] = useState<string>('')
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     {
       id: '1',
@@ -153,6 +240,52 @@ function RecipeCostCalculatorContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadId])
+
+  const loadExample = (recipe: ExampleRecipe) => {
+    // Load ingredients with generated IDs and calculated costs
+    const ingredientsWithIds = recipe.ingredients.map((ing, index) => ({
+      ...ing,
+      id: `example-${Date.now()}-${index}`,
+      cost: 0, // Will be calculated by useEffect
+    }))
+    
+    setRecipeName(recipe.recipeName)
+    setServings(recipe.servings)
+    setIngredients(ingredientsWithIds)
+    setLaborCost(recipe.laborCost)
+    setOverheadCost(recipe.overheadCost)
+    setDesiredProfit(recipe.desiredProfit)
+    setCurrentExample(recipe.name)
+    setShowExampleBanner(true)
+    setCalculationId(null) // Clear any loaded calculation
+    setLastSaved(null)
+    
+    toast({
+      title: '📊 Example loaded!',
+      description: `Loaded: ${recipe.name}`,
+    })
+  }
+
+  const clearExample = () => {
+    setRecipeName('')
+    setServings(12)
+    setIngredients([
+      {
+        id: '1',
+        name: '',
+        amount: 0,
+        unit: 'cup',
+        packageSize: 0,
+        packageCost: 0,
+        cost: 0
+      }
+    ])
+    setLaborCost(0)
+    setOverheadCost(0)
+    setDesiredProfit(50)
+    setCurrentExample('')
+    setShowExampleBanner(false)
+  }
 
   const handleSaveClick = () => {
     if (!recipeName.trim()) {
@@ -273,6 +406,66 @@ function RecipeCostCalculatorContent() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Example Banner */}
+      {showExampleBanner && currentExample && (
+        <div className="max-w-4xl mx-auto mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              <Lightbulb className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">
+                  Example: {currentExample}
+                </h3>
+                <p className="text-sm text-amber-800">
+                  {EXAMPLE_RECIPES.find(r => r.name === currentExample)?.explanation}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearExample}
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Example Recipes */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-900">
+              <Lightbulb className="h-5 w-5" />
+              Try an Example Recipe
+            </CardTitle>
+            <p className="text-sm text-blue-700 mt-1">
+              New to recipe costing? Load a realistic example to see how it works
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {EXAMPLE_RECIPES.map((recipe) => (
+                <button
+                  key={recipe.name}
+                  onClick={() => loadExample(recipe)}
+                  className="text-left p-4 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group"
+                >
+                  <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">
+                    {recipe.name}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    {recipe.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

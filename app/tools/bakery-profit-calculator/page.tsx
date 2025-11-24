@@ -7,16 +7,106 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { TrendingUp, DollarSign, AlertCircle, CheckCircle, Save, Share2, Printer, BarChart3 } from 'lucide-react'
+import { TrendingUp, DollarSign, AlertCircle, CheckCircle, Save, Share2, Printer, BarChart3, Lightbulb, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+
+interface ExampleBusiness {
+  name: string
+  description: string
+  totalRevenue: number
+  ingredientCosts: number
+  packagingCosts: number
+  laborCosts: number
+  overheadCosts: number
+  marketingCosts: number
+  otherCosts: number
+  explanation: string
+}
+
+const EXAMPLE_BUSINESSES: ExampleBusiness[] = [
+  {
+    name: 'Thriving Home Bakery',
+    description: 'Profitable home-based operation',
+    totalRevenue: 5000,
+    ingredientCosts: 1200,
+    packagingCosts: 300,
+    laborCosts: 1500,
+    overheadCosts: 800,
+    marketingCosts: 200,
+    otherCosts: 100,
+    explanation: 'This home bakery makes $5,000/month with 70% gross margin and 18% net profit ($900). Excellent margins! Low overhead and efficient operations make this sustainable.',
+  },
+  {
+    name: 'Struggling Startup',
+    description: 'New bakery with high costs',
+    totalRevenue: 8000,
+    ingredientCosts: 2800,
+    packagingCosts: 500,
+    laborCosts: 3500,
+    overheadCosts: 2000,
+    marketingCosts: 400,
+    otherCosts: 300,
+    explanation: 'Revenue is $8,000 but costs are $9,500 - losing $1,500/month! COGS is 41% (too high) and labor is 44% of revenue. Need to: reduce costs, increase prices, or boost sales volume.',
+  },
+  {
+    name: 'Farmers Market Vendor',
+    description: 'Weekend market sales only',
+    totalRevenue: 2500,
+    ingredientCosts: 600,
+    packagingCosts: 150,
+    laborCosts: 800,
+    overheadCosts: 300,
+    marketingCosts: 50,
+    otherCosts: 100,
+    explanation: 'Small operation with $2,500/month revenue and $500 profit (20% margin). Good margins but limited by market schedule. Could expand to online sales or wholesale.',
+  },
+  {
+    name: 'Wholesale Bakery',
+    description: 'High volume, lower margins',
+    totalRevenue: 25000,
+    ingredientCosts: 7500,
+    packagingCosts: 1500,
+    laborCosts: 8000,
+    overheadCosts: 4000,
+    marketingCosts: 500,
+    otherCosts: 1000,
+    explanation: 'High revenue ($25k) but tight margins. Net profit is $2,500 (10%). Wholesale requires volume - 64% gross margin is good, but operating costs are high. Scale is key.',
+  },
+  {
+    name: 'Boutique Bakery',
+    description: 'Premium products, premium prices',
+    totalRevenue: 12000,
+    ingredientCosts: 2400,
+    packagingCosts: 600,
+    laborCosts: 4000,
+    overheadCosts: 2000,
+    marketingCosts: 800,
+    otherCosts: 400,
+    explanation: 'Premium pricing yields 75% gross margin! Net profit is $2,800 (23%). High marketing spend builds brand. This model works with quality ingredients and excellent customer experience.',
+  },
+  {
+    name: 'Break-Even Bakery',
+    description: 'Just covering costs',
+    totalRevenue: 6000,
+    ingredientCosts: 1800,
+    packagingCosts: 400,
+    laborCosts: 2200,
+    overheadCosts: 1200,
+    marketingCosts: 300,
+    otherCosts: 100,
+    explanation: 'Revenue equals costs - $0 profit. 63% gross margin is decent, but operating expenses consume it all. Need to either cut costs by 10% or increase revenue by $600/month to be profitable.',
+  },
+]
 
 export default function BakeryProfitCalculator() {
   const { toast } = useToast()
   const router = useRouter()
   const { user } = useAuth()
   const [showSignupDialog, setShowSignupDialog] = useState(false)
+  const [showExampleBanner, setShowExampleBanner] = useState(false)
+  const [currentExample, setCurrentExample] = useState<string>('')
   
   // Revenue
   const [totalRevenue, setTotalRevenue] = useState(0)
@@ -109,6 +199,35 @@ export default function BakeryProfitCalculator() {
     window.print()
   }
 
+  const loadExample = (business: ExampleBusiness) => {
+    setTotalRevenue(business.totalRevenue)
+    setIngredientCosts(business.ingredientCosts)
+    setPackagingCosts(business.packagingCosts)
+    setLaborCosts(business.laborCosts)
+    setOverheadCosts(business.overheadCosts)
+    setMarketingCosts(business.marketingCosts)
+    setOtherCosts(business.otherCosts)
+    setCurrentExample(business.name)
+    setShowExampleBanner(true)
+    
+    toast({
+      title: '📊 Example loaded!',
+      description: `Loaded: ${business.name}`,
+    })
+  }
+
+  const clearExample = () => {
+    setTotalRevenue(0)
+    setIngredientCosts(0)
+    setPackagingCosts(0)
+    setLaborCosts(0)
+    setOverheadCosts(0)
+    setMarketingCosts(0)
+    setOtherCosts(0)
+    setCurrentExample('')
+    setShowExampleBanner(false)
+  }
+
   return (
     <CalculatorLayout
       title="Free Bakery Profit Calculator"
@@ -139,6 +258,66 @@ export default function BakeryProfitCalculator() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Example Banner */}
+      {showExampleBanner && currentExample && (
+        <div className="max-w-4xl mx-auto mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              <Lightbulb className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">
+                  Example: {currentExample}
+                </h3>
+                <p className="text-sm text-amber-800">
+                  {EXAMPLE_BUSINESSES.find(b => b.name === currentExample)?.explanation}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearExample}
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Example Businesses */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-900">
+              <Lightbulb className="h-5 w-5" />
+              Try an Example Business
+            </CardTitle>
+            <p className="text-sm text-blue-700 mt-1">
+              See how different bakery models perform. Load an example to understand profit margins and benchmarks
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {EXAMPLE_BUSINESSES.map((business) => (
+                <button
+                  key={business.name}
+                  onClick={() => loadExample(business)}
+                  className="text-left p-4 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group"
+                >
+                  <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">
+                    {business.name}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    {business.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

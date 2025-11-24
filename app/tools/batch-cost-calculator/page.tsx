@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Plus, Trash2, DollarSign, TrendingUp, Save, Share2, Printer, Package } from 'lucide-react'
+import { Plus, Trash2, DollarSign, TrendingUp, Save, Share2, Printer, Package, Lightbulb, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
@@ -21,11 +21,108 @@ interface Product {
   yieldPerBatch: number
 }
 
+interface ExampleScenario {
+  name: string
+  description: string
+  products: Omit<Product, 'id'>[]
+  laborHours: number
+  hourlyRate: number
+  overheadCosts: number
+  explanation: string
+}
+
+const EXAMPLE_SCENARIOS: ExampleScenario[] = [
+  {
+    name: 'Profitable Premium Bakery',
+    description: 'High-margin gourmet products with proper pricing',
+    products: [
+      {
+        name: 'Premium Cupcakes',
+        batches: 3,
+        costPerBatch: 18.00,
+        pricePerBatch: 60.00,
+        yieldPerBatch: 12,
+      },
+      {
+        name: 'Gourmet Cookies',
+        batches: 4,
+        costPerBatch: 14.00,
+        pricePerBatch: 48.00,
+        yieldPerBatch: 18,
+      },
+    ],
+    laborHours: 5,
+    hourlyRate: 25,
+    overheadCosts: 20.00,
+    explanation: 'This shows a profitable scenario with premium pricing. Notice the 31% profit margin after all costs. Key: Price products 3-4x ingredient cost to cover labor and overhead.',
+  },
+  {
+    name: 'Farmers Market - Cookie Mix',
+    description: 'Multiple cookie batches for weekend market',
+    products: [
+      {
+        name: 'Chocolate Chip Cookies',
+        batches: 4,
+        costPerBatch: 12.50,
+        pricePerBatch: 30.00,
+        yieldPerBatch: 24,
+      },
+      {
+        name: 'Oatmeal Raisin Cookies',
+        batches: 3,
+        costPerBatch: 10.00,
+        pricePerBatch: 28.00,
+        yieldPerBatch: 24,
+      },
+    ],
+    laborHours: 6,
+    hourlyRate: 25,
+    overheadCosts: 15.00,
+    explanation: 'This example shows a LOSS scenario (-$41). Why? Labor costs ($150) are too high for the revenue. Solution: Increase prices, reduce labor time, or make larger batches.',
+  },
+  {
+    name: 'Wholesale Brownies',
+    description: 'Large batch production for wholesale order',
+    products: [
+      {
+        name: 'Fudge Brownies',
+        batches: 10,
+        costPerBatch: 8.50,
+        pricePerBatch: 18.00,
+        yieldPerBatch: 16,
+      },
+    ],
+    laborHours: 8,
+    hourlyRate: 20,
+    overheadCosts: 25.00,
+    explanation: 'Wholesale pricing example. Product profit is good (52%), but after labor, you lose money. Wholesale requires efficient production - reduce labor time or negotiate higher prices.',
+  },
+  {
+    name: 'High-Volume Production',
+    description: 'Economies of scale with large batches',
+    products: [
+      {
+        name: 'Simple Cookies',
+        batches: 20,
+        costPerBatch: 8.00,
+        pricePerBatch: 22.00,
+        yieldPerBatch: 36,
+      },
+    ],
+    laborHours: 10,
+    hourlyRate: 20,
+    overheadCosts: 40.00,
+    explanation: 'High-volume production (720 units) with 9% profit margin. Lower margins work when you sell in volume. Notice how cost per unit drops with larger batches.',
+  },
+]
+
 export default function BatchCostCalculator() {
   const { toast } = useToast()
   const router = useRouter()
   const { user } = useAuth()
   const [showSignupDialog, setShowSignupDialog] = useState(false)
+  const [showExampleBanner, setShowExampleBanner] = useState(false)
+  const [currentExample, setCurrentExample] = useState<string>('')
   
   const [products, setProducts] = useState<Product[]>([
     {
@@ -130,6 +227,44 @@ export default function BatchCostCalculator() {
     window.print()
   }
 
+  const loadExample = (scenario: ExampleScenario) => {
+    // Load products with generated IDs
+    const productsWithIds = scenario.products.map((p, index) => ({
+      ...p,
+      id: `example-${Date.now()}-${index}`,
+    }))
+    
+    setProducts(productsWithIds)
+    setLaborHours(scenario.laborHours)
+    setHourlyRate(scenario.hourlyRate)
+    setOverheadCosts(scenario.overheadCosts)
+    setCurrentExample(scenario.name)
+    setShowExampleBanner(true)
+    
+    toast({
+      title: '📊 Example loaded!',
+      description: `Loaded: ${scenario.name}`,
+    })
+  }
+
+  const clearExample = () => {
+    setProducts([
+      {
+        id: '1',
+        name: '',
+        batches: 1,
+        costPerBatch: 0,
+        pricePerBatch: 0,
+        yieldPerBatch: 12,
+      }
+    ])
+    setLaborHours(0)
+    setHourlyRate(25)
+    setOverheadCosts(0)
+    setCurrentExample('')
+    setShowExampleBanner(false)
+  }
+
   return (
     <CalculatorLayout
       title="Free Batch Cost Calculator"
@@ -160,6 +295,66 @@ export default function BatchCostCalculator() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Example Banner */}
+      {showExampleBanner && currentExample && (
+        <div className="max-w-4xl mx-auto mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              <Lightbulb className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">
+                  Example: {currentExample}
+                </h3>
+                <p className="text-sm text-amber-800">
+                  {EXAMPLE_SCENARIOS.find(s => s.name === currentExample)?.explanation}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearExample}
+              className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Example Scenarios */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-900">
+              <Lightbulb className="h-5 w-5" />
+              Try an Example Scenario
+            </CardTitle>
+            <p className="text-sm text-blue-700 mt-1">
+              Not sure where to start? Load a realistic example to see how the calculator works
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {EXAMPLE_SCENARIOS.map((scenario) => (
+                <button
+                  key={scenario.name}
+                  onClick={() => loadExample(scenario)}
+                  className="text-left p-4 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group"
+                >
+                  <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">
+                    {scenario.name}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    {scenario.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
