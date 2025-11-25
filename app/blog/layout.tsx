@@ -3,8 +3,8 @@ import blogPosts from './blogPostList'
 import { generateBlogIndexSchema } from '@/lib/seo-utils'
 
 export const metadata: Metadata = {
-    title: 'Bakery Business Blog - Expert Guides & Pricing Strategies',
-    description: 'Expert guides, pricing strategies, and proven tactics to grow your bakery profitably. Learn recipe costing, cake pricing, business planning, and more.',
+    title: 'Bakery Business Blog | Pricing Guides & Home Baker Tips',
+    description: 'Free guides for home bakers: How to price cakes, calculate recipe costs, start a home bakery & more. 20+ articles from baking business experts. Updated 2025.',
     keywords: [
         'bakery blog',
         'baking business tips',

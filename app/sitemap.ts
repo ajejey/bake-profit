@@ -6,20 +6,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   const blogSlugs = blogPostList.map((post) => post.slug)
 
-  // Static pages
-  const routes = [
-    '',
-    '/bakery-business-tool',
-    '/tools',
-    '/blog',
-  ].map((route) => ({
+  // Core pages - highest priority
+  const corePages = [
+    { route: '', priority: 1.0 },
+    { route: '/tools', priority: 0.95 },
+    { route: '/pricing', priority: 0.9 },
+    { route: '/blog', priority: 0.85 },
+    { route: '/bakery-business-tool', priority: 0.8 },
+    { route: '/login', priority: 0.5 },
+    { route: '/signup', priority: 0.5 },
+  ].map(({ route, priority }) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
+    priority,
   }))
 
-  // Calculator pages
+  // Calculator pages - high priority (main traffic drivers)
   const calculators = [
     '/tools/recipe-cost-calculator',
     '/tools/cake-pricing-calculator',
@@ -42,5 +45,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  return [...routes, ...calculators, ...blogPosts]
+  return [...corePages, ...calculators, ...blogPosts]
 }

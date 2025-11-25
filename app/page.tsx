@@ -21,84 +21,91 @@ import {
 import Footer from "@/components/layout/Footer";
 
 export default function Home() {
-  // JSON-LD structured data for homepage
-  const websiteSchema = {
+  // WebPage schema for homepage - other schemas are in layout.tsx
+  const webPageSchema = {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'BakeProfit',
+    '@type': 'WebPage',
+    '@id': 'https://bakeprofit.vercel.app/#webpage',
     url: 'https://bakeprofit.vercel.app',
-    description: 'Free bakery management software for home bakers. Calculate recipe costs, price cakes & cupcakes, track orders, manage inventory.',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://bakeprofit.vercel.app/tools?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
+    name: 'BakeProfit | Free Recipe Cost Calculator & Bakery Software for Home Bakers',
+    description: 'Stop underpricing your baked goods! Free recipe cost calculator + bakery management software. Calculate costs, price cakes correctly, track orders & inventory.',
+    isPartOf: {
+      '@id': 'https://bakeprofit.vercel.app/#website',
     },
-  }
-
-  const organizationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'BakeProfit',
-    url: 'https://bakeprofit.vercel.app',
-    logo: 'https://bakeprofit.vercel.app/logo.png',
-    description: 'Professional bakery management software and free calculators for home bakers and small bakeries.',
-    sameAs: [
-      'https://facebook.com/bakeprofit',
-      'https://instagram.com/bakeprofit',
-      'https://twitter.com/bakeprofit',
-    ],
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'Customer Support',
-      availableLanguage: 'English',
+    about: {
+      '@id': 'https://bakeprofit.vercel.app/#organization',
     },
-  }
-
-  const softwareSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: 'BakeProfit',
-    applicationCategory: 'BusinessApplication',
-    operatingSystem: 'Web Browser',
-    offers: [
-      {
-        '@type': 'Offer',
-        name: 'Free Tier',
-        price: '0',
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: 'https://bakeprofit.vercel.app/og-image.png',
+    },
+    mainEntity: {
+      '@type': 'SoftwareApplication',
+      name: 'BakeProfit',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web Browser',
+      offers: {
+        '@type': 'AggregateOffer',
+        lowPrice: '0',
+        highPrice: '6.99',
         priceCurrency: 'USD',
-        description: 'Free access to all calculators and basic features',
+        offerCount: '2',
       },
-      {
-        '@type': 'Offer',
-        name: 'Pro Tier',
-        price: '6.99',
-        priceCurrency: 'USD',
-        priceSpecification: {
-          '@type': 'UnitPriceSpecification',
-          price: '6.99',
-          priceCurrency: 'USD',
-          unitText: 'MONTH',
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.hero-description'],
+    },
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://bakeprofit.vercel.app',
         },
-        description: 'Unlimited recipes, orders, Google Drive sync, and priority support',
-      },
-    ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '1247',
-      bestRating: '5',
-      worstRating: '1',
+      ],
     },
-    featureList: [
-      'Recipe Cost Calculator',
-      'Cake Pricing Calculator',
-      'Order Management',
-      'Inventory Tracking',
-      'Recipe Scaling',
-      'Profit Analysis',
+  }
+
+  // FAQ schema for homepage
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Is BakeProfit really free?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes! BakeProfit offers a free tier with 5 recipes, 15 orders/month, and access to all 6 free calculators. No credit card required. Upgrade to Pro ($6.99/mo) for unlimited everything.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I calculate recipe costs?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Use our free Recipe Cost Calculator. Add your ingredients with their package costs, enter quantities used in your recipe, add labor and overhead costs, and instantly see your total cost per serving and suggested selling price.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What features does BakeProfit include?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'BakeProfit includes: Recipe Cost Calculator, Cake Pricing Calculator, Order Tracking, Inventory Management, Customer Management, and Business Analytics. Works offline and keeps your data private.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is my data safe with BakeProfit?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes! Your data is stored locally on your device by default. We never see or access your recipes, orders, or customer information. Pro users can optionally sync to Google Drive for backup.',
+        },
+      },
     ],
   }
 
@@ -107,15 +114,11 @@ export default function Home() {
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       
       {/* Header with Mobile Navigation */}
