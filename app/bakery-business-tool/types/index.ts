@@ -356,3 +356,193 @@ export interface PDFCustomization {
   createdAt: string
   updatedAt: string
 }
+
+// ============================================
+// STOREFRONT / PUBLIC MENU TYPES
+// ============================================
+
+export type MenuTemplateId = 'elegant-floral' | 'modern-minimal' | 'rustic-kraft' | 'playful-pastel'
+
+export interface MenuProduct {
+  id: string
+  recipeId?: string           // Optional link to recipe
+  name: string
+  description?: string
+  price: number
+  category?: string           // e.g., "Cakes", "Cupcakes", "Cookies"
+  image?: string              // Product image URL
+  isAvailable: boolean
+  isFeatured?: boolean        // Show prominently
+  sortOrder: number
+}
+
+export interface MenuContactInfo {
+  phone?: string
+  email?: string
+  instagram?: string
+  facebook?: string
+  whatsapp?: string
+  website?: string
+  address?: string
+}
+
+export interface MenuBranding {
+  businessName: string
+  tagline?: string            // e.g., "Handcrafted with love"
+  logo?: string               // Logo URL or base64
+  primaryColor?: string       // Hex color
+  accentColor?: string        // Hex color
+  backgroundImage?: string    // Optional background image
+}
+
+export interface PublicMenu {
+  id: string
+  userId: string              // Owner
+  slug: string                // URL slug (e.g., "sarahs-bakery")
+  
+  // Branding
+  branding: MenuBranding
+  
+  // Template
+  templateId: MenuTemplateId
+  
+  // Products
+  products: MenuProduct[]
+  categories: string[]        // Product categories for grouping
+  
+  // Contact
+  contactInfo: MenuContactInfo
+  
+  // Settings
+  showPrices: boolean         // Toggle price visibility
+  showContactInfo: boolean
+  orderFormEnabled: boolean   // Enable order form
+  acceptingOrders: boolean    // Currently accepting orders
+  orderLeadDays?: number      // Minimum days notice for orders
+  
+  // Status
+  isPublished: boolean
+  publishedAt?: string
+  
+  // Analytics
+  viewCount: number
+  
+  // Metadata
+  createdAt: string
+  updatedAt: string
+}
+
+// Menu template configuration
+export interface MenuTemplate {
+  id: MenuTemplateId
+  name: string
+  description: string
+  thumbnail: string           // Preview image
+  fonts: {
+    heading: string           // Google Font name
+    body: string              // Google Font name
+  }
+  colors: {
+    primary: string
+    secondary: string
+    background: string
+    text: string
+    accent: string
+  }
+  style: 'elegant' | 'modern' | 'rustic' | 'playful'
+}
+
+// Available templates
+export const MENU_TEMPLATES: MenuTemplate[] = [
+  {
+    id: 'elegant-floral',
+    name: 'Elegant Floral',
+    description: 'Sophisticated design with watercolor florals and script fonts',
+    thumbnail: '/templates/elegant-floral-thumb.png',
+    fonts: {
+      heading: 'Playfair Display',
+      body: 'Lora',
+    },
+    colors: {
+      primary: '#8B4557',      // Dusty rose
+      secondary: '#D4A574',    // Gold
+      background: '#FDF8F5',   // Cream
+      text: '#3D3D3D',         // Dark gray
+      accent: '#E8D5C4',       // Soft beige
+    },
+    style: 'elegant',
+  },
+  {
+    id: 'modern-minimal',
+    name: 'Modern Minimal',
+    description: 'Clean, contemporary design with bold typography',
+    thumbnail: '/templates/modern-minimal-thumb.png',
+    fonts: {
+      heading: 'Montserrat',
+      body: 'Open Sans',
+    },
+    colors: {
+      primary: '#1A1A1A',      // Black
+      secondary: '#F43F5E',    // Rose (your brand color)
+      background: '#FFFFFF',   // White
+      text: '#374151',         // Gray
+      accent: '#FEE2E2',       // Light rose
+    },
+    style: 'modern',
+  },
+  {
+    id: 'rustic-kraft',
+    name: 'Rustic Kraft',
+    description: 'Warm, handcrafted feel with kraft paper textures',
+    thumbnail: '/templates/rustic-kraft-thumb.png',
+    fonts: {
+      heading: 'Amatic SC',
+      body: 'Josefin Sans',
+    },
+    colors: {
+      primary: '#5D4037',      // Brown
+      secondary: '#8D6E63',    // Light brown
+      background: '#EFEBE9',   // Kraft paper
+      text: '#3E2723',         // Dark brown
+      accent: '#D7CCC8',       // Beige
+    },
+    style: 'rustic',
+  },
+  {
+    id: 'playful-pastel',
+    name: 'Playful Pastel',
+    description: 'Fun, colorful design perfect for cupcakes and treats',
+    thumbnail: '/templates/playful-pastel-thumb.png',
+    fonts: {
+      heading: 'Pacifico',
+      body: 'Quicksand',
+    },
+    colors: {
+      primary: '#EC4899',      // Pink
+      secondary: '#8B5CF6',    // Purple
+      background: '#FDF4FF',   // Light pink
+      text: '#4B5563',         // Gray
+      accent: '#FBBF24',       // Yellow
+    },
+    style: 'playful',
+  },
+]
+
+// Default menu for new users
+export const DEFAULT_MENU: Omit<PublicMenu, 'id' | 'userId' | 'createdAt' | 'updatedAt'> = {
+  slug: '',
+  branding: {
+    businessName: 'My Bakery',
+    tagline: 'Handcrafted with love',
+  },
+  templateId: 'elegant-floral',
+  products: [],
+  categories: ['Cakes', 'Cupcakes', 'Cookies', 'Other'],
+  contactInfo: {},
+  showPrices: true,
+  showContactInfo: true,
+  orderFormEnabled: false,
+  acceptingOrders: true,
+  isPublished: false,
+  viewCount: 0,
+}

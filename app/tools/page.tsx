@@ -3,15 +3,15 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { Header } from '@/components/layout/Header'
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
-import { ChefHat, Calculator, DollarSign, Scale, TrendingUp, Package, PieChart, CheckCircle, Users, ArrowRight } from 'lucide-react'
+import { ChefHat, Calculator, DollarSign, Scale, TrendingUp, Package, PieChart, CheckCircle, Users, ArrowRight, Globe } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
-  title: 'Free Baking Calculators & Tools for Home Bakers | BakeProfit',
-  description: 'Free calculators for bakers: recipe cost calculator, cake pricing calculator, recipe scaling calculator, and more. No signup required.',
-  keywords: 'baking calculators, recipe calculator, cake pricing, recipe cost, baking tools, bakery calculator',
+  title: 'Free Baking Calculators & Menu Builder | BakeProfit',
+  description: 'Free calculators and menu builder for bakers: recipe cost calculator, cake pricing, recipe scaling, and create beautiful online menus. No signup required.',
+  keywords: 'baking calculators, recipe calculator, cake pricing, recipe cost, baking tools, bakery calculator, menu builder, online menu',
 }
 
 interface Tool {
@@ -68,6 +68,14 @@ const tools: Tool[] = [
     icon: PieChart,
     href: '/tools/batch-cost-calculator',
     color: 'rose',
+  },
+  {
+    title: 'Menu Builder',
+    description: 'Create beautiful online menus with templates, QR codes, and shareable links. Auto-populate from your recipes.',
+    icon: Globe,
+    href: '/bakery-business-tool/storefront',
+    color: 'orange',
+    popular: true,
   },
 ]
 

@@ -152,6 +152,13 @@ export default function PricingNewPage() {
                       <p className="text-xs text-gray-500">Download as PDF or spreadsheet</p>
                     </div>
                   </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-gray-700"><strong>Beautiful Menu Builder</strong></span>
+                      <p className="text-xs text-gray-500">Create online menus with templates, QR codes & shareable links</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -294,6 +301,13 @@ export default function PricingNewPage() {
                     <div>
                       <span className="text-gray-900">No branding on exports</span>
                       <p className="text-xs text-gray-600">Professional invoices and PDFs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-gray-900"><strong>Beautiful Menu Builder</strong></span>
+                      <p className="text-xs text-gray-600">Create stunning online menus with templates, QR codes & shareable links</p>
                     </div>
                   </div>
                 </div>

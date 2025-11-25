@@ -253,6 +253,10 @@ export default function PricingPage() {
                     <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-700">Export data</span>
                   </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700"><strong>Beautiful Menu Builder</strong></span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -323,6 +327,10 @@ export default function PricingPage() {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-900">No branding on exports</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-900"><strong>Beautiful Menu Builder</strong></span>
                   </div>
                 </div>
               </CardContent>

@@ -20,6 +20,7 @@ import {
   LogOut,
   Download,
   Calendar,
+  Globe,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -150,6 +151,13 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       shortName: 'Analytics',
       icon: <TrendingUp className="h-5 w-5" />,
       href: '/bakery-business-tool/analytics',
+    },
+    {
+      id: 'storefront',
+      name: 'My Storefront',
+      shortName: 'Storefront',
+      icon: <Globe className="h-5 w-5" />,
+      href: '/bakery-business-tool/storefront',
     },
     {
       id: 'settings',

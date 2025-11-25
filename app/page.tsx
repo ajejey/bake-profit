@@ -16,7 +16,9 @@ import {
   DollarSign,
   BarChart3,
   Crown,
-  Gift
+  Gift,
+  Globe,
+  QrCode
 } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 
@@ -27,8 +29,8 @@ export default function Home() {
     '@type': 'WebPage',
     '@id': 'https://bakeprofit.vercel.app/#webpage',
     url: 'https://bakeprofit.vercel.app',
-    name: 'BakeProfit | Free Recipe Cost Calculator & Bakery Software for Home Bakers',
-    description: 'Stop underpricing your baked goods! Free recipe cost calculator + bakery management software. Calculate costs, price cakes correctly, track orders & inventory.',
+    name: 'BakeProfit | Free Recipe Cost Calculator, Menu Builder & Bakery Software for Home Bakers',
+    description: 'Stop underpricing your baked goods! Free recipe cost calculator + bakery management software. Calculate costs, price cakes correctly, create beautiful online menus, track orders & inventory.',
     isPartOf: {
       '@id': 'https://bakeprofit.vercel.app/#website',
     },
@@ -493,6 +495,36 @@ export default function Home() {
                 <li className="flex items-start gap-2 text-sm text-gray-600">
                   <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                   <span>Weekly and monthly reports</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 7 - Menu Builder */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-rose-100">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-rose-500 rounded-xl flex items-center justify-center mb-6">
+                <Globe className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Beautiful Menu Builder</h3>
+              <p className="text-gray-600 mb-4">
+                Create stunning online menus in minutes. Choose from 4-6 beautiful templates, auto-populate from your recipes, 
+                and share with a unique link or QR code. Perfect for showcasing your products.
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2 text-sm text-gray-600">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span>4-6 professionally designed templates</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm text-gray-600">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span>Auto-populate from your recipes</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm text-gray-600">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span>Shareable links and QR codes</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm text-gray-600">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span>Export as PNG or PDF</span>
                 </li>
               </ul>
             </div>
