@@ -21,6 +21,7 @@ import {
   Download,
   Calendar,
   Globe,
+  CakeSliceIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -156,7 +157,7 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       id: 'storefront',
       name: 'My Storefront',
       shortName: 'Storefront',
-      icon: <Globe className="h-5 w-5" />,
+      icon: <CakeSliceIcon className="h-5 w-5" />,
       href: '/bakery-business-tool/storefront',
     },
     {
@@ -209,19 +210,36 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    'flex items-center w-full px-3 py-3 rounded-md transition-colors text-left cursor-pointer',
+                    'flex items-center w-full px-3 py-3 rounded-md transition-colors text-left cursor-pointer relative',
+                    item.id === 'storefront' && 'group',
                     currentPage === item.id
                       ? 'bg-rose-50 text-rose-600'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : item.id === 'storefront'
+                        ? 'text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:text-amber-700'
+                        : 'text-gray-700 hover:bg-gray-100'
                   )}
                 >
-                  <span className="mr-3">{item.icon}</span>
-                  <span className="font-medium flex-1">{item.name}</span>
+                  {/* Glow effect for storefront */}
+                  {/* {item.id === 'storefront' && (
+                    <>
+                      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-amber-400 to-orange-400 opacity-0 group-hover:opacity-20 blur transition-opacity" />
+                      <div className="absolute inset-0 rounded-md animate-pulse bg-gradient-to-r from-amber-300 to-orange-300 opacity-0 group-hover:opacity-10" />
+                    </>
+                  )} */}
+                  
+                  <span className="mr-3 relative z-10">{item.icon}</span>
+                  <span className="font-medium flex-1 relative z-10">{item.name}</span>
+                  
+                  {item.id === 'storefront' && (
+                    <Badge className="ml-2 relative z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 animate-pulse">
+                      ✨                     </Badge>
+                  )}
+                  
                   {item.id === 'inventory' && alertCount > 0 && (
                     <Badge
                       variant={hasOutOfStock ? 'destructive' : 'default'}
                       className={cn(
-                        'ml-2',
+                        'ml-2 relative z-10',
                         !hasOutOfStock && 'bg-yellow-500 hover:bg-yellow-600'
                       )}
                     >

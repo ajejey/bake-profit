@@ -361,7 +361,7 @@ export interface PDFCustomization {
 // STOREFRONT / PUBLIC MENU TYPES
 // ============================================
 
-export type MenuTemplateId = 'elegant-floral' | 'modern-minimal' | 'rustic-kraft' | 'playful-pastel'
+export type MenuTemplateId = 'elegant-floral' | 'modern-minimal' | 'rustic-kraft' | 'playful-pastel' | 'parisian-noir' | 'bento-grid'
 
 export interface MenuProduct {
   id: string
@@ -449,7 +449,7 @@ export interface MenuTemplate {
     text: string
     accent: string
   }
-  style: 'elegant' | 'modern' | 'rustic' | 'playful'
+  style: 'elegant' | 'modern' | 'rustic' | 'playful' | 'luxury'
 }
 
 // Available templates
@@ -525,6 +525,42 @@ export const MENU_TEMPLATES: MenuTemplate[] = [
       accent: '#FBBF24',       // Yellow
     },
     style: 'playful',
+  },
+  {
+    id: 'parisian-noir',
+    name: 'Parisian Noir',
+    description: 'Luxurious Art Deco design with gold accents and elegant typography',
+    thumbnail: '/templates/parisian-noir-thumb.png',
+    fonts: {
+      heading: 'Cormorant Garamond',
+      body: 'Cormorant Garamond',
+    },
+    colors: {
+      primary: '#C9A962',      // Gold
+      secondary: '#FAFAFA',    // Off-white
+      background: '#0D0D0D',   // Near black
+      text: '#888888',         // Muted gray
+      accent: '#C9A962',       // Gold
+    },
+    style: 'luxury',
+  },
+  {
+    id: 'bento-grid',
+    name: 'Bento Grid',
+    description: 'Modern asymmetric grid layout with colorful cards inspired by Apple',
+    thumbnail: '/templates/bento-grid-thumb.png',
+    fonts: {
+      heading: 'Space Grotesk',
+      body: 'Inter',
+    },
+    colors: {
+      primary: '#F97316',      // Orange
+      secondary: '#EC4899',    // Pink
+      background: '#FAFAFA',   // Light gray
+      text: '#1F2937',         // Dark gray
+      accent: '#8B5CF6',       // Purple
+    },
+    style: 'modern',
   },
 ]
 

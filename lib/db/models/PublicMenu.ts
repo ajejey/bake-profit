@@ -47,7 +47,7 @@ export interface IPublicMenu extends Document {
     accentColor?: string
     backgroundImage?: string
   }
-  templateId: 'elegant-floral' | 'modern-minimal' | 'rustic-kraft' | 'playful-pastel'
+  templateId: 'elegant-floral' | 'modern-minimal' | 'rustic-kraft' | 'playful-pastel' | 'parisian-noir' | 'bento-grid'
   products: Array<{
     id: string
     recipeId?: string
@@ -104,7 +104,7 @@ const PublicMenuSchema = new Schema<IPublicMenu>({
   },
   templateId: {
     type: String,
-    enum: ['elegant-floral', 'modern-minimal', 'rustic-kraft', 'playful-pastel'],
+    enum: ['elegant-floral', 'modern-minimal', 'rustic-kraft', 'playful-pastel', 'parisian-noir', 'bento-grid'],
     default: 'elegant-floral',
   },
   products: {

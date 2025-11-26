@@ -19,7 +19,7 @@ import MenuRenderer from './MenuRenderer'
 export default function MenuBuilder() {
   const { menu, isLoading, error, saveMenu, createMenu, addProduct, updateProduct, removeProduct, publishMenu, unpublishMenu } = useMenu()
   const { recipes } = useBakeryData()
-  
+
   const [activeTab, setActiveTab] = useState('design')
   const [showPreview, setShowPreview] = useState(false)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
@@ -34,7 +34,7 @@ export default function MenuBuilder() {
   const [draggedId, setDraggedId] = useState<string | null>(null)
   const [isGeneratingShortLink, setIsGeneratingShortLink] = useState(false)
   const [shortLinkCopied, setShortLinkCopied] = useState(false)
-  
+
   useEffect(() => { setLocalMenu(menu) }, [menu])
 
   const handleDragStart = (e: React.DragEvent, productId: string) => {
@@ -110,7 +110,7 @@ export default function MenuBuilder() {
   }
 
   const copyLink = () => { if (localMenu) navigator.clipboard.writeText(`${window.location.origin}/m/${localMenu.slug}`) }
-  
+
   const copyShortLink = async () => {
     if (!localMenu) return
     try {
@@ -133,7 +133,7 @@ export default function MenuBuilder() {
       setIsGeneratingShortLink(false)
     }
   }
-  
+
   const getQRCodeUrl = () => localMenu ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/m/${localMenu.slug}`)}` : ''
 
   if (isLoading) return <div className="flex items-center justify-center h-96"><Loader2 className="h-8 w-8 animate-spin text-rose-500" /></div>
@@ -232,10 +232,10 @@ export default function MenuBuilder() {
             <CardHeader><CardTitle>Branding</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2"><Label>Business Name</Label><Input value={localMenu.branding?.businessName || ''} onChange={(e) => setLocalMenu({...localMenu, branding: {...(localMenu.branding || {}), businessName: e.target.value}})} /></div>
-                <div className="space-y-2"><Label>Tagline</Label><Input value={localMenu.branding?.tagline || ''} onChange={(e) => setLocalMenu({...localMenu, branding: {...(localMenu.branding || {}), tagline: e.target.value}})} placeholder="Handcrafted with love" /></div>
+                <div className="space-y-2"><Label>Business Name</Label><Input value={localMenu.branding?.businessName || ''} onChange={(e) => setLocalMenu({ ...localMenu, branding: { ...(localMenu.branding || {}), businessName: e.target.value } })} /></div>
+                <div className="space-y-2"><Label>Tagline</Label><Input value={localMenu.branding?.tagline || ''} onChange={(e) => setLocalMenu({ ...localMenu, branding: { ...(localMenu.branding || {}), tagline: e.target.value } })} placeholder="Handcrafted with love" /></div>
               </div>
-              <div className="space-y-2"><Label>Logo URL</Label><Input value={localMenu.branding?.logo || ''} onChange={(e) => setLocalMenu({...localMenu, branding: {...(localMenu.branding || {}), logo: e.target.value}})} placeholder="https://example.com/logo.png" /></div>
+              <div className="space-y-2"><Label>Logo URL</Label><Input value={localMenu.branding?.logo || ''} onChange={(e) => setLocalMenu({ ...localMenu, branding: { ...(localMenu.branding || {}), logo: e.target.value } })} placeholder="https://example.com/logo.png" /></div>
             </CardContent>
           </Card>
           <Card>
@@ -243,9 +243,9 @@ export default function MenuBuilder() {
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {MENU_TEMPLATES.map((t) => (
-                  <button key={t.id} onClick={() => setLocalMenu({...localMenu, templateId: t.id})} className={`relative p-4 rounded-xl border-2 text-left ${localMenu.templateId === t.id ? 'border-rose-500 bg-rose-50' : 'border-gray-200 hover:border-rose-300'}`}>
+                  <button key={t.id} onClick={() => setLocalMenu({ ...localMenu, templateId: t.id })} className={`relative p-4 rounded-xl border-2 text-left ${localMenu.templateId === t.id ? 'border-rose-500 bg-rose-50' : 'border-gray-200 hover:border-rose-300'}`}>
                     {localMenu.templateId === t.id && <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center"><Check className="h-4 w-4 text-white" /></div>}
-                    <div className="flex gap-1 mb-3">{Object.values(t.colors).slice(0,4).map((c,i) => <div key={i} className="w-6 h-6 rounded-full border" style={{backgroundColor:c}} />)}</div>
+                    <div className="flex gap-1 mb-3">{Object.values(t.colors).slice(0, 4).map((c, i) => <div key={i} className="w-6 h-6 rounded-full border" style={{ backgroundColor: c }} />)}</div>
                     <h4 className="font-semibold">{t.name}</h4>
                     <p className="text-xs text-gray-500 mt-1">{t.description}</p>
                   </button>
@@ -272,8 +272,8 @@ export default function MenuBuilder() {
               ) : (
                 <div className="space-y-3">
                   {localMenu.products.map(p => (
-                    <div 
-                      key={p.id} 
+                    <div
+                      key={p.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, p.id)}
                       onDragOver={handleDragOver}
@@ -288,8 +288,8 @@ export default function MenuBuilder() {
                       </div>
                       <div className="text-right"><p className="font-semibold">${p.price.toFixed(2)}</p><p className="text-xs text-gray-500">{p.category}</p></div>
                       <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => updateProduct(p.id, {isFeatured: !p.isFeatured})}><Sparkles className={`h-4 w-4 ${p.isFeatured ? 'text-yellow-500' : 'text-gray-400'}`} /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => updateProduct(p.id, {isAvailable: !p.isAvailable})}>{p.isAvailable ? <Eye className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-gray-400" />}</Button>
+                        <Button variant="ghost" size="sm" onClick={() => updateProduct(p.id, { isFeatured: !p.isFeatured })}><Sparkles className={`h-4 w-4 ${p.isFeatured ? 'text-yellow-500' : 'text-gray-400'}`} /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => updateProduct(p.id, { isAvailable: !p.isAvailable })}>{p.isAvailable ? <Eye className="h-4 w-4 text-green-500" /> : <X className="h-4 w-4 text-gray-400" />}</Button>
                         <Button variant="ghost" size="sm" onClick={() => removeProduct(p.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                       </div>
                     </div>
@@ -305,12 +305,12 @@ export default function MenuBuilder() {
             <CardHeader><CardTitle>Contact Information</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2"><Label>Phone</Label><Input value={localMenu.contactInfo?.phone || ''} onChange={(e) => setLocalMenu({...localMenu, contactInfo: {...(localMenu.contactInfo || {}), phone: e.target.value}})} placeholder="+1 234 567 8900" /></div>
-                <div className="space-y-2"><Label>Email</Label><Input value={localMenu.contactInfo?.email || ''} onChange={(e) => setLocalMenu({...localMenu, contactInfo: {...(localMenu.contactInfo || {}), email: e.target.value}})} placeholder="hello@mybakery.com" /></div>
-                <div className="space-y-2"><Label>Instagram</Label><Input value={localMenu.contactInfo?.instagram || ''} onChange={(e) => setLocalMenu({...localMenu, contactInfo: {...(localMenu.contactInfo || {}), instagram: e.target.value}})} placeholder="@mybakery" /></div>
-                <div className="space-y-2"><Label>WhatsApp</Label><Input value={localMenu.contactInfo?.whatsapp || ''} onChange={(e) => setLocalMenu({...localMenu, contactInfo: {...(localMenu.contactInfo || {}), whatsapp: e.target.value}})} placeholder="+1 234 567 8900" /></div>
+                <div className="space-y-2"><Label>Phone</Label><Input value={localMenu.contactInfo?.phone || ''} onChange={(e) => setLocalMenu({ ...localMenu, contactInfo: { ...(localMenu.contactInfo || {}), phone: e.target.value } })} placeholder="+1 234 567 8900" /></div>
+                <div className="space-y-2"><Label>Email</Label><Input value={localMenu.contactInfo?.email || ''} onChange={(e) => setLocalMenu({ ...localMenu, contactInfo: { ...(localMenu.contactInfo || {}), email: e.target.value } })} placeholder="hello@mybakery.com" /></div>
+                <div className="space-y-2"><Label>Instagram</Label><Input value={localMenu.contactInfo?.instagram || ''} onChange={(e) => setLocalMenu({ ...localMenu, contactInfo: { ...(localMenu.contactInfo || {}), instagram: e.target.value } })} placeholder="@mybakery" /></div>
+                <div className="space-y-2"><Label>WhatsApp</Label><Input value={localMenu.contactInfo?.whatsapp || ''} onChange={(e) => setLocalMenu({ ...localMenu, contactInfo: { ...(localMenu.contactInfo || {}), whatsapp: e.target.value } })} placeholder="+1 234 567 8900" /></div>
               </div>
-              <div className="space-y-2"><Label>Address</Label><Textarea value={localMenu.contactInfo?.address || ''} onChange={(e) => setLocalMenu({...localMenu, contactInfo: {...(localMenu.contactInfo || {}), address: e.target.value}})} rows={2} /></div>
+              <div className="space-y-2"><Label>Address</Label><Textarea value={localMenu.contactInfo?.address || ''} onChange={(e) => setLocalMenu({ ...localMenu, contactInfo: { ...(localMenu.contactInfo || {}), address: e.target.value } })} rows={2} /></div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -319,9 +319,11 @@ export default function MenuBuilder() {
           <Card>
             <CardHeader><CardTitle>Display Settings</CardTitle></CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-between"><div><Label>Show Prices</Label><p className="text-sm text-gray-500">Display prices next to products</p></div><Switch checked={localMenu.showPrices} onCheckedChange={(c) => setLocalMenu({...localMenu, showPrices: c})} /></div>
-              <div className="flex items-center justify-between"><div><Label>Show Contact Info</Label><p className="text-sm text-gray-500">Display your contact details</p></div><Switch checked={localMenu.showContactInfo} onCheckedChange={(c) => setLocalMenu({...localMenu, showContactInfo: c})} /></div>
-              <div className="flex items-center justify-between"><div><Label>Accepting Orders</Label><p className="text-sm text-gray-500">Show that you&apos;re taking orders</p></div><Switch checked={localMenu.acceptingOrders} onCheckedChange={(c) => setLocalMenu({...localMenu, acceptingOrders: c})} /></div>
+              <div className="flex items-center justify-between"><div><Label>Show Prices</Label><p className="text-sm text-gray-500">Display prices next to products</p></div><Switch checked={localMenu.showPrices} onCheckedChange={(c) => setLocalMenu({ ...localMenu, showPrices: c })} /></div>
+              <div className="flex items-center justify-between"><div><Label>Show Contact Info</Label><p className="text-sm text-gray-500">Display your contact details</p></div><Switch checked={localMenu.showContactInfo} onCheckedChange={(c) => setLocalMenu({ ...localMenu, showContactInfo: c })} /></div>
+              <div className="flex items-center justify-between"><div><Label>Accepting Orders</Label><p className="text-sm text-gray-500">Show that you&apos;re taking orders</p></div><Switch checked={localMenu.acceptingOrders} onCheckedChange={(c) => setLocalMenu({ ...localMenu, acceptingOrders: c })} /></div>
+              <div className="flex items-center justify-between"><div><Label>Enable Order Form</Label><p className="text-sm text-gray-500">Allow customers to place orders directly from your menu</p></div><Switch checked={localMenu.orderFormEnabled} onCheckedChange={(c) => setLocalMenu({ ...localMenu, orderFormEnabled: c })} /></div>
+              <div className="space-y-2"><Label htmlFor="orderLeadDays">Order Lead Days</Label><Input id="orderLeadDays" type="number" min="0" value={localMenu.orderLeadDays || 2} onChange={(e) => setLocalMenu({ ...localMenu, orderLeadDays: parseInt(e.target.value) || 2 })} className="max-w-[200px]" /><p className="text-sm text-gray-500">Minimum notice required for orders (in days)</p></div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -338,13 +340,13 @@ export default function MenuBuilder() {
         <DialogContent>
           <DialogHeader><DialogTitle>Add Custom Product</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2"><Label>Product Name *</Label><Input value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} /></div>
-            <div className="space-y-2"><Label>Description</Label><Textarea value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} rows={2} /></div>
+            <div className="space-y-2"><Label>Product Name *</Label><Input value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} /></div>
+            <div className="space-y-2"><Label>Description</Label><Textarea value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} rows={2} /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2"><Label>Price *</Label><Input type="number" step="0.01" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: parseFloat(e.target.value) || 0})} /></div>
-              <div className="space-y-2"><Label>Category</Label><Select value={newProduct.category} onValueChange={(v) => setNewProduct({...newProduct, category: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{localMenu.categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-2"><Label>Price *</Label><Input type="number" step="0.01" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) || 0 })} /></div>
+              <div className="space-y-2"><Label>Category</Label><Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{localMenu.categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select></div>
             </div>
-            <div className="flex items-center gap-2"><Switch checked={newProduct.isFeatured} onCheckedChange={(c) => setNewProduct({...newProduct, isFeatured: c})} /><Label>Mark as featured</Label></div>
+            <div className="flex items-center gap-2"><Switch checked={newProduct.isFeatured} onCheckedChange={(c) => setNewProduct({ ...newProduct, isFeatured: c })} /><Label>Mark as featured</Label></div>
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setShowAddProductDialog(false)}>Cancel</Button><Button onClick={handleAddCustomProduct} disabled={!newProduct.name || !newProduct.price}>Add Product</Button></DialogFooter>
         </DialogContent>
