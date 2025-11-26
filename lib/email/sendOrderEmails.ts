@@ -45,7 +45,7 @@ export async function sendBakerOrderNotification(options: {
                 (item) => `
       <div style="padding: 12px 0; border-bottom: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-weight: 600; color: #1f2937;">${item.name} × ${item.quantity}</span>
+          <span style="font-weight: 600; color: #1f2937;">${item.name} <span style="margin: 0 4px;">×</span> ${item.quantity}</span>
           <span style="font-weight: 500; color: #1f2937;">$${(item.price * item.quantity).toFixed(2)}</span>
         </div>
         ${item.notes ? `<div style="font-size: 13px; color: #6b7280; font-style: italic;">Note: ${item.notes}</div>` : ''}
@@ -217,7 +217,7 @@ export async function sendCustomerOrderConfirmation(options: {
                 (item) => `
       <div style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between;">
-          <span style="color: #1f2937;">${item.name} × ${item.quantity}</span>
+          <span style="color: #1f2937;">${item.name} <span style="margin: 0 4px;">×</span> ${item.quantity}</span>
           <span style="font-weight: 500; color: #1f2937;">$${(item.price * item.quantity).toFixed(2)}</span>
         </div>
       </div>

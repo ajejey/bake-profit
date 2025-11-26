@@ -2,6 +2,7 @@
 
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { BakeryDataProvider } from '../contexts/BakeryDataContext'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 import { SyncIndicator } from './SyncIndicator'
 import { DatabaseSyncManager } from './DatabaseSyncManager'
 
@@ -12,6 +13,7 @@ import { DatabaseSyncManager } from './DatabaseSyncManager'
  * Includes:
  * - GoogleOAuthProvider: For Google Drive sync
  * - BakeryDataProvider: For IndexedDB data management
+ * - NotificationProvider: For order notifications
  * - DatabaseSyncManager: For MongoDB sync
  * - SyncIndicator: For showing sync status
  */
@@ -20,11 +22,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <BakeryDataProvider>
-        <DatabaseSyncManager />
-        <SyncIndicator />
-        {children}
-      </BakeryDataProvider>
+      <NotificationProvider>
+        <BakeryDataProvider>
+          <DatabaseSyncManager />
+          <SyncIndicator />
+          {children}
+        </BakeryDataProvider>
+      </NotificationProvider>
     </GoogleOAuthProvider>
   )
 }

@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useOrders, useRecipes, useCustomers, useInventory, useCurrencySymbol } from '../hooks'
+import { useOrderNotifications } from '../hooks/useOrderNotifications'
 import { useAuth } from '@/contexts/AuthContext'
 import DashboardCalendarWidget from './Calendar/DashboardCalendarWidget'
+import NewOrdersCard from './NewOrdersCard'
 
 
 // Helper to format date
@@ -37,11 +39,13 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ onNavigate }: DashboardProps) {
+  // Activate order notifications
+  useOrderNotifications()
+
   const {
     orders,
     ordersDueToday,
     ordersDueThisWeek,
-    pendingOrders,
     totalRevenue,
     totalProfit
   } = useOrders()
@@ -85,6 +89,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
   return (
     <div className="space-y-6">
+      {/* New Orders Notification */}
+      <NewOrdersCard />
+
       {/* Greeting */}
       <h1 className="text-3xl font-bold text-gray-900 mb-3">
         Welcome back, {user?.name || 'Baker'}!

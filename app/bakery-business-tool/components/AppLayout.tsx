@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
+import { useNotifications } from '@/contexts/NotificationContext'
 import { cn } from '@/lib/utils'
 import {
   Calculator,
@@ -37,6 +38,7 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
   const router = useRouter()
   const { logout } = useAuth()
   const { toast } = useToast()
+  const { unreadCount: unreadOrderCount } = useNotifications()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { hasLowStock, hasOutOfStock, alertCount } = useInventory()
   const [isSampleDataLoaded, setIsSampleDataLoaded] = useState(false)
@@ -233,6 +235,12 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
                   {item.id === 'storefront' && (
                     <Badge className="ml-2 relative z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 animate-pulse">
                       ✨                     </Badge>
+                  )}
+                  
+                  {item.id === 'orders' && unreadOrderCount > 0 && (
+                    <Badge className="ml-2 relative z-10 bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 animate-pulse">
+                      {unreadOrderCount}
+                    </Badge>
                   )}
                   
                   {item.id === 'inventory' && alertCount > 0 && (
