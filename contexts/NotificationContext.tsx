@@ -18,6 +18,8 @@ interface NotificationContextType {
   addNotification: (notification: Omit<OrderNotification, 'id' | 'createdAt' | 'isRead'>) => void
   markAsRead: (id: string) => void
   markAllAsRead: () => void
+  dismissNotification: (id: string) => void
+  dismissAllNotifications: () => void
   clearNotifications: () => void
   loadNotifications: () => Promise<void>
 }
@@ -71,6 +73,14 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
   }, [])
 
+  const dismissNotification = useCallback((id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id))
+  }, [])
+
+  const dismissAllNotifications = useCallback(() => {
+    setNotifications([])
+  }, [])
+
   const clearNotifications = useCallback(() => {
     setNotifications([])
   }, [])
@@ -88,6 +98,8 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         addNotification,
         markAsRead,
         markAllAsRead,
+        dismissNotification,
+        dismissAllNotifications,
         clearNotifications,
         loadNotifications,
       }}

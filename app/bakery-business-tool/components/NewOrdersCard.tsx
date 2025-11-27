@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Bell, ArrowRight, ShoppingCart } from 'lucide-react'
+import { Bell, ArrowRight, ShoppingCart, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useNotifications } from '@/contexts/NotificationContext'
 
 export default function NewOrdersCard() {
-  const { notifications, unreadCount, markAsRead } = useNotifications()
+  const { notifications, unreadCount, markAsRead, dismissAllNotifications } = useNotifications()
   const [latestOrder, setLatestOrder] = useState(notifications[0] || null)
 
   useEffect(() => {
@@ -21,7 +21,16 @@ export default function NewOrdersCard() {
   }
 
   return (
-    <div className="mb-6 bg-gradient-to-r from-rose-50 to-orange-50 border-2 border-rose-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="mb-6 bg-gradient-to-r from-rose-50 to-orange-50 border-2 border-rose-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow relative">
+      {/* Dismiss button */}
+      <button
+        onClick={dismissAllNotifications}
+        className="absolute top-3 right-3 p-1 text-gray-400 hover:text-gray-600 hover:bg-rose-100 rounded-md transition-colors"
+        title="Dismiss all notifications"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4 flex-1">
           {/* Icon */}
