@@ -2066,7 +2066,7 @@ export default function RecipeCalculator() {
                     <span>Servings:</span>
                     <span>{recipe.servings}</span>
                   </div>
-                  {(recipe.prepTime || recipe.cookTime) && (
+                  {!!(recipe.prepTime || recipe.cookTime) && (
                     <div className="flex justify-between text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
