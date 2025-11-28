@@ -11,14 +11,28 @@ import { DatabaseSyncManager } from './DatabaseSyncManager'
  * This allows the parent layout.tsx to remain a Server Component
  * 
  * Includes:
- * - GoogleOAuthProvider: For Google Drive sync
+ * - GoogleOAuthProvider: For Google Drive sync (only if client ID is available)
  * - BakeryDataProvider: For IndexedDB data management
  * - NotificationProvider: For order notifications
  * - DatabaseSyncManager: For MongoDB sync
  * - SyncIndicator: For showing sync status
  */
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
+  // Only wrap with GoogleOAuthProvider if we have a valid client ID
+  // This prevents FedCM initialization errors when client ID is missing
+  if (!googleClientId) {
+    return (
+      <NotificationProvider>
+        <BakeryDataProvider>
+          <DatabaseSyncManager />
+          <SyncIndicator />
+          {children}
+        </BakeryDataProvider>
+      </NotificationProvider>
+    )
+  }
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>

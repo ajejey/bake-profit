@@ -17,7 +17,12 @@ import { useAuth } from '@/contexts/AuthContext'
  */
 export function DatabaseSyncManager() {
   const { token } = useAuth()
-  useOptimizedSync() // Use optimized bidirectional sync
+  
+  try {
+    useOptimizedSync() // Use optimized bidirectional sync
+  } catch (error) {
+    console.error('DatabaseSyncManager error:', error)
+  }
 
   // Log once when sync manager mounts with auth
   useEffect(() => {

@@ -3,7 +3,16 @@
 import { useGoogleDriveSync } from '../hooks/useGoogleDriveSync'
 
 export function SyncIndicator() {
-  const { syncStatus, isConnected } = useGoogleDriveSync()
+  let syncStatus, isConnected
+  
+  try {
+    const result = useGoogleDriveSync()
+    syncStatus = result.syncStatus
+    isConnected = result.isConnected
+  } catch (error) {
+    console.error('SyncIndicator error:', error)
+    return null
+  }
 
   if (!isConnected) return null
 
