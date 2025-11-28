@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Store, Eye, Save, Globe, Copy, QrCode, Plus, Trash2, GripVertical, Check, X, ExternalLink, Palette, Settings, Package, Phone, Loader2, AlertCircle, Sparkles, Link } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Store, Eye, Save, Globe, Copy, QrCode, Plus, Trash2, GripVertical, Check, X, ExternalLink, Palette, Settings, Package, Phone, Loader2, AlertCircle, Sparkles, Link2, CheckCircle2, XCircle, Edit3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,18 +13,18 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMenu } from '../../hooks/useMenu'
 import { useBakeryData } from '../../contexts/BakeryDataContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { MENU_TEMPLATES, type MenuProduct } from '../../types'
 import MenuRenderer from './MenuRenderer'
 
 export default function MenuBuilder() {
-  const { menu, isLoading, error, saveMenu, createMenu, addProduct, updateProduct, removeProduct, publishMenu, unpublishMenu } = useMenu()
+  const { menu, isLoading, error, saveMenu, createMenu, addProduct, updateProduct, removeProduct, publishMenu, unpublishMenu, checkSlugAvailability } = useMenu()
   const { recipes } = useBakeryData()
+  const { user } = useAuth()
+  const autoCreateAttempted = useRef(false)
 
   const [activeTab, setActiveTab] = useState('design')
   const [showPreview, setShowPreview] = useState(false)
-  const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [newSlug, setNewSlug] = useState('')
-  const [slugError, setSlugError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [showAddProductDialog, setShowAddProductDialog] = useState(false)
@@ -34,8 +34,52 @@ export default function MenuBuilder() {
   const [draggedId, setDraggedId] = useState<string | null>(null)
   const [isGeneratingShortLink, setIsGeneratingShortLink] = useState(false)
   const [shortLinkCopied, setShortLinkCopied] = useState(false)
+  
+  // URL editing state
+  const [isEditingUrl, setIsEditingUrl] = useState(false)
+  const [editedSlug, setEditedSlug] = useState('')
+  const [slugStatus, setSlugStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid'>('idle')
+  const [isSavingSlug, setIsSavingSlug] = useState(false)
+  const slugCheckTimeout = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => { setLocalMenu(menu) }, [menu])
+
+  // Auto-create menu for new users using their business name or user name
+  useEffect(() => {
+    const autoCreateMenu = async () => {
+      // Only attempt once, and only if no menu exists and not loading
+      if (autoCreateAttempted.current || menu || isLoading) return
+      autoCreateAttempted.current = true
+
+      // Generate slug from business name or user name
+      const displayName = user?.business_name || user?.name || ''
+      const baseName = displayName || user?.email?.split('@')[0] || 'my-bakery'
+      let slug = baseName
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .slice(0, 30)
+
+      // Ensure minimum length
+      if (slug.length < 3) {
+        slug = 'my-bakery'
+      }
+
+      console.log('Auto-creating menu with slug:', slug)
+      // Pass business name to pre-populate branding
+      let success = await createMenu(slug, displayName || undefined)
+      
+      // If slug is taken, try with a random suffix
+      if (!success) {
+        const uniqueSlug = `${slug}-${Date.now().toString(36).slice(-4)}`
+        console.log('Slug taken, trying:', uniqueSlug)
+        success = await createMenu(uniqueSlug, displayName || undefined)
+      }
+    }
+
+    autoCreateMenu()
+  }, [menu, isLoading, user, createMenu])
 
   const handleDragStart = (e: React.DragEvent, productId: string) => {
     setDraggedId(productId)
@@ -70,19 +114,6 @@ export default function MenuBuilder() {
     setDraggedId(null)
   }
 
-  const validateSlug = (slug: string) => {
-    if (!slug) { setSlugError('URL is required'); return false }
-    if (!/^[a-z0-9-_]+$/.test(slug)) { setSlugError('Only lowercase letters, numbers, hyphens allowed'); return false }
-    if (slug.length < 3) { setSlugError('URL must be at least 3 characters'); return false }
-    setSlugError(''); return true
-  }
-
-  const handleCreateMenu = async () => {
-    if (!validateSlug(newSlug)) return
-    const success = await createMenu(newSlug)
-    if (success) { setShowCreateDialog(false); setNewSlug('') }
-  }
-
   const handleSave = async () => {
     if (!localMenu) return
     setIsSaving(true)
@@ -93,7 +124,68 @@ export default function MenuBuilder() {
 
   const handlePublishToggle = async () => {
     if (!localMenu) return
-    localMenu.isPublished ? await unpublishMenu() : await publishMenu()
+    if (localMenu.isPublished) {
+      await unpublishMenu()
+    } else {
+      await publishMenu()
+    }
+  }
+
+  // URL editing handlers
+  const handleStartEditUrl = () => {
+    setEditedSlug(localMenu?.slug || '')
+    setSlugStatus('idle')
+    setIsEditingUrl(true)
+  }
+
+  const handleCancelEditUrl = () => {
+    setIsEditingUrl(false)
+    setEditedSlug('')
+    setSlugStatus('idle')
+  }
+
+  const handleSlugChange = (value: string) => {
+    // Sanitize input: lowercase, only allowed characters
+    const sanitized = value.toLowerCase().replace(/[^a-z0-9-_]/g, '')
+    setEditedSlug(sanitized)
+
+    // Clear previous timeout
+    if (slugCheckTimeout.current) {
+      clearTimeout(slugCheckTimeout.current)
+    }
+
+    // Validate format
+    if (sanitized.length < 3) {
+      setSlugStatus('invalid')
+      return
+    }
+
+    // If same as current, mark as available
+    if (sanitized === localMenu?.slug) {
+      setSlugStatus('available')
+      return
+    }
+
+    // Debounce availability check
+    setSlugStatus('checking')
+    slugCheckTimeout.current = setTimeout(async () => {
+      const available = await checkSlugAvailability(sanitized)
+      setSlugStatus(available ? 'available' : 'taken')
+    }, 500)
+  }
+
+  const handleSaveUrl = async () => {
+    if (!localMenu || slugStatus !== 'available' || editedSlug === localMenu.slug) return
+    
+    setIsSavingSlug(true)
+    const success = await saveMenu({ ...localMenu, slug: editedSlug })
+    setIsSavingSlug(false)
+    
+    if (success) {
+      setIsEditingUrl(false)
+      setEditedSlug('')
+      setSlugStatus('idle')
+    }
   }
 
   const handleAddFromRecipe = (recipeId: string) => {
@@ -138,36 +230,22 @@ export default function MenuBuilder() {
 
   if (isLoading) return <div className="flex items-center justify-center h-96"><Loader2 className="h-8 w-8 animate-spin text-rose-500" /></div>
 
+  // Show loading while auto-creating menu
   if (!menu && !isLoading) {
     return (
       <div className="max-w-2xl mx-auto">
         <Card className="border-2 border-dashed border-rose-200">
           <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-4"><Store className="h-8 w-8 text-rose-500" /></div>
-            <CardTitle className="text-2xl">Create Your Online Menu</CardTitle>
-            <CardDescription>Share a beautiful menu with your customers.</CardDescription>
+            <div className="mx-auto w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-4">
+              <Loader2 className="h-8 w-8 text-rose-500 animate-spin" />
+            </div>
+            <CardTitle className="text-2xl">Setting Up Your Storefront</CardTitle>
+            <CardDescription>Creating your online menu...</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Button size="lg" className="bg-rose-500 hover:bg-rose-600" onClick={() => setShowCreateDialog(true)}><Sparkles className="mr-2 h-5 w-5" />Create My Menu</Button>
+            <p className="text-sm text-gray-500">This will only take a moment</p>
           </CardContent>
         </Card>
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Create Your Menu</DialogTitle><DialogDescription>Choose a URL for your menu.</DialogDescription></DialogHeader>
-            <div className="space-y-4 py-4">
-              <Label>Your Menu URL</Label>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">bakeprofit.vercel.app/m/</span>
-                <Input value={newSlug} onChange={(e) => { const v = e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ''); setNewSlug(v); validateSlug(v) }} placeholder="my-bakery" className="flex-1" />
-              </div>
-              {slugError && <p className="text-sm text-red-500 flex items-center gap-1"><AlertCircle className="h-4 w-4" />{slugError}</p>}
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-              <Button onClick={handleCreateMenu} disabled={!newSlug || !!slugError} className="bg-rose-500 hover:bg-rose-600">Create Menu</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     )
   }
@@ -176,46 +254,172 @@ export default function MenuBuilder() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Store className="h-6 w-6 text-rose-500" />My Storefront</h1>
-          <p className="text-gray-500 mt-1">Create and share your online menu</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowPreview(true)}><Eye className="mr-2 h-4 w-4" />Preview</Button>
-          <Button onClick={handleSave} disabled={isSaving} className="bg-rose-500 hover:bg-rose-600">
-            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : saveSuccess ? <Check className="mr-2 h-4 w-4" /> : <Save className="mr-2 h-4 w-4" />}
-            {saveSuccess ? 'Saved!' : 'Save'}
-          </Button>
-        </div>
-      </div>
-
-      {error && <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center gap-2"><AlertCircle className="h-5 w-5" />{error}</div>}
-
-      <Card className={`py-0 ${localMenu.isPublished ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}`}>
-        <CardContent className="py-4">
+      <div className="flex flex-col gap-4">
+        {/* Header with Status Banner */}
+        <div className={`rounded-lg border-2 ${localMenu.isPublished ? 'border-green-200 bg-gradient-to-r from-green-50 to-emerald-50' : 'border-yellow-200 bg-gradient-to-r from-yellow-50 to-amber-50'} p-4`}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${localMenu.isPublished ? 'bg-green-500' : 'bg-yellow-500'}`} />
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 mt-1">
+                <Store className="h-6 w-6 text-rose-500" />
+              </div>
               <div>
-                <p className="font-medium">{localMenu.isPublished ? 'Your menu is live!' : 'Your menu is not published yet'}</p>
-                <p className="text-sm text-gray-600">{localMenu.isPublished ? `${localMenu.viewCount} views` : 'Publish to make it visible'}</p>
+                <div className="flex items-center gap-2 mb-1">
+                  <h1 className="text-2xl font-bold text-gray-900">My Storefront</h1>
+                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${localMenu.isPublished ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <div className={`w-2 h-2 rounded-full ${localMenu.isPublished ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
+                    {localMenu.isPublished ? 'Live' : 'Draft'}
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {localMenu.isPublished ? `${localMenu.viewCount} views • Share your menu with customers` : 'Publish your menu to make it visible online'}
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Primary Actions */}
+              <div className="flex items-center gap-2 flex-1">
+                <Button 
+                  onClick={handleSave} 
+                  disabled={isSaving} 
+                  size="sm" 
+                  className="bg-rose-500 hover:bg-rose-600 flex-1 sm:flex-none"
+                >
+                  {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : saveSuccess ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                  {saveSuccess ? 'Saved!' : 'Save Changes'}
+                </Button>
+                <Button 
+                  variant={localMenu.isPublished ? 'outline' : 'default'} 
+                  size="sm" 
+                  onClick={handlePublishToggle} 
+                  className={`flex-1 sm:flex-none ${!localMenu.isPublished ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                >
+                  <Globe className="mr-2 h-4 w-4" />
+                  {localMenu.isPublished ? 'Unpublish' : 'Publish'}
+                </Button>
+              </div>
+
+              {/* Secondary Actions */}
               {localMenu.isPublished && (
-                <>
-                  <Button variant="outline" size="sm" onClick={copyLink}><Copy className="mr-2 h-4 w-4" />Copy Link</Button>
-                  {/* <Button variant="outline" size="sm" onClick={copyShortLink} disabled={isGeneratingShortLink}><Link className="mr-2 h-4 w-4" />{shortLinkCopied ? 'Copied!' : 'Short Link'}</Button> */}
-                  <Button variant="outline" size="sm" onClick={() => setShowQRDialog(true)}><QrCode className="mr-2 h-4 w-4" />QR</Button>
-                  <Button variant="outline" size="sm" onClick={() => window.open(`/m/${localMenu.slug}`, '_blank')}><ExternalLink className="mr-2 h-4 w-4" />View</Button>
-                </>
+                <div className="flex items-center gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={() => window.open(`/m/${localMenu.slug}`, '_blank')}>
+                    <ExternalLink className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">View Live</span>
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={copyLink}>
+                    <Copy className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Copy Link</span>
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowQRDialog(true)}>
+                    <QrCode className="h-4 w-4" />
+                  </Button>
+                </div>
               )}
-              <Button variant={localMenu.isPublished ? 'outline' : 'default'} size="sm" onClick={handlePublishToggle} className={!localMenu.isPublished ? 'bg-green-600 hover:bg-green-700' : ''}>
-                <Globe className="mr-2 h-4 w-4" />{localMenu.isPublished ? 'Unpublish' : 'Publish'}
-              </Button>
+              
+              {!localMenu.isPublished && (
+                <Button variant="outline" size="sm" onClick={() => setShowPreview(true)} className="sm:ml-auto">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+              )}
             </div>
           </div>
+        </div>
+
+        {error && <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center gap-2"><AlertCircle className="h-5 w-5" />{error}</div>}
+      </div>
+
+      {/* Storefront URL Editor - Prominent placement for easy access */}
+      <Card className="border-2 border-rose-100">
+        <CardContent className="py-0">
+          <div className="flex items-center gap-2 mb-3">
+            <Link2 className="h-5 w-5 text-rose-500" />
+            <span className="font-semibold text-gray-900">Your Storefront URL</span>
+          </div>
+          
+          {!isEditingUrl ? (
+            // Display mode
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-4 py-3 border">
+                <span className="text-gray-500 text-sm">bakeprofit.vercel.app/m/</span>
+                <span className="font-medium text-gray-900">{localMenu.slug}</span>
+              </div>
+              <Button variant="outline" onClick={handleStartEditUrl} className="shrink-0">
+                <Edit3 className="mr-2 h-4 w-4" />
+                Change URL
+              </Button>
+            </div>
+          ) : (
+            // Edit mode
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex-1 flex items-center bg-white rounded-lg border-2 border-rose-200 focus-within:border-rose-400 transition-colors">
+                  <span className="text-gray-500 text-sm pl-4 shrink-0">bakeprofit.vercel.app/m/</span>
+                  <Input
+                    value={editedSlug}
+                    onChange={(e) => handleSlugChange(e.target.value)}
+                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 pl-1"
+                    placeholder="your-bakery-name"
+                    autoFocus
+                  />
+                  <div className="pr-3">
+                    {slugStatus === 'checking' && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
+                    {slugStatus === 'available' && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                    {slugStatus === 'taken' && <XCircle className="h-5 w-5 text-red-500" />}
+                    {slugStatus === 'invalid' && <AlertCircle className="h-5 w-5 text-yellow-500" />}
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleCancelEditUrl}
+                    disabled={isSavingSlug}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleSaveUrl}
+                    disabled={slugStatus !== 'available' || editedSlug === localMenu.slug || isSavingSlug}
+                    className="bg-rose-500 hover:bg-rose-600"
+                  >
+                    {isSavingSlug ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Save URL
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Status messages */}
+              <div className="text-sm">
+                {slugStatus === 'invalid' && (
+                  <p className="text-yellow-600 flex items-center gap-1">
+                    <AlertCircle className="h-4 w-4" />
+                    URL must be at least 3 characters (letters, numbers, hyphens only)
+                  </p>
+                )}
+                {slugStatus === 'taken' && (
+                  <p className="text-red-600 flex items-center gap-1">
+                    <XCircle className="h-4 w-4" />
+                    This URL is already taken. Try a different one.
+                  </p>
+                )}
+                {slugStatus === 'available' && editedSlug !== localMenu.slug && (
+                  <p className="text-green-600 flex items-center gap-1">
+                    <CheckCircle2 className="h-4 w-4" />
+                    This URL is available!
+                  </p>
+                )}
+                {slugStatus === 'checking' && (
+                  <p className="text-gray-500 flex items-center gap-1">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Checking availability...
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <p className="text-xs text-gray-500 mt-3">
+            This is the link you&apos;ll share with customers. Choose something memorable and easy to type.
+          </p>
         </CardContent>
       </Card>
 

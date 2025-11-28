@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string | null;
   business_name: string | null;
+  phone: string | null;
   avatar_url: string | null;
   email_verified: boolean;
   google_id: string | null;

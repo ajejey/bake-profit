@@ -7,36 +7,60 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { User, Mail, Phone, Building2, Lock } from 'lucide-react';
+import { User, Lock, Loader2 } from 'lucide-react';
 
 export default function AccountSettings() {
-  const { user } = useAuth();
+  const { user, token, refreshUser } = useAuth();
   const { toast } = useToast();
 
   // Profile state
   const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState('');
+  const [email] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [businessName, setBusinessName] = useState(user?.business_name || '');
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleSaveProfile = async () => {
+    setIsSavingProfile(true);
     try {
-      // TODO: Implement API call to update profile
-      toast({
-        title: 'Profile updated',
-        description: 'Your profile information has been saved.',
+      const response = await fetch('/api/auth/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name,
+          business_name: businessName,
+          phone,
+        }),
       });
+
+      const data = await response.json();
+
+      if (data.success) {
+        await refreshUser();
+        toast({
+          title: 'Profile updated',
+          description: 'Your profile information has been saved.',
+        });
+      } else {
+        throw new Error(data.error || 'Failed to update profile');
+      }
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to update profile. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to update profile. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsSavingProfile(false);
     }
   };
 
@@ -59,21 +83,41 @@ export default function AccountSettings() {
       return;
     }
 
+    setIsChangingPassword(true);
     try {
-      // TODO: Implement API call to change password
-      toast({
-        title: 'Password changed',
-        description: 'Your password has been updated successfully.',
+      const response = await fetch('/api/auth/me', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
       });
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Password changed',
+          description: 'Your password has been updated successfully.',
+        });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        throw new Error(data.error || 'Failed to change password');
+      }
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to change password. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to change password. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -104,17 +148,15 @@ export default function AccountSettings() {
 
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@example.com"
-                />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                disabled
+                className="bg-gray-50"
+              />
               <p className="text-xs text-gray-500">
-                Email is used for login and notifications
+                Email cannot be changed. Contact support if needed.
               </p>
             </div>
 
@@ -141,7 +183,8 @@ export default function AccountSettings() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button onClick={handleSaveProfile}>
+            <Button onClick={handleSaveProfile} disabled={isSavingProfile}>
+              {isSavingProfile && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Changes
             </Button>
           </div>
@@ -199,7 +242,8 @@ export default function AccountSettings() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button onClick={handleChangePassword}>
+            <Button onClick={handleChangePassword} disabled={isChangingPassword || !currentPassword || !newPassword}>
+              {isChangingPassword && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Change Password
             </Button>
           </div>

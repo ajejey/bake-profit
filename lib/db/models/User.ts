@@ -6,6 +6,7 @@ export interface IUser {
   password_hash?: string;
   name?: string;
   business_name?: string;
+  phone?: string;
   avatar_url?: string;
   
   email_verified: boolean;
@@ -54,6 +55,10 @@ const UserSchema = new Schema<IUser>(
       required: false,
     },
     business_name: {
+      type: String,
+      required: false,
+    },
+    phone: {
       type: String,
       required: false,
     },

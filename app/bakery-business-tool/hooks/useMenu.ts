@@ -9,7 +9,7 @@ interface UseMenuReturn {
   isLoading: boolean
   error: string | null
   saveMenu: (updates: Partial<PublicMenu>) => Promise<boolean>
-  createMenu: (slug: string) => Promise<boolean>
+  createMenu: (slug: string, businessName?: string) => Promise<boolean>
   deleteMenu: () => Promise<boolean>
   addProduct: (product: Omit<MenuProduct, 'id' | 'sortOrder'>) => void
   updateProduct: (id: string, updates: Partial<MenuProduct>) => void
@@ -60,7 +60,7 @@ export function useMenu(): UseMenuReturn {
   }, [token])
 
   // Create new menu
-  const createMenu = useCallback(async (slug: string): Promise<boolean> => {
+  const createMenu = useCallback(async (slug: string, businessName?: string): Promise<boolean> => {
     if (!token) {
       setError('Not authenticated')
       return false
@@ -76,7 +76,10 @@ export function useMenu(): UseMenuReturn {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({ 
+          slug,
+          branding: businessName ? { businessName } : undefined
+        }),
       })
 
       const data = await response.json()

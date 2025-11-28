@@ -11,6 +11,7 @@ function toUser(doc: IUser): User {
     email: doc.email,
     name: doc.name || null,
     business_name: doc.business_name || null,
+    phone: doc.phone || null,
     avatar_url: doc.avatar_url || null,
     email_verified: doc.email_verified,
     google_id: doc.google_id || null,
