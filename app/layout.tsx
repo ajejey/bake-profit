@@ -121,7 +121,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" translate="no">
       <head>
         {/* Organization Schema - Enhanced for Knowledge Panel */}
         <Script id="organization-schema" type="application/ld+json" strategy="beforeInteractive">
