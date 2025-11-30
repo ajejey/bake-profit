@@ -178,6 +178,12 @@ export function useSyncedBakeryData() {
     }
   }
 
+  const deleteInventoryItem = (ingredientId: string) => {
+    context.deleteInventoryItem(ingredientId)
+    SyncEngine.recordOperation('inventory', ingredientId, 'delete')
+    window.dispatchEvent(new Event('data:changed'))
+  }
+
   return {
     // Data (read-only)
     recipes: context.recipes,
@@ -217,6 +223,7 @@ export function useSyncedBakeryData() {
     // Inventory actions (synced)
     addInventoryItem,
     updateInventoryItem,
+    deleteInventoryItem,
     getInventoryItem: context.getInventoryItem,
     updateStock,
 

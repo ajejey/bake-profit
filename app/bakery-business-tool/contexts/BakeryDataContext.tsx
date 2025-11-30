@@ -44,6 +44,7 @@ interface BakeryDataContextType {
   // Inventory Actions
   addInventoryItem: (item: InventoryItem) => void
   updateInventoryItem: (ingredientId: string, item: Partial<InventoryItem>) => void
+  deleteInventoryItem: (ingredientId: string) => void
   getInventoryItem: (ingredientId: string) => InventoryItem | undefined
   updateStock: (ingredientId: string, quantity: number) => void
 
@@ -390,6 +391,10 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     return inventory.find(item => item.ingredientId === ingredientId)
   }, [inventory])
 
+  const deleteInventoryItem = useCallback((ingredientId: string) => {
+    setInventory(prev => prev.filter(item => item.ingredientId !== ingredientId))
+  }, [])
+
   const updateStock = useCallback((ingredientId: string, quantity: number) => {
     setInventory(prev => {
       const existing = prev.find(item => item.ingredientId === ingredientId)
@@ -469,6 +474,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     getIngredientById,
     addInventoryItem,
     updateInventoryItem,
+    deleteInventoryItem,
     getInventoryItem,
     updateStock,
     registerCategory,
@@ -500,6 +506,7 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
     getIngredientById,
     addInventoryItem,
     updateInventoryItem,
+    deleteInventoryItem,
     getInventoryItem,
     updateStock,
     recipeCategories,

@@ -99,6 +99,9 @@ export default function InventoryManager() {
     getInventoryStatus,
     getInventoryWithDetails,
     generateShoppingList,
+    getInventoryItem,
+    updateInventoryItem,
+    deleteInventoryItem,
   } = useInventory()
 
   const [isAddIngredientOpen, setIsAddIngredientOpen] = useState(false)
@@ -192,6 +195,15 @@ export default function InventoryManager() {
       packageCost: data.packageCost,
     }) // Hook handles everything!
 
+    // Also update the inventory item's unit if it exists and unit changed
+    const inventoryItem = getInventoryItem(editingIngredient.id)
+    if (inventoryItem && inventoryItem.unit !== data.unit) {
+      updateInventoryItem(editingIngredient.id, {
+        unit: data.unit,
+        costPerUnit: costPerUnit,
+      })
+    }
+
     setIsEditIngredientOpen(false)
     setEditingIngredient(null)
 
@@ -204,6 +216,14 @@ export default function InventoryManager() {
   // Handle deleting an ingredient
   const handleDeleteIngredient = (id: string) => {
     const result = safeDeleteIngredient(id) // Hook checks recipe usage!
+
+    // Also delete the corresponding inventory item if ingredient was deleted
+    if (result.success) {
+      const inventoryItem = getInventoryItem(id)
+      if (inventoryItem) {
+        deleteInventoryItem(id)
+      }
+    }
 
     toast({
       title: result.success ? 'Ingredient deleted' : 'Cannot delete ingredient',
