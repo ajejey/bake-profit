@@ -350,9 +350,11 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               ))}
               {ordersDueThisWeek.length > 5 && (
                 <div className="text-center pt-2">
-                  <Button variant="link" size="sm">
-                    View all {ordersDueThisWeek.length} orders →
-                  </Button>
+                  <Link href="/bakery-business-tool/orders">
+                    <Button variant="link" size="sm">
+                      View all {ordersDueThisWeek.length} orders →
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { useSyncedBakeryData } from './useSyncedBakeryData'
-import type { InventoryItem, InventoryAlert, ShoppingListItem, Order, Recipe, Ingredient } from '../types'
+import type { InventoryItem, InventoryAlert, ShoppingListItem, Order } from '../types'
 
 /**
  * Custom hook for inventory management
@@ -13,7 +13,6 @@ export function useInventory() {
     inventory,
     ingredients, 
     orders,
-    recipes,
     addInventoryItem, 
     updateInventoryItem,
     deleteInventoryItem,
@@ -242,16 +241,30 @@ export function useInventory() {
 
   /**
    * Get inventory item with ingredient details
+   * Filters out orphaned inventory items (where ingredient was deleted)
    */
   const getInventoryWithDetails = () => {
-    return inventory.map(item => {
-      const ingredient = getIngredientById(item.ingredientId)
-      return {
-        ...item,
-        ingredientName: ingredient?.name || 'Unknown',
-        ingredient,
-      }
+    return inventory
+      .map(item => {
+        const ingredient = getIngredientById(item.ingredientId)
+        return {
+          ...item,
+          ingredientName: ingredient?.name || 'Unknown',
+          ingredient,
+        }
+      })
+      .filter(item => item.ingredient !== undefined) // Filter out orphaned items
+  }
+
+  /**
+   * Clean up orphaned inventory items (where ingredient was deleted)
+   */
+  const cleanupOrphanedInventory = () => {
+    const orphanedItems = inventory.filter(item => !getIngredientById(item.ingredientId))
+    orphanedItems.forEach(item => {
+      deleteInventoryItem(item.ingredientId)
     })
+    return orphanedItems.length
   }
 
   /**
@@ -309,5 +322,8 @@ export function useInventory() {
     // Shopping list
     generateShoppingList,
     calculateIngredientsForOrders,
+    
+    // Cleanup
+    cleanupOrphanedInventory,
   }
 }

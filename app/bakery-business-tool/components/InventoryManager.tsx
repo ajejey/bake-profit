@@ -103,6 +103,7 @@ export default function InventoryManager() {
     getInventoryItem,
     updateInventoryItem,
     deleteInventoryItem,
+    cleanupOrphanedInventory,
   } = useInventory()
 
   const [isAddIngredientOpen, setIsAddIngredientOpen] = useState(false)
@@ -136,6 +137,14 @@ export default function InventoryManager() {
   })
 
   console.log("preferredWeightUnit", preferredWeightUnit)
+
+  // Cleanup orphaned inventory items on mount
+  React.useEffect(() => {
+    const orphanedCount = cleanupOrphanedInventory()
+    if (orphanedCount > 0) {
+      console.log(`Cleaned up ${orphanedCount} orphaned inventory item(s)`)
+    }
+  }, [cleanupOrphanedInventory])
 
   // Update form when preferredWeightUnit changes (after settings load)
   React.useEffect(() => {
