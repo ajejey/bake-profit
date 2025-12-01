@@ -5,6 +5,7 @@ export { useCustomers } from './useCustomers'
 export { useIngredients } from './useIngredients'
 export { useInventory } from './useInventory'
 export { usePricing } from './usePricing'
+export { useBatchSizes } from './useBatchSizes'
 export { useAnalytics } from './useAnalytics'
 export { useInvoices } from './useInvoices'
 export { usePDFCustomization } from './usePDFCustomization'
@@ -30,4 +31,5 @@ export {
   usePreferredVolumeUnit,
   useFormattedDate,
   useFormattedTime,
+  useDateFormat,
 } from './useSettings'

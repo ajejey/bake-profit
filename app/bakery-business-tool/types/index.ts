@@ -24,6 +24,19 @@ export interface RecipeIngredient {
 
 export type RecipeCategory = 'Cakes' | 'Cookies' | 'Bread' | 'Pastries' | 'Pies' | 'Other'
 
+/**
+ * Selling Unit - Defines how a recipe can be sold in different portions
+ * Example: A 3 lb fudge batch can be sold as "Quarter Pound", "Half Pound", "Full Pound"
+ */
+export interface SellingUnit {
+  id: string                    // Unique identifier
+  name: string                  // Display name (e.g., "Quarter Pound", "Dozen")
+  quantity: number              // Amount in batch units (e.g., 0.25 for quarter lb)
+  unit: string                  // Unit label (e.g., "lb", "piece", "dozen")
+  priceOverride?: number        // Optional manual price (overrides calculated)
+  isDefault?: boolean           // If true, this is the default selling unit
+}
+
 export interface Recipe {
   id: string
   name: string
@@ -50,6 +63,11 @@ export interface Recipe {
   notes: string              // Baker notes, tips, variations
   image?: string             // Recipe photo URL (future)
 
+  // Batch/Yield Information (for selling units)
+  batchYield?: number           // Total yield of one batch (e.g., 3 for "3 lbs")
+  batchUnit?: string            // Unit of yield (e.g., "lb", "piece", "dozen")
+  sellingUnits?: SellingUnit[]  // Different ways to sell this recipe
+
   // Metadata
   createdAt: string
   updatedAt: string
@@ -65,6 +83,11 @@ export interface OrderItem {
   subtotalCost: number      // Cost × quantity
   subtotalRevenue: number   // Price × quantity
   profit: number           // Revenue - Cost
+  
+  // Selling Unit (optional - for batch-based pricing)
+  sellingUnitId?: string      // Links to SellingUnit in Recipe
+  sellingUnitName?: string    // Cached name (e.g., "Quarter Pound")
+  sellingUnitQuantity?: number // How much of the batch unit (e.g., 0.25)
 }
 
 export interface Order {

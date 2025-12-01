@@ -71,6 +71,7 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { v4 as uuidv4 } from 'uuid'
 import { useIngredients, useRecipes, useDefaultServings, useDefaultLaborCost, useDefaultOverhead } from '../hooks'
+import { BatchSizeManager } from './BatchSizeManager'
 import { useBakeryData } from '../contexts/BakeryDataContext'
 import type { Ingredient, Recipe, RecipeIngredient, RecipeCategory } from '../types'
 import { Badge } from '@/components/ui/badge'
@@ -2112,6 +2113,15 @@ export default function RecipeCalculator() {
                       )}
                     </span>
                   </div>
+                  {/* Batch Sizes / Selling Units */}
+                  {recipe.batchYield && recipe.sellingUnits && recipe.sellingUnits.length > 0 && (
+                    <div className="flex justify-between text-sm pt-2 border-t mt-2">
+                      <span>Selling Units:</span>
+                      <span className="text-rose-600 font-medium">
+                        {recipe.sellingUnits.length} configured
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2 mt-4">
                   <Button
@@ -2123,6 +2133,7 @@ export default function RecipeCalculator() {
                     <ChefHat className="h-4 w-4 mr-2" />
                     View Recipe
                   </Button>
+                  <BatchSizeManager recipe={recipe} />
                   <Button
                     variant="outline"
                     size="sm"

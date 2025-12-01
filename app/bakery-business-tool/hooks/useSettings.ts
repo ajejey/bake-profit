@@ -101,6 +101,21 @@ export function useDefaultLaborCost() {
   return { laborCost, loading }
 }
 
+export function useDateFormat() {
+  const [dateFormat, setDateFormat] = useState('MM/DD/YYYY')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getBusinessSettings().then(settings => {
+      setDateFormat(settings.dateFormat)
+    }).catch(() => {
+      // Use default on error
+    }).finally(() => setLoading(false))
+  }, [])
+
+  return { dateFormat, loading }
+}
+
 export function useDefaultOverhead() {
   const [overhead, setOverhead] = useState(10)
   const [loading, setLoading] = useState(true)

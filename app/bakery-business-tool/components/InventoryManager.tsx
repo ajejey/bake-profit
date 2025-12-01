@@ -62,6 +62,7 @@ import { z } from 'zod'
 import SearchBar from './SearchBar'
 import FilterChips from './FilterChips'
 import SortDropdown from './SortDropdown'
+import Link from 'next/link'
 
 // Form schemas
 const ingredientFormSchema = z.object({
@@ -595,10 +596,25 @@ export default function InventoryManager() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Ingredient</DialogTitle>
-                    <DialogDescription>
-                      Add a new ingredient with its cost information.
-                    </DialogDescription>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <DialogTitle>Add New Ingredient</DialogTitle>
+                        <DialogDescription>
+                          Add a new ingredient with its cost information.
+                        </DialogDescription>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        title="Settings"
+                        asChild
+                        className="h-8 w-8"
+                      >
+                        <Link href="/bakery-business-tool/settings">
+                          <Settings className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
                   </DialogHeader>
 
                   <Form {...ingredientForm}>

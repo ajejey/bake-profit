@@ -11,9 +11,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Calendar, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check, Minus, Download, FileText, ChefHat, Truck } from 'lucide-react'
+import { Plus, Calendar as CalendarIcon, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check, Minus, Download, FileText, ChefHat, Truck, Settings, Info } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
-import { useOrders, useRecipes, useCustomers, useCurrencySymbol } from '../hooks'
+import { useOrders, useRecipes, useCustomers, useCurrencySymbol, useBatchSizes, useDefaultMarkup, useDateFormat } from '../hooks'
 import type { Order, OrderItem, Customer } from '../types'
 import SearchBar from './SearchBar'
 import FilterChips, { type FilterOption } from './FilterChips'
@@ -22,6 +22,11 @@ import { useSubscription } from '@/contexts/SubscriptionContext'
 import UsageIndicator from '@/components/subscription/UsageIndicator'
 import { getDefaultOrderStatus } from '../utils/settings'
 import { CustomerSelector } from './CustomerSelector'
+import { format } from 'date-fns'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +42,7 @@ import {
   generatePackingSlip,
   getOrderPDFFilename
 } from '../lib/pdfGenerators/orderPDF'
+import Link from 'next/link'
 
 
 
@@ -45,6 +51,7 @@ export default function OrderTracker() {
   const { toast } = useToast()
   const { checkLimit } = useSubscription()
   const { symbol: currencySymbol = '$' } = useCurrencySymbol()
+  const { dateFormat = 'MM/DD/YYYY' } = useDateFormat()
   console.log("currencySymbol in OrderTracker", currencySymbol)
 
   // Use custom hooks for data access
@@ -60,16 +67,65 @@ export default function OrderTracker() {
 
   // Form state
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
-  const [deliveryDate, setDeliveryDate] = useState('')
+  const [deliveryDate, setDeliveryDate] = useState<Date | undefined>()
   const [orderNotes, setOrderNotes] = useState('')
   const [selectedRecipeId, setSelectedRecipeId] = useState('')
+  const [selectedSellingUnitId, setSelectedSellingUnitId] = useState('')
   const [quantity, setQuantity] = useState(1)
   const [sellingPrice, setSellingPrice] = useState(0)
   const [orderItems, setOrderItems] = useState<OrderItem[]>([])
 
+  // Batch sizes hook
+  const { getSellingUnitsWithPricing } = useBatchSizes()
+
+  // Get default markup from business settings
+  const { markup: defaultMarkup = 150 } = useDefaultMarkup()
+  // Convert percentage to multiplier: 150% = 1 + (150/100) = 2.5x
+  const markupMultiplier = 1 + (defaultMarkup / 100)
+
+  // Get selected recipe and its selling units
+  const selectedRecipe = recipes.find(r => r.id === selectedRecipeId)
+  const sellingUnitsWithPricing = selectedRecipe ? getSellingUnitsWithPricing(selectedRecipe, markupMultiplier) : []
+
+  // Calculate full recipe price using markup from business settings
+  const fullRecipePrice = selectedRecipe ? (selectedRecipe.totalCost || 0) * markupMultiplier : 0
+
   // Helper to format currency synchronously
   const formatCurrency = (amount: number): string => {
     return `${currencySymbol}${amount.toFixed(2)}`
+  }
+
+  // Helper to format date according to user settings
+  const formatDateDisplay = (dateString: string): string => {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
+
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+
+    switch (dateFormat) {
+      case 'DD/MM/YYYY':
+        return `${day}/${month}/${year}`
+      case 'YYYY-MM-DD':
+        return `${year}-${month}-${day}`
+      case 'MM/DD/YYYY':
+      default:
+        return `${month}/${day}/${year}`
+    }
+  }
+
+  // Helper to get date-fns format string based on user's date format setting
+  const getDateFnsFormat = (): string => {
+    switch (dateFormat) {
+      case 'DD/MM/YYYY':
+        return 'dd/MM/yyyy'
+      case 'YYYY-MM-DD':
+        return 'yyyy-MM-dd'
+      case 'MM/DD/YYYY':
+      default:
+        return 'MM/dd/yyyy'
+    }
   }
 
   // Handle creating a new customer from selector
@@ -122,8 +178,27 @@ export default function OrderTracker() {
     const recipe = recipes.find(r => r.id === selectedRecipeId)
     if (!recipe) return
 
-    const costPerUnit = recipe.totalCost || 0
-    const pricePerUnit = sellingPrice || costPerUnit * 2.5 // Default 2.5x markup
+    // Check if a selling unit is selected
+    const selectedSellingUnit = selectedSellingUnitId
+      ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)
+      : null
+
+    let costPerUnit: number
+    let pricePerUnit: number
+    let itemName: string
+
+    if (selectedSellingUnit) {
+      // Use selling unit pricing
+      costPerUnit = selectedSellingUnit.cost
+      pricePerUnit = sellingPrice || selectedSellingUnit.suggestedPrice
+      itemName = `${recipe.name} (${selectedSellingUnit.name})`
+    } else {
+      // Use recipe-level pricing (fallback) with markup from business settings
+      costPerUnit = recipe.totalCost || 0
+      pricePerUnit = sellingPrice || costPerUnit * markupMultiplier
+      itemName = recipe.name
+    }
+
     const subtotalCost = costPerUnit * quantity
     const subtotalRevenue = pricePerUnit * quantity
     const profit = subtotalRevenue - subtotalCost
@@ -131,25 +206,30 @@ export default function OrderTracker() {
     const newItem: OrderItem = {
       id: uuidv4(),
       recipeId: recipe.id,
-      recipeName: recipe.name,
+      recipeName: itemName,
       quantity,
       costPerUnit,
       pricePerUnit,
       subtotalCost,
       subtotalRevenue,
       profit,
+      // Store selling unit info for reference
+      sellingUnitId: selectedSellingUnit?.id,
+      sellingUnitName: selectedSellingUnit?.name,
+      sellingUnitQuantity: selectedSellingUnit?.quantity,
     }
 
     setOrderItems([...orderItems, newItem])
 
     // Reset item form
     setSelectedRecipeId('')
+    setSelectedSellingUnitId('')
     setQuantity(1)
     setSellingPrice(0)
 
     toast({
       title: 'Item added',
-      description: `${recipe.name} x${quantity} added to order`,
+      description: `${itemName} x${quantity} added to order`,
     })
   }
 
@@ -203,7 +283,7 @@ export default function OrderTracker() {
       items: orderItems,
       status: defaultStatus,
       orderDate: new Date().toISOString(),
-      deliveryDate,
+      deliveryDate: deliveryDate!.toISOString(),
       totalCost,
       totalRevenue,
       totalProfit,
@@ -219,7 +299,7 @@ export default function OrderTracker() {
 
     // Reset form
     setSelectedCustomer(null)
-    setDeliveryDate('')
+    setDeliveryDate(undefined)
     setOrderNotes('')
     setOrderItems([])
     setIsAddOrderOpen(false)
@@ -350,10 +430,23 @@ export default function OrderTracker() {
           </DialogTrigger>
           <DialogContent className="max-w-[95vw] md:max-w-4xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create New Order</DialogTitle>
-              <DialogDescription>
-                Add a new customer order with delivery details
-              </DialogDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <DialogTitle>Create New Order</DialogTitle>
+                  <DialogDescription>
+                    Add a new customer order with delivery details
+                  </DialogDescription>
+                </div>
+                <Link href="/bakery-business-tool/settings">
+                  <Button
+                    variant="outline"
+                    title="Settings"
+                    size="icon"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </DialogHeader>
 
             <div className="space-y-4">
@@ -366,13 +459,32 @@ export default function OrderTracker() {
 
               {/* Delivery Date */}
               <div>
-                <Label className="text-sm font-medium mb-1" htmlFor="deliveryDate">Delivery Date *</Label>
-                <Input
-                  id="deliveryDate"
-                  type="date"
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                />
+                <Label className="text-sm font-medium mb-1">Delivery Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !deliveryDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {deliveryDate ? format(deliveryDate, getDateFnsFormat()) : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={deliveryDate}
+                      onSelect={setDeliveryDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <p className="text-xs text-gray-500 mt-1">
+                  Format: {dateFormat}
+                </p>
               </div>
 
               {/* Add Items */}
@@ -397,7 +509,14 @@ export default function OrderTracker() {
                         </Button>
                       </div>
                     ) : (
-                      <Select value={selectedRecipeId} onValueChange={setSelectedRecipeId}>
+                      <Select
+                        value={selectedRecipeId}
+                        onValueChange={(value) => {
+                          setSelectedRecipeId(value)
+                          setSelectedSellingUnitId('') // Reset selling unit when recipe changes
+                          setSellingPrice(0) // Reset price
+                        }}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select recipe" />
                         </SelectTrigger>
@@ -405,6 +524,9 @@ export default function OrderTracker() {
                           {recipes.map(recipe => (
                             <SelectItem key={recipe.id} value={recipe.id}>
                               {recipe.name} ({formatCurrency(recipe.totalCost || 0)})
+                              {recipe.sellingUnits && recipe.sellingUnits.length > 0 && (
+                                <span className="ml-1 text-rose-500">★</span>
+                              )}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -412,8 +534,78 @@ export default function OrderTracker() {
                     )}
                   </div>
 
-                  <div className="w-full md:col-span-2 opacity-100 md:opacity-100">
-                    <Label className="text-sm font-medium mb-1">Quantity</Label>
+                  {/* Selling Unit Selector - Only show if recipe has selling units */}
+                  {sellingUnitsWithPricing.length > 0 && (
+                    <div className="w-full md:col-span-4">
+                      <div className="flex items-center gap-1 mb-1">
+                        <Label className="text-sm font-medium">
+                          Package Size
+                        </Label>
+                        <TooltipProvider delayDuration={200}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="inline-flex items-center cursor-help">
+                                <Info className="h-3 w-3 text-gray-400 hover:text-gray-600 transition-colors" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-xs">
+                                Choose <strong>Whole Batch</strong> to sell the entire recipe output, or select a <strong>selling unit</strong> to sell portions.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Select
+                        value={selectedSellingUnitId || 'full-recipe'}
+                        onValueChange={(value) => {
+                          setSelectedSellingUnitId(value === 'full-recipe' ? '' : value)
+                          // Auto-set the suggested price (rounded to 2 decimals)
+                          if (value === 'full-recipe') {
+                            setSellingPrice(Math.round(fullRecipePrice * 100) / 100)
+                          } else {
+                            const unit = sellingUnitsWithPricing.find(u => u.id === value)
+                            if (unit) {
+                              setSellingPrice(Math.round(unit.suggestedPrice * 100) / 100)
+                            }
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select package size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="full-recipe">
+                            🎂 Whole Batch {selectedRecipe?.batchYield && selectedRecipe?.batchUnit ?
+                              `(${selectedRecipe.batchYield} ${selectedRecipe.batchUnit})` : ''} - {formatCurrency(fullRecipePrice)}
+                          </SelectItem>
+                          {sellingUnitsWithPricing.map(unit => (
+                            <SelectItem key={unit.id} value={unit.id}>
+                              📦 {unit.name} - {formatCurrency(unit.suggestedPrice)}
+                              <span className="text-xs text-gray-500 ml-1">
+                                ({unit.quantity} {selectedRecipe?.batchUnit})
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  <div className={`w-full ${sellingUnitsWithPricing.length > 0 ? 'md:col-span-2' : 'md:col-span-2'} opacity-100 md:opacity-100`}>
+                    <Label className="text-sm font-medium mb-1">
+                      Quantity
+                      {selectedSellingUnitId && sellingUnitsWithPricing.length > 0 && (
+                        <span className="text-xs text-gray-500 ml-1">
+                          (How many {sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)?.name.toLowerCase() || 'units'}?)
+                        </span>
+                      )}
+                      {!selectedSellingUnitId && selectedRecipe?.batchYield && (
+                        <span className="text-xs text-gray-500 ml-1">
+                          (How many batches?)
+                        </span>
+                      )}
+                    </Label>
                     <div className="flex items-center gap-1 w-full">
                       <Button
                         type="button"
@@ -655,8 +847,8 @@ export default function OrderTracker() {
 
                   {/* Delivery Info */}
                   <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Delivery: {new Date(order.deliveryDate).toLocaleDateString()}
+                    <CalendarIcon className="h-4 w-4 mr-2" />
+                    Delivery: {formatDateDisplay(order.deliveryDate)}
                   </div>
 
                   {/* Financial Info */}

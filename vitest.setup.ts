@@ -1,2 +1,2 @@
 // Vitest setup file
-// No special setup needed for calculation tests
+import '@testing-library/jest-dom/vitest'
