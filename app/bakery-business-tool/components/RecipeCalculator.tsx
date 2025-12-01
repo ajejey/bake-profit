@@ -2123,22 +2123,25 @@ export default function RecipeCalculator() {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-4 w-full flex-wrap">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="flex-1"
                     onClick={() => handleSelectRecipe(recipe)}
+                    className="flex-1"
                   >
                     <ChefHat className="h-4 w-4 mr-2" />
                     View Recipe
                   </Button>
-                  <BatchSizeManager recipe={recipe} />
+                  <div className="flex-1">
+                    <BatchSizeManager recipe={recipe} />
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"
                     title='Scale Recipe'
                     onClick={() => handleOpenScaleDialog(recipe)}
+                    className="flex-1"
                   >
                     <Scale className="h-4 w-4" />
                   </Button>
