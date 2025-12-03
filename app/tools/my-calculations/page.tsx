@@ -147,6 +147,9 @@ export default function MyCalculationsPage() {
   const filteredRecipes = filterBySearch(recipes)
   const filteredCakes = filterBySearch(cakes)
   const filteredScalings = filterBySearch(scalings)
+  const filteredIngredients = filterBySearch(ingredients)
+  const filteredBatches = filterBySearch(batches)
+  const filteredProfits = filterBySearch(profits)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
@@ -239,7 +242,7 @@ export default function MyCalculationsPage() {
         ) : (
           /* Tabs */
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-6">
+            <TabsList className="mb-6 flex flex-wrap">
               <TabsTrigger value="all">
                 All ({totalCount})
               </TabsTrigger>
@@ -254,6 +257,18 @@ export default function MyCalculationsPage() {
               <TabsTrigger value="scalings">
                 <Scale className="h-4 w-4 mr-2" />
                 Scalings ({scalings.length})
+              </TabsTrigger>
+              <TabsTrigger value="ingredients">
+                <Package className="h-4 w-4 mr-2" />
+                Ingredients ({ingredients.length})
+              </TabsTrigger>
+              <TabsTrigger value="batches">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Batches ({batches.length})
+              </TabsTrigger>
+              <TabsTrigger value="profits">
+                <PieChart className="h-4 w-4 mr-2" />
+                Profits ({profits.length})
               </TabsTrigger>
             </TabsList>
 
@@ -311,6 +326,63 @@ export default function MyCalculationsPage() {
                           scaling={scaling}
                           onEdit={() => handleEdit('scaling', scaling.id)}
                           onDelete={() => handleDelete('scaling', scaling.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {filteredIngredients.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <Package className="h-5 w-5 text-rose-500" />
+                      Ingredient Cost Calculations
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredIngredients.map((ingredient) => (
+                        <IngredientCard
+                          key={ingredient.id}
+                          ingredient={ingredient}
+                          onEdit={() => handleEdit('ingredient', ingredient.id)}
+                          onDelete={() => handleDelete('ingredient', ingredient.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {filteredBatches.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-rose-500" />
+                      Batch Cost Calculations
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredBatches.map((batch) => (
+                        <BatchCard
+                          key={batch.id}
+                          batch={batch}
+                          onEdit={() => handleEdit('batch', batch.id)}
+                          onDelete={() => handleDelete('batch', batch.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {filteredProfits.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <PieChart className="h-5 w-5 text-rose-500" />
+                      Profit Analysis Calculations
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredProfits.map((profit) => (
+                        <ProfitCard
+                          key={profit.id}
+                          profit={profit}
+                          onEdit={() => handleEdit('profit', profit.id)}
+                          onDelete={() => handleDelete('profit', profit.id)}
                         />
                       ))}
                     </div>
@@ -382,6 +454,75 @@ export default function MyCalculationsPage() {
                       scaling={scaling}
                       onEdit={() => handleEdit('scaling', scaling.id)}
                       onDelete={() => handleDelete('scaling', scaling.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Ingredients Tab */}
+            <TabsContent value="ingredients">
+              {filteredIngredients.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">No ingredient calculations saved yet.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredIngredients.map((ingredient) => (
+                    <IngredientCard
+                      key={ingredient.id}
+                      ingredient={ingredient}
+                      onEdit={() => handleEdit('ingredient', ingredient.id)}
+                      onDelete={() => handleDelete('ingredient', ingredient.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Batches Tab */}
+            <TabsContent value="batches">
+              {filteredBatches.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <TrendingUp className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">No batch calculations saved yet.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredBatches.map((batch) => (
+                    <BatchCard
+                      key={batch.id}
+                      batch={batch}
+                      onEdit={() => handleEdit('batch', batch.id)}
+                      onDelete={() => handleDelete('batch', batch.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Profits Tab */}
+            <TabsContent value="profits">
+              {filteredProfits.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <PieChart className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">No profit calculations saved yet.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredProfits.map((profit) => (
+                    <ProfitCard
+                      key={profit.id}
+                      profit={profit}
+                      onEdit={() => handleEdit('profit', profit.id)}
+                      onDelete={() => handleDelete('profit', profit.id)}
                     />
                   ))}
                 </div>
@@ -571,6 +712,199 @@ function ScalingCard({
         </div>
         <p className="text-xs text-gray-500 mb-4">
           Updated {new Date(scaling.updatedAt).toLocaleDateString()}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={onEdit}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onDelete}
+          >
+            <Trash2 className="h-4 w-4 text-red-500" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Ingredient Card Component
+function IngredientCard({ 
+  ingredient, 
+  onEdit, 
+  onDelete 
+}: { 
+  ingredient: SavedIngredientCalculation
+  onEdit: () => void
+  onDelete: () => void
+}) {
+  return (
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-start justify-between">
+          <span className="line-clamp-1">{ingredient.name}</span>
+          <Package className="h-5 w-5 text-rose-500 flex-shrink-0" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2 text-sm mb-4">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Ingredient:</span>
+            <span className="font-medium">{ingredient.ingredientName}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Package Size:</span>
+            <span className="font-medium">{ingredient.packageSize} {ingredient.unit}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Package Cost:</span>
+            <span className="font-medium">${ingredient.packageCost.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Cost Per Unit:</span>
+            <span className="font-medium text-green-600">${ingredient.costPerUnit.toFixed(2)}</span>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">
+          Updated {new Date(ingredient.updatedAt).toLocaleDateString()}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={onEdit}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onDelete}
+          >
+            <Trash2 className="h-4 w-4 text-red-500" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Batch Card Component
+function BatchCard({ 
+  batch, 
+  onEdit, 
+  onDelete 
+}: { 
+  batch: SavedBatchCalculation
+  onEdit: () => void
+  onDelete: () => void
+}) {
+  return (
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-start justify-between">
+          <span className="line-clamp-1">{batch.name}</span>
+          <TrendingUp className="h-5 w-5 text-rose-500 flex-shrink-0" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2 text-sm mb-4">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Batches:</span>
+            <span className="font-medium">{batch.batches}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Cost:</span>
+            <span className="font-medium">${batch.totalCost.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Revenue:</span>
+            <span className="font-medium">${batch.totalRevenue.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Profit:</span>
+            <span className={`font-medium ${batch.totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              ${batch.totalProfit.toFixed(2)}
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">
+          Updated {new Date(batch.updatedAt).toLocaleDateString()}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={onEdit}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onDelete}
+          >
+            <Trash2 className="h-4 w-4 text-red-500" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Profit Card Component
+function ProfitCard({ 
+  profit, 
+  onEdit, 
+  onDelete 
+}: { 
+  profit: SavedProfitCalculation
+  onEdit: () => void
+  onDelete: () => void
+}) {
+  return (
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-start justify-between">
+          <span className="line-clamp-1">{profit.name}</span>
+          <PieChart className="h-5 w-5 text-rose-500 flex-shrink-0" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2 text-sm mb-4">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Revenue:</span>
+            <span className="font-medium">${profit.revenue.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Costs:</span>
+            <span className="font-medium">${profit.costs.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Profit Amount:</span>
+            <span className={`font-medium ${profit.profitAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              ${profit.profitAmount.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Profit Margin:</span>
+            <span className="font-medium text-blue-600">{profit.profitMargin.toFixed(1)}%</span>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">
+          Updated {new Date(profit.updatedAt).toLocaleDateString()}
         </p>
         <div className="flex gap-2">
           <Button
