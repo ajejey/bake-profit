@@ -151,7 +151,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
             </CardTitle>
             <CardDescription>Orders that need attention today</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <CardContent className="space-y-3">
             {ordersDueToday.map(order => (
               <div
                 key={order.id}

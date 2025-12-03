@@ -283,7 +283,7 @@ export default function OrderTracker() {
       items: orderItems,
       status: defaultStatus,
       orderDate: new Date().toISOString(),
-      deliveryDate: deliveryDate!.toISOString(),
+      deliveryDate: format(deliveryDate!, 'yyyy-MM-dd'),
       totalCost,
       totalRevenue,
       totalProfit,
@@ -514,7 +514,14 @@ export default function OrderTracker() {
                         onValueChange={(value) => {
                           setSelectedRecipeId(value)
                           setSelectedSellingUnitId('') // Reset selling unit when recipe changes
-                          setSellingPrice(0) // Reset price
+                          // Auto-set price to full recipe price with markup
+                          const recipe = recipes.find(r => r.id === value)
+                          if (recipe) {
+                            const autoPrice = (recipe.totalCost || 0) * markupMultiplier
+                            setSellingPrice(Math.round(autoPrice * 100) / 100)
+                          } else {
+                            setSellingPrice(0)
+                          }
                         }}
                       >
                         <SelectTrigger className="w-full">
@@ -638,7 +645,18 @@ export default function OrderTracker() {
                   </div>
 
                   <div className="w-full md:col-span-3">
-                    <Label className="text-sm font-medium mb-1">Selling Price ({currencySymbol})</Label>
+                    <Label className="text-sm font-medium mb-1">
+                      Selling Price ({currencySymbol})
+                      {selectedRecipe && (
+                        <span className="text-xs text-gray-500 font-normal ml-1">
+                          (Cost: {formatCurrency(
+                            selectedSellingUnitId 
+                              ? (sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)?.cost || selectedRecipe.totalCost || 0)
+                              : (selectedRecipe.totalCost || 0)
+                          )})
+                        </span>
+                      )}
+                    </Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -646,7 +664,28 @@ export default function OrderTracker() {
                       value={sellingPrice || ''}
                       onChange={(e) => setSellingPrice(parseFloat(e.target.value) || 0)}
                       disabled={recipes.length === 0}
+                      className={(() => {
+                        if (!selectedRecipe || sellingPrice <= 0) return ''
+                        const selectedUnit = selectedSellingUnitId 
+                          ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId) 
+                          : null
+                        const currentCost = selectedUnit ? selectedUnit.cost : (selectedRecipe.totalCost || 0)
+                        return sellingPrice < currentCost ? 'border-red-500 border-2' : ''
+                      })()}
                     />
+                    {(() => {
+                      if (!selectedRecipe || sellingPrice <= 0) return null
+                      const selectedUnit = selectedSellingUnitId 
+                        ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId) 
+                        : null
+                      const currentCost = selectedUnit ? selectedUnit.cost : (selectedRecipe.totalCost || 0)
+                      if (sellingPrice >= currentCost) return null
+                      return (
+                        <p className="text-xs text-red-500 mt-1 font-medium">
+                          ⚠️ Price is below cost - You will lose {formatCurrency(currentCost - sellingPrice)} per unit!
+                        </p>
+                      )
+                    })()}
                   </div>
 
                   <div className="w-full md:col-span-2 flex md:items-end">
@@ -669,7 +708,7 @@ export default function OrderTracker() {
                           <div className="font-medium">{item.recipeName}</div>
                           <div className="text-sm text-gray-600">
                             Qty: {item.quantity} × {formatCurrency(item.pricePerUnit)} = {formatCurrency(item.subtotalRevenue)}
-                            <span className="ml-2 text-green-600">
+                            <span className={`ml-2 ${item.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               (Profit: {formatCurrency(item.profit)})
                             </span>
                           </div>
@@ -684,20 +723,28 @@ export default function OrderTracker() {
                       </div>
                     ))}
 
-                    <div className="border-t pt-2 mt-2">
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Total Cost:</span>
-                        <span>{formatCurrency(orderItems.reduce((sum, item) => sum + item.subtotalCost, 0))}</span>
-                      </div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Total Revenue:</span>
-                        <span>{formatCurrency(orderItems.reduce((sum, item) => sum + item.subtotalRevenue, 0))}</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-green-600">
-                        <span>Total Profit:</span>
-                        <span>{formatCurrency(orderItems.reduce((sum, item) => sum + item.subtotalRevenue, 0) - orderItems.reduce((sum, item) => sum + item.subtotalCost, 0))}</span>
-                      </div>
-                    </div>
+                    {(() => {
+                      const totalCost = orderItems.reduce((sum, item) => sum + item.subtotalCost, 0)
+                      const totalRevenue = orderItems.reduce((sum, item) => sum + item.subtotalRevenue, 0)
+                      const totalProfit = totalRevenue - totalCost
+                      
+                      return (
+                        <div className="border-t pt-2 mt-2">
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Total Cost:</span>
+                            <span>{formatCurrency(totalCost)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Total Revenue:</span>
+                            <span>{formatCurrency(totalRevenue)}</span>
+                          </div>
+                          <div className={`flex justify-between font-bold ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <span>Total Profit:</span>
+                            <span>{formatCurrency(totalProfit)}</span>
+                          </div>
+                        </div>
+                      )
+                    })()}
                   </div>
                 )}
               </div>

@@ -35,19 +35,37 @@ export function useOrders() {
       .slice(0, 10)
   }, [orders])
 
+  // Helper to get date string in YYYY-MM-DD format from any date input
+  const getDateString = (dateInput: string): string => {
+    const date = new Date(dateInput)
+    if (isNaN(date.getTime())) return dateInput
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   // Get orders due today
   const ordersDueToday = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0]
-    return orders.filter(o => o.deliveryDate.startsWith(today) && o.status !== 'delivered')
+    const now = new Date()
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    
+    return orders.filter(o => {
+      const deliveryDateStr = getDateString(o.deliveryDate)
+      return deliveryDateStr === today && o.status !== 'delivered'
+    })
   }, [orders])
 
   // Get orders due this week
   const ordersDueThisWeek = useMemo(() => {
-    const today = new Date()
-    const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
+    const now = new Date()
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+    const nextWeekStr = `${nextWeek.getFullYear()}-${String(nextWeek.getMonth() + 1).padStart(2, '0')}-${String(nextWeek.getDate()).padStart(2, '0')}`
+    
     return orders.filter(o => {
-      const deliveryDate = new Date(o.deliveryDate)
-      return deliveryDate >= today && deliveryDate <= nextWeek && o.status !== 'delivered'
+      const deliveryDateStr = getDateString(o.deliveryDate)
+      return deliveryDateStr >= todayStr && deliveryDateStr <= nextWeekStr && o.status !== 'delivered'
     })
   }, [orders])
 
