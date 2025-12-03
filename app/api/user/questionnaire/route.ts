@@ -45,20 +45,24 @@ export async function POST(request: NextRequest) {
     // Parse request body
     const body = await request.json() as QuestionnaireRequest;
 
-    if (!body.lookingFor || !body.helpWith) {
+    // Check if at least some data is provided
+    const hasData = body.lookingFor?.trim() || body.helpWith?.trim() || (body.interestedFeatures?.length ?? 0) > 0;
+    
+    if (!hasData) {
+      // If no data provided, just return success without saving
       return NextResponse.json<QuestionnaireResponse>(
-        { 
-          success: false, 
-          error: 'Missing required fields: lookingFor and helpWith' 
+        {
+          success: true,
+          message: 'Questionnaire skipped',
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 
-    // Update user with questionnaire data
+    // Update user with questionnaire data (only if something is provided)
     await updateUser(payload.userId, {
-      questionnaire_looking_for: body.lookingFor,
-      questionnaire_help_with: body.helpWith,
+      questionnaire_looking_for: body.lookingFor?.trim() || undefined,
+      questionnaire_help_with: body.helpWith?.trim() || undefined,
       questionnaire_interested_features: body.interestedFeatures || [],
       questionnaire_answered_at: new Date(),
     });

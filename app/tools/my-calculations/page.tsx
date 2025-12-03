@@ -397,10 +397,6 @@ export default function MyCalculationsPage() {
       <WelcomeQuestionnaire
         open={showQuestionnaire}
         onOpenChange={setShowQuestionnaire}
-        onComplete={() => {
-          // Mark questionnaire as answered in localStorage
-          localStorage.setItem('questionnaire_answered', 'true')
-        }}
       />
     </div>
   )

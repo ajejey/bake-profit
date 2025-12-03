@@ -57,12 +57,26 @@ export function WelcomeQuestionnaire({
     )
   }
 
+  const hasAnyData = (): boolean => {
+    return (
+      lookingFor.trim().length > 0 ||
+      helpWith.trim().length > 0 ||
+      interestedFeatures.length > 0
+    )
+  }
+
   const handleSubmit = async () => {
+    // If nothing is filled, just close silently
+    if (!hasAnyData()) {
+      onOpenChange(false)
+      return
+    }
+
     setIsSubmitting(true)
 
     const data: QuestionnaireData = {
-      lookingFor,
-      helpWith,
+      lookingFor: lookingFor.trim(),
+      helpWith: helpWith.trim(),
       interestedFeatures,
     }
 
@@ -94,6 +108,9 @@ export function WelcomeQuestionnaire({
         description: 'We\'ll use this to make BakeProfit better for you.',
       })
 
+      // Mark questionnaire as answered
+      localStorage.setItem('questionnaire_answered', 'true')
+
       if (onComplete) {
         onComplete(data)
       }
@@ -102,8 +119,8 @@ export function WelcomeQuestionnaire({
     } catch (error) {
       console.error('Error saving questionnaire:', error)
       toast({
-        title: 'Error',
-        description: 'Could not save your responses. You can skip this for now.',
+        title: '❌ Error saving responses',
+        description: error instanceof Error ? error.message : 'Could not save your responses. You can skip this for now.',
         variant: 'destructive',
       })
     } finally {
@@ -112,6 +129,8 @@ export function WelcomeQuestionnaire({
   }
 
   const handleSkip = () => {
+    // Mark questionnaire as skipped so we don't ask again
+    localStorage.setItem('questionnaire_answered', 'true')
     onOpenChange(false)
   }
 
@@ -164,7 +183,7 @@ export function WelcomeQuestionnaire({
             <Label className="text-base font-semibold">
               Which features interest you most? (Select all that apply)
             </Label>
-            <div className="space-y-2">
+            <div className="space-y-2 p-3 rounded-lg border border-gray-200 bg-gray-50">
               {FEATURE_OPTIONS.map((feature) => (
                 <div key={feature.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -192,7 +211,7 @@ export function WelcomeQuestionnaire({
             className="flex-1"
             disabled={isSubmitting}
           >
-            Skip for now
+            Don&apos;t show again
           </Button>
           <Button
             onClick={handleSubmit}
