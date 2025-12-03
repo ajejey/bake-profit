@@ -11,6 +11,7 @@ import { Scale, ArrowRight, Plus, Trash2, Save, Share2, Printer, Calculator } fr
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { saveCalculation, CALCULATOR_STORES, generateCalculationId, type SavedScalingCalculation } from '@/app/tools/utils/calculatorStorage'
 
 interface Ingredient {
   id: string
@@ -195,14 +196,37 @@ export default function RecipeScalingCalculator() {
     handleActualSave()
   }
 
-  const handleActualSave = () => {
-    toast({
-      title: '✅ Recipe saved!',
-      description: 'View it in My Calculations.',
-    })
-    setTimeout(() => {
-      router.push('/tools/my-calculations')
-    }, 1500)
+  const handleActualSave = async () => {
+    try {
+      const calculation: SavedScalingCalculation = {
+        id: generateCalculationId(),
+        name: recipeName || 'Unnamed Recipe',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        originalYield: originalYield,
+        desiredYield: desiredYield,
+        scalingFactor: scalingFactor,
+        ingredients: ingredients,
+      }
+
+      await saveCalculation(CALCULATOR_STORES.scalings, calculation)
+
+      toast({
+        title: '✅ Recipe saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: '❌ Error saving calculation',
+        description: 'Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleShare = () => {

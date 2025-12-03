@@ -11,6 +11,7 @@ import { TrendingUp, DollarSign, AlertCircle, CheckCircle, Save, Share2, Printer
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { saveCalculation, CALCULATOR_STORES, generateCalculationId, type SavedProfitCalculation } from '@/app/tools/utils/calculatorStorage'
 
 interface ExampleBusiness {
   name: string
@@ -177,14 +178,37 @@ export default function BakeryProfitCalculator() {
     handleActualSave()
   }
 
-  const handleActualSave = () => {
-    toast({
-      title: '✅ Calculation saved!',
-      description: 'View it in My Calculations.',
-    })
-    setTimeout(() => {
-      router.push('/tools/my-calculations')
-    }, 1500)
+  const handleActualSave = async () => {
+    try {
+      const calculation: SavedProfitCalculation = {
+        id: generateCalculationId(),
+        name: 'Profit Analysis',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        revenue: totalRevenue,
+        costs: totalCosts,
+        profitMargin: netProfitMargin,
+        profitAmount: netProfit,
+      }
+
+      await saveCalculation(CALCULATOR_STORES.profits, calculation)
+
+      toast({
+        title: '✅ Calculation saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: '❌ Error saving calculation',
+        description: 'Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleShare = () => {

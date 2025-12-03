@@ -12,6 +12,7 @@ import { Package, DollarSign, Save, Share2, Printer, Calculator, Lightbulb, X } 
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { saveCalculation, CALCULATOR_STORES, generateCalculationId, type SavedIngredientCalculation } from '@/app/tools/utils/calculatorStorage'
 
 // Unit conversion factors (to grams for weight, to ml for volume)
 const CONVERSIONS = {
@@ -228,14 +229,38 @@ export default function IngredientCostCalculator() {
     handleActualSave()
   }
 
-  const handleActualSave = () => {
-    toast({
-      title: '✅ Calculation saved!',
-      description: 'View it in My Calculations.',
-    })
-    setTimeout(() => {
-      router.push('/tools/my-calculations')
-    }, 1500)
+  const handleActualSave = async () => {
+    try {
+      const calculation: SavedIngredientCalculation = {
+        id: generateCalculationId(),
+        name: ingredientName || 'Unnamed Ingredient',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ingredientName: ingredientName,
+        packageSize: packageSize,
+        packageCost: packageCost,
+        unit: recipeUnit,
+        costPerUnit: costPerUnit,
+      }
+
+      await saveCalculation(CALCULATOR_STORES.ingredients, calculation)
+
+      toast({
+        title: '✅ Calculation saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: '❌ Error saving calculation',
+        description: 'Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleShare = () => {

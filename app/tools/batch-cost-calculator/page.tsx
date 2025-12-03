@@ -11,6 +11,7 @@ import { Plus, Trash2, DollarSign, TrendingUp, Save, Share2, Printer, Package, L
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { SaveCalculationDialog } from '@/components/calculators/SaveCalculationDialog'
+import { saveCalculation, CALCULATOR_STORES, generateCalculationId, type SavedBatchCalculation } from '@/app/tools/utils/calculatorStorage'
 
 interface Product {
   id: string
@@ -205,14 +206,39 @@ export default function BatchCostCalculator() {
     handleActualSave()
   }
 
-  const handleActualSave = () => {
-    toast({
-      title: '✅ Calculation saved!',
-      description: 'View it in My Calculations.',
-    })
-    setTimeout(() => {
-      router.push('/tools/my-calculations')
-    }, 1500)
+  const handleActualSave = async () => {
+    try {
+      const calculation: SavedBatchCalculation = {
+        id: generateCalculationId(),
+        name: products[0]?.name || 'Unnamed Batch',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        batches: products.reduce((sum, p) => sum + p.batches, 0),
+        costPerBatch: products.length > 0 ? products[0].costPerBatch : 0,
+        totalCost: grandTotalCost,
+        pricePerBatch: products.length > 0 ? products[0].pricePerBatch : 0,
+        totalRevenue: grandTotalRevenue,
+        totalProfit: grandTotalProfit,
+      }
+
+      await saveCalculation(CALCULATOR_STORES.batches, calculation)
+
+      toast({
+        title: '✅ Calculation saved!',
+        description: 'View it in My Calculations.',
+      })
+
+      setTimeout(() => {
+        router.push('/tools/my-calculations')
+      }, 1500)
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      toast({
+        title: '❌ Error saving calculation',
+        description: 'Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleShare = () => {
