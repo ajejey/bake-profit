@@ -5,10 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { useCurrencySymbol } from '../hooks'
 
-// Helper to format currency synchronously
-const formatCurrency = (amount: number, symbol: string = '$'): string => {
-  return `${symbol}${amount.toFixed(2)}`
-}
+
 
 // Helper to format date
 const formatDate = (dateString: string): string => {
@@ -63,6 +60,8 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
   const { toast } = useToast()
   const { customers, addCustomer, updateCustomer, deleteCustomer } = useCustomers()
   const { orders } = useOrders()
+  const { symbol: currencySymbol } = useCurrencySymbol()
+
 
   // UI State
   const [searchTerm, setSearchTerm] = useState('')
@@ -91,6 +90,12 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
       address: '',
       notes: ''
     })
+  }
+
+
+  // Helper to format currency synchronously
+  const formatCurrency = (amount: number): string => {
+    return `${currencySymbol}${amount.toFixed(2)}`
   }
 
   // Handle add customer
@@ -185,8 +190,8 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
 
   // Get customer orders
   const getCustomerOrders = (customer: Customer) => {
-    return orders.filter(order => 
-      order.customerName === customer.name || 
+    return orders.filter(order =>
+      order.customerName === customer.name ||
       customer.orderHistory.includes(order.id)
     )
   }
@@ -196,7 +201,7 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
     let filtered = customers.filter(customer => {
       // Search filter
       const searchLower = searchTerm.toLowerCase()
-      const matchesSearch = 
+      const matchesSearch =
         customer.name.toLowerCase().includes(searchLower) ||
         customer.email?.toLowerCase().includes(searchLower) ||
         customer.phone?.includes(searchTerm)
@@ -246,10 +251,10 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold">Customers</h1>
-        <p className="text-gray-600">Manage your customer relationships</p>
-      </div>
+        <div>
+          <h1 className="text-3xl font-bold">Customers</h1>
+          <p className="text-gray-600">Manage your customer relationships</p>
+        </div>
         <Button onClick={() => setIsAddDialogOpen(true)} className="sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Add Customer
@@ -289,7 +294,7 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.vipCustomers}</div>
-            <p className="text-xs text-muted-foreground">$100+ spent</p>
+            <p className="text-xs text-muted-foreground">{currencySymbol}100+ spent</p>
           </CardContent>
         </Card>
 
@@ -322,72 +327,72 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
                 Add Customer
               </Button> */}
             </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add New Customer</DialogTitle>
-                  <DialogDescription>
-                    Add a new customer to your database
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Name *</Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Customer name"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="customer@email.com"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="(555) 123-4567"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="address">Address</Label>
-                    <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      placeholder="123 Main St, City, State"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="notes">Notes</Label>
-                    <Textarea
-                      id="notes"
-                      value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      placeholder="Any special notes or preferences..."
-                      rows={3}
-                    />
-                  </div>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Customer</DialogTitle>
+                <DialogDescription>
+                  Add a new customer to your database
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Customer name"
+                  />
                 </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddCustomer}>Add Customer</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="customer@email.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    placeholder="123 Main St, City, State"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="notes">Notes</Label>
+                  <Textarea
+                    id="notes"
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    placeholder="Any special notes or preferences..."
+                    rows={3}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddCustomer}>Add Customer</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
 
         {/* Filter Chips and Sort */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -425,7 +430,7 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
                 {searchTerm || filterType !== 'all' ? 'No customers found' : 'No customers yet'}
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchTerm || filterType !== 'all' 
+                {searchTerm || filterType !== 'all'
                   ? 'Try adjusting your search or filters'
                   : 'Add your first customer to get started'
                 }
@@ -625,8 +630,8 @@ export default function CustomerManagement({ onNavigate }: CustomerManagementPro
                       <Badge
                         variant={
                           order.status === 'delivered' ? 'default' :
-                          order.status === 'ready' ? 'secondary' :
-                          'outline'
+                            order.status === 'ready' ? 'secondary' :
+                              'outline'
                         }
                       >
                         {order.status}

@@ -18,6 +18,10 @@ const STORES = {
   businessSettings: 'businessSettings',
   orderSettings: 'orderSettings',
   recipeSettings: 'recipeSettings',
+  calendarSettings: 'calendarSettings',
+  appearanceSettings: 'appearanceSettings',
+  notificationSettings: 'notificationSettings',
+  pdfCustomization: 'pdfCustomization',
 } as const
 
 type StoreName = typeof STORES[keyof typeof STORES]
@@ -90,6 +94,10 @@ export async function setItem(key: string, value: string): Promise<void> {
     else if (key === 'businessSettings') storeName = 'businessSettings'
     else if (key === 'orderSettings') storeName = 'orderSettings'
     else if (key === 'recipeSettings') storeName = 'recipeSettings'
+    else if (key === 'calendarSettings') storeName = 'calendarSettings'
+    else if (key === 'appearanceSettings') storeName = 'appearanceSettings'
+    else if (key === 'notificationSettings') storeName = 'notificationSettings'
+    else if (key === 'pdfCustomization') storeName = 'pdfCustomization'
 
     const store = await getStore(storeName, 'readwrite')
 
@@ -123,6 +131,10 @@ export async function getItem(key: string): Promise<string | null> {
     else if (key === 'businessSettings') storeName = 'businessSettings'
     else if (key === 'orderSettings') storeName = 'orderSettings'
     else if (key === 'recipeSettings') storeName = 'recipeSettings'
+    else if (key === 'calendarSettings') storeName = 'calendarSettings'
+    else if (key === 'appearanceSettings') storeName = 'appearanceSettings'
+    else if (key === 'notificationSettings') storeName = 'notificationSettings'
+    else if (key === 'pdfCustomization') storeName = 'pdfCustomization'
 
     const store = await getStore(storeName, 'readonly')
 
@@ -160,6 +172,10 @@ export async function removeItem(key: string): Promise<void> {
     else if (key === 'businessSettings') storeName = 'businessSettings'
     else if (key === 'orderSettings') storeName = 'orderSettings'
     else if (key === 'recipeSettings') storeName = 'recipeSettings'
+    else if (key === 'calendarSettings') storeName = 'calendarSettings'
+    else if (key === 'appearanceSettings') storeName = 'appearanceSettings'
+    else if (key === 'notificationSettings') storeName = 'notificationSettings'
+    else if (key === 'pdfCustomization') storeName = 'pdfCustomization'
 
     const store = await getStore(storeName, 'readwrite')
 
@@ -227,7 +243,7 @@ export function isIndexedDBAvailable(): boolean {
 //     // Check if there's any existing localStorage data to migrate
 //     const keys = Object.keys(localStorage)
 //     const bakeryKeys = keys.filter(k => k.startsWith('bakery-') || k.includes('Settings'))
-    
+
 //     if (bakeryKeys.length === 0) {
 //       console.log('✅ No localStorage data to migrate (fresh app)')
 //       return

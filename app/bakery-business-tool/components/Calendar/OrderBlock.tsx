@@ -62,88 +62,87 @@ export default function OrderBlock({
         return (
             <div
                 onClick={onClick}
-                className={`order-block-detailed p-6 border-2 ${statusColor} rounded-xl cursor-pointer hover:shadow-lg transition-all ${className}`}
+                className={`order-block-detailed p-4 sm:p-6 border-2 ${statusColor} rounded-xl cursor-pointer hover:shadow-lg transition-all ${className}`}
             >
-                <div className="flex items-start justify-between mb-4">
+                {/* Header - Stack on mobile */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0 mb-4">
                     <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{order.customerName}</h3>
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">{order.customerName}</h3>
                         <p className="text-sm text-gray-600">Order #{order.orderNumber}</p>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}>
+                    <span className={`self-start px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}>
                         {statusConfig.label}
                     </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6 mb-6">
-                    <div className="space-y-3">
-                        {order.deliveryTime && (
-                            <div className="flex items-center gap-2 text-gray-700">
-                                <Clock className="w-5 h-5 text-gray-400" />
-                                <div>
-                                    <p className="text-xs text-gray-500">Delivery Time</p>
-                                    <p className="font-medium">{order.deliveryTime}</p>
-                                </div>
+                {/* Details grid - Single column on mobile */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-6">
+                    {order.deliveryTime && (
+                        <div className="flex items-center gap-2 text-gray-700">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">Delivery Time</p>
+                                <p className="font-medium text-sm sm:text-base">{order.deliveryTime}</p>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {order.deliveryAddress && (
-                            <div className="flex items-center gap-2 text-gray-700">
-                                <MapPin className="w-5 h-5 text-gray-400" />
-                                <div>
-                                    <p className="text-xs text-gray-500">Delivery Address</p>
-                                    <p className="font-medium">{order.deliveryAddress}</p>
-                                </div>
+                    {order.customerPhone && (
+                        <div className="flex items-center gap-2 text-gray-700">
+                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">Contact</p>
+                                <p className="font-medium text-sm sm:text-base">{order.customerPhone}</p>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
-                    <div className="space-y-3">
-                        {order.customerPhone && (
-                            <div className="flex items-center gap-2 text-gray-700">
-                                <User className="w-5 h-5 text-gray-400" />
-                                <div>
-                                    <p className="text-xs text-gray-500">Contact</p>
-                                    <p className="font-medium">{order.customerPhone}</p>
-                                </div>
+                    {order.deliveryAddress && (
+                        <div className="flex items-center gap-2 text-gray-700">
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">Delivery Address</p>
+                                <p className="font-medium text-sm sm:text-base truncate">{order.deliveryAddress}</p>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {order.productionDuration && (
-                            <div className="flex items-center gap-2 text-gray-700">
-                                <Package className="w-5 h-5 text-gray-400" />
-                                <div>
-                                    <p className="text-xs text-gray-500">Production Time</p>
-                                    <p className="font-medium">{order.productionDuration.toFixed(1)} hours</p>
-                                </div>
+                    {order.productionDuration && (
+                        <div className="flex items-center gap-2 text-gray-700">
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">Production Time</p>
+                                <p className="font-medium text-sm sm:text-base">{order.productionDuration.toFixed(1)} hours</p>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
 
-                <div className="border-t pt-4">
+                {/* Order items */}
+                <div className="border-t pt-3 sm:pt-4">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2">Order Items ({order.items.length})</h4>
                     <div className="space-y-1">
                         {order.items.map(item => (
-                            <div key={item.id} className="flex justify-between text-sm">
-                                <span className="text-gray-700">
+                            <div key={item.id} className="flex justify-between text-xs sm:text-sm gap-2">
+                                <span className="text-gray-700 truncate">
                                     {item.quantity}x {item.recipeName}
                                 </span>
-                                <span className="font-medium text-gray-900">
+                                <span className="font-medium text-gray-900 flex-shrink-0">
                                     ${item.subtotalRevenue.toFixed(2)}
                                 </span>
                             </div>
                         ))}
                     </div>
-                    <div className="flex justify-between mt-3 pt-3 border-t font-bold text-gray-900">
+                    <div className="flex justify-between mt-3 pt-3 border-t font-bold text-gray-900 text-sm sm:text-base">
                         <span>Total</span>
                         <span className="text-rose-600">${order.totalRevenue.toFixed(2)}</span>
                     </div>
                 </div>
 
                 {order.notes && (
-                    <div className="mt-4 pt-4 border-t">
+                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t">
                         <p className="text-xs text-gray-500 mb-1">Notes</p>
-                        <p className="text-sm text-gray-700">{order.notes}</p>
+                        <p className="text-xs sm:text-sm text-gray-700">{order.notes}</p>
                     </div>
                 )}
             </div>

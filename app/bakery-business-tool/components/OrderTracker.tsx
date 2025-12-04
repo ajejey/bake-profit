@@ -57,7 +57,7 @@ export default function OrderTracker() {
   // Use custom hooks for data access
   const { orders, addOrder, updateOrderStatus, deleteOrder, getNextOrderNumber } = useOrders()
   const { recipes } = useRecipes()
-  const { saveCustomer, addCustomer } = useCustomers()
+  const { saveCustomer, addCustomer, removeOrderFromCustomer } = useCustomers()
 
   // UI State
   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false)
@@ -322,7 +322,20 @@ export default function OrderTracker() {
 
   // Delete order
   const handleDeleteOrder = (orderId: string) => {
+    // Find the order to get customer info before deleting
+    const orderToDelete = orders.find(o => o.id === orderId)
+
+    // Delete the order
     deleteOrder(orderId)
+
+    // Update the customer's data (remove order from history, update totals)
+    if (orderToDelete) {
+      removeOrderFromCustomer(
+        orderToDelete.customerName,
+        orderId,
+        orderToDelete.totalRevenue
+      )
+    }
 
     toast({
       title: 'Order deleted',
@@ -650,7 +663,7 @@ export default function OrderTracker() {
                       {selectedRecipe && (
                         <span className="text-xs text-gray-500 font-normal ml-1">
                           (Cost: {formatCurrency(
-                            selectedSellingUnitId 
+                            selectedSellingUnitId
                               ? (sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)?.cost || selectedRecipe.totalCost || 0)
                               : (selectedRecipe.totalCost || 0)
                           )})
@@ -666,8 +679,8 @@ export default function OrderTracker() {
                       disabled={recipes.length === 0}
                       className={(() => {
                         if (!selectedRecipe || sellingPrice <= 0) return ''
-                        const selectedUnit = selectedSellingUnitId 
-                          ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId) 
+                        const selectedUnit = selectedSellingUnitId
+                          ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)
                           : null
                         const currentCost = selectedUnit ? selectedUnit.cost : (selectedRecipe.totalCost || 0)
                         return sellingPrice < currentCost ? 'border-red-500 border-2' : ''
@@ -675,8 +688,8 @@ export default function OrderTracker() {
                     />
                     {(() => {
                       if (!selectedRecipe || sellingPrice <= 0) return null
-                      const selectedUnit = selectedSellingUnitId 
-                        ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId) 
+                      const selectedUnit = selectedSellingUnitId
+                        ? sellingUnitsWithPricing.find(u => u.id === selectedSellingUnitId)
                         : null
                       const currentCost = selectedUnit ? selectedUnit.cost : (selectedRecipe.totalCost || 0)
                       if (sellingPrice >= currentCost) return null
@@ -727,7 +740,7 @@ export default function OrderTracker() {
                       const totalCost = orderItems.reduce((sum, item) => sum + item.subtotalCost, 0)
                       const totalRevenue = orderItems.reduce((sum, item) => sum + item.subtotalRevenue, 0)
                       const totalProfit = totalRevenue - totalCost
-                      
+
                       return (
                         <div className="border-t pt-2 mt-2">
                           <div className="flex justify-between text-sm mb-1">

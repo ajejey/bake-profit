@@ -176,6 +176,15 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
         customers: data?.customers?.length || 0,
         ingredients: data?.ingredients?.length || 0,
         inventory: data?.inventory?.length || 0,
+        settings: [
+          data?.businessSettings ? 'business' : null,
+          data?.orderSettings ? 'order' : null,
+          data?.recipeSettings ? 'recipe' : null,
+          data?.appearanceSettings ? 'appearance' : null,
+          data?.notificationSettings ? 'notification' : null,
+          data?.calendarSettings ? 'calendar' : null,
+          data?.pdfCustomization ? 'pdf' : null,
+        ].filter(Boolean).join(', ')
       })
 
       try {
@@ -220,6 +229,32 @@ export function BakeryDataProvider({ children }: { children: React.ReactNode }) 
           setInventory(normalized)
           await StorageAdapter.setItem(STORAGE_KEYS.inventory, JSON.stringify(normalized))
         }
+
+        // Handle Settings Sync (Singleton objects)
+        if (data.businessSettings) {
+          await StorageAdapter.setItem('businessSettings', JSON.stringify(data.businessSettings))
+        }
+        if (data.orderSettings) {
+          await StorageAdapter.setItem('orderSettings', JSON.stringify(data.orderSettings))
+        }
+        if (data.recipeSettings) {
+          await StorageAdapter.setItem('recipeSettings', JSON.stringify(data.recipeSettings))
+        }
+        if (data.appearanceSettings) {
+          await StorageAdapter.setItem('appearanceSettings', JSON.stringify(data.appearanceSettings))
+        }
+        if (data.notificationSettings) {
+          await StorageAdapter.setItem('notificationSettings', JSON.stringify(data.notificationSettings))
+        }
+        if (data.calendarSettings) {
+          await StorageAdapter.setItem('calendarSettings', JSON.stringify(data.calendarSettings))
+        }
+        if (data.pdfCustomization) {
+          await StorageAdapter.setItem('pdfCustomization', JSON.stringify(data.pdfCustomization))
+        }
+
+        // Dispatch event to notify settings components to reload
+        window.dispatchEvent(new Event('data:changed'))
 
         console.log('✅ Sync complete: Data applied to IndexedDB and UI')
       } catch (error) {

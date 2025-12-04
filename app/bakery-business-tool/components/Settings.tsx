@@ -2,16 +2,17 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  User, 
-  Crown, 
-  Briefcase, 
-  ShoppingCart, 
-  ChefHat, 
-  Database, 
-  Palette, 
+import {
+  User,
+  Crown,
+  Briefcase,
+  ShoppingCart,
+  ChefHat,
+  Database,
+  Palette,
   Bell,
-  FileText
+  FileText,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import AccountSettings from '@/components/settings/AccountSettings';
 import SubscriptionSettings from '@/components/settings/SubscriptionSettings';
@@ -23,6 +24,7 @@ import AppearanceSettings from '@/components/settings/AppearanceSettings';
 import NotificationsSettings from '@/components/settings/NotificationsSettings';
 import { GoogleDriveSettings } from './GoogleDriveSettings';
 import PDFCustomizationSettings from './PDFCustomizationSettings';
+import CalendarSettings from '@/components/settings/CalendarSettings';
 import { Cloud } from 'lucide-react';
 
 export default function Settings() {
@@ -32,6 +34,7 @@ export default function Settings() {
     { id: 'business', label: 'Business', icon: Briefcase },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
+    { id: 'calendar', label: 'Calendar', icon: CalendarIcon },
     { id: 'pdf', label: 'PDF Settings', icon: FileText },
     { id: 'subscription', label: 'Subscription', icon: Crown },
     { id: 'account', label: 'Account', icon: User },
@@ -86,6 +89,10 @@ export default function Settings() {
 
           <TabsContent value="pdf" className="mt-0">
             <PDFCustomizationSettings />
+          </TabsContent>
+
+          <TabsContent value="calendar" className="mt-0">
+            <CalendarSettings />
           </TabsContent>
 
           <TabsContent value="subscription" className="mt-0">

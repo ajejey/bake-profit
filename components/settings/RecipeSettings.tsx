@@ -9,11 +9,12 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ChefHat } from 'lucide-react';
 import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
-import { useCurrencySymbol } from '@/app/bakery-business-tool/hooks';
+import { useCurrencySymbol, useSyncedSettings } from '@/app/bakery-business-tool/hooks';
 
 export default function RecipeSettings() {
   const { toast } = useToast();
   const { symbol: currencySymbol } = useCurrencySymbol()
+  const { setRecipeSettings } = useSyncedSettings();
   const [defaultServings, setDefaultServings] = useState('12');
   const [laborCostPerHour, setLaborCostPerHour] = useState('15');
   const [overheadCost, setOverheadCost] = useState('10');
@@ -41,6 +42,14 @@ export default function RecipeSettings() {
     };
 
     loadSettings();
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      loadSettings();
+    };
+
+    window.addEventListener('data:changed', handleDataChanged);
+    return () => window.removeEventListener('data:changed', handleDataChanged);
   }, []);
 
   // Auto-save settings when any value changes (with debounce)
@@ -49,26 +58,26 @@ export default function RecipeSettings() {
     if (isLoading) return;
 
     const timeoutId = setTimeout(async () => {
-      await StorageAdapter.setItem('recipeSettings', JSON.stringify({
+      await setRecipeSettings({
         defaultServings,
         laborCostPerHour,
         overheadCost,
         showCostBreakdown,
-      }));
+      });
 
       console.log('Recipe settings auto-saved');
     }, 1000); // 1 second debounce
 
     return () => clearTimeout(timeoutId);
-  }, [defaultServings, laborCostPerHour, overheadCost, showCostBreakdown, isLoading]);
+  }, [defaultServings, laborCostPerHour, overheadCost, showCostBreakdown, isLoading, setRecipeSettings]);
 
   const handleSave = async () => {
-    await StorageAdapter.setItem('recipeSettings', JSON.stringify({
+    await setRecipeSettings({
       defaultServings,
       laborCostPerHour,
       overheadCost,
       showCostBreakdown,
-    }));
+    });
     toast({ title: 'Settings saved', description: 'Recipe preferences updated.' });
   };
 

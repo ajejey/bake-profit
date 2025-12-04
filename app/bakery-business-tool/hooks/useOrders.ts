@@ -10,18 +10,17 @@ import { useOrderSettings } from './useSettings'
  * Provides clean API for working with orders
  */
 export function useOrders() {
-  const { 
-    orders, 
-    addOrder, 
-    updateOrder, 
-    deleteOrder, 
-    getOrderById, 
+  const {
+    orders,
+    addOrder,
+    updateOrder,
+    deleteOrder,
+    getOrderById,
     updateOrderStatus,
-    recipes 
+    recipes
   } = useSyncedBakeryData()
 
   const { settings } = useOrderSettings()
-  console.log("Settings:", settings)
 
   // Get orders by status
   const getOrdersByStatus = useMemo(() => {
@@ -49,7 +48,7 @@ export function useOrders() {
   const ordersDueToday = useMemo(() => {
     const now = new Date()
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-    
+
     return orders.filter(o => {
       const deliveryDateStr = getDateString(o.deliveryDate)
       return deliveryDateStr === today && o.status !== 'delivered'
@@ -62,7 +61,7 @@ export function useOrders() {
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
     const nextWeekStr = `${nextWeek.getFullYear()}-${String(nextWeek.getMonth() + 1).padStart(2, '0')}-${String(nextWeek.getDate()).padStart(2, '0')}`
-    
+
     return orders.filter(o => {
       const deliveryDateStr = getDateString(o.deliveryDate)
       return deliveryDateStr >= todayStr && deliveryDateStr <= nextWeekStr && o.status !== 'delivered'

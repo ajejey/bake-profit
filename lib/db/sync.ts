@@ -5,6 +5,12 @@ import CustomerModel, { ICustomer } from './models/Customer';
 import IngredientModel, { IIngredient } from './models/Ingredient';
 import InventoryModel, { IInventoryItem } from './models/Inventory';
 import BusinessSettingsModel, { IBusinessSettings } from './models/BusinessSettings';
+import CalendarSettingsModel, { ICalendarSettings } from './models/CalendarSettings';
+import OrderSettingsModel, { IOrderSettings } from './models/OrderSettings';
+import RecipeSettingsModel, { IRecipeSettings } from './models/RecipeSettings';
+import AppearanceSettingsModel, { IAppearanceSettings } from './models/AppearanceSettings';
+import NotificationSettingsModel, { INotificationSettings } from './models/NotificationSettings';
+import PDFCustomizationModel, { IPDFCustomization } from './models/PDFCustomization';
 
 /**
  * Sync data from frontend to MongoDB
@@ -25,7 +31,14 @@ export interface SyncPayload {
   customers?: SyncChange<ICustomer>[];
   ingredients?: SyncChange<IIngredient>[];
   inventory?: SyncChange<IInventoryItem>[];
+  // All settings types (singleton per user, upsert pattern)
   businessSettings?: IBusinessSettings;
+  calendarSettings?: ICalendarSettings;
+  orderSettings?: IOrderSettings;
+  recipeSettings?: IRecipeSettings;
+  appearanceSettings?: IAppearanceSettings;
+  notificationSettings?: INotificationSettings;
+  pdfCustomization?: IPDFCustomization;
 }
 
 /**
@@ -245,10 +258,119 @@ export async function syncBusinessSettings(userId: string, settings: IBusinessSe
 }
 
 /**
- * Process complete sync payload
+ * Sync calendar settings (upsert - single document per user)
  */
+export async function syncCalendarSettings(userId: string, settings: ICalendarSettings): Promise<void> {
+  await connectDB();
+
+  try {
+    await CalendarSettingsModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing calendar settings for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Sync order settings (upsert - single document per user)
+ */
+export async function syncOrderSettings(userId: string, settings: IOrderSettings): Promise<void> {
+  await connectDB();
+
+  try {
+    await OrderSettingsModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing order settings for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Sync recipe settings (upsert - single document per user)
+ */
+export async function syncRecipeSettings(userId: string, settings: IRecipeSettings): Promise<void> {
+  await connectDB();
+
+  try {
+    await RecipeSettingsModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing recipe settings for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Sync appearance settings (upsert - single document per user)
+ */
+export async function syncAppearanceSettings(userId: string, settings: IAppearanceSettings): Promise<void> {
+  await connectDB();
+
+  try {
+    await AppearanceSettingsModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing appearance settings for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Sync notification settings (upsert - single document per user)
+ */
+export async function syncNotificationSettings(userId: string, settings: INotificationSettings): Promise<void> {
+  await connectDB();
+
+  try {
+    await NotificationSettingsModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing notification settings for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Sync PDF customization (upsert - single document per user)
+ */
+export async function syncPDFCustomization(userId: string, settings: IPDFCustomization): Promise<void> {
+  await connectDB();
+
+  try {
+    await PDFCustomizationModel.findOneAndUpdate(
+      { userId },
+      { ...settings, userId },
+      { upsert: true, new: true }
+    );
+  } catch (error) {
+    console.error(`Error syncing PDF customization for user ${userId}:`, error);
+    throw error;
+  }
+}
+
 export async function processSyncPayload(payload: SyncPayload): Promise<void> {
-  const { userId, recipes, orders, customers, ingredients, inventory, businessSettings } = payload;
+  const {
+    userId, recipes, orders, customers, ingredients, inventory,
+    businessSettings, calendarSettings, orderSettings, recipeSettings,
+    appearanceSettings, notificationSettings, pdfCustomization
+  } = payload;
 
   try {
     if (recipes && recipes.length > 0) {
@@ -271,8 +393,33 @@ export async function processSyncPayload(payload: SyncPayload): Promise<void> {
       await syncInventory(userId, inventory);
     }
 
+    // Sync all 7 settings types
     if (businessSettings) {
       await syncBusinessSettings(userId, businessSettings);
+    }
+
+    if (calendarSettings) {
+      await syncCalendarSettings(userId, calendarSettings);
+    }
+
+    if (orderSettings) {
+      await syncOrderSettings(userId, orderSettings);
+    }
+
+    if (recipeSettings) {
+      await syncRecipeSettings(userId, recipeSettings);
+    }
+
+    if (appearanceSettings) {
+      await syncAppearanceSettings(userId, appearanceSettings);
+    }
+
+    if (notificationSettings) {
+      await syncNotificationSettings(userId, notificationSettings);
+    }
+
+    if (pdfCustomization) {
+      await syncPDFCustomization(userId, pdfCustomization);
     }
 
     console.log(`✅ Sync completed for user ${userId}`);
@@ -290,13 +437,23 @@ export async function fetchUserData(userId: string) {
   await connectDB();
 
   try {
-    const [recipes, orders, customers, ingredients, inventory, businessSettings] = await Promise.all([
+    const [
+      recipes, orders, customers, ingredients, inventory,
+      businessSettings, calendarSettings, orderSettings, recipeSettings,
+      appearanceSettings, notificationSettings, pdfCustomization
+    ] = await Promise.all([
       RecipeModel.find({ userId }),
       OrderModel.find({ userId }),
       CustomerModel.find({ userId }),
       IngredientModel.find({ userId }),
       InventoryModel.find({ userId }),
       BusinessSettingsModel.findOne({ userId }),
+      CalendarSettingsModel.findOne({ userId }),
+      OrderSettingsModel.findOne({ userId }),
+      RecipeSettingsModel.findOne({ userId }),
+      AppearanceSettingsModel.findOne({ userId }),
+      NotificationSettingsModel.findOne({ userId }),
+      PDFCustomizationModel.findOne({ userId }),
     ]);
 
     return {
@@ -306,6 +463,12 @@ export async function fetchUserData(userId: string) {
       ingredients,
       inventory,
       businessSettings,
+      calendarSettings,
+      orderSettings,
+      recipeSettings,
+      appearanceSettings,
+      notificationSettings,
+      pdfCustomization,
     };
   } catch (error) {
     console.error(`Error fetching user data for ${userId}:`, error);

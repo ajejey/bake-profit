@@ -106,13 +106,13 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
       icon: <ShoppingCart className="h-5 w-5" />,
       href: '/bakery-business-tool/orders',
     },
-    // {
-    //   id: 'calendar',
-    //   name: 'Calendar',
-    //   shortName: 'Calendar',
-    //   icon: <Calendar className="h-5 w-5" />,
-    //   href: '/bakery-business-tool/calendar',
-    // },
+    {
+      id: 'calendar',
+      name: 'Calendar',
+      shortName: 'Calendar',
+      icon: <Calendar className="h-5 w-5" />,
+      href: '/bakery-business-tool/calendar',
+    },
     {
       id: 'recipes',
       name: 'Recipes',
@@ -228,21 +228,21 @@ export default function AppLayout({ children, currentPage = 'dashboard' }: AppLa
                       <div className="absolute inset-0 rounded-md animate-pulse bg-gradient-to-r from-amber-300 to-orange-300 opacity-0 group-hover:opacity-10" />
                     </>
                   )} */}
-                  
+
                   <span className="mr-3 relative z-10">{item.icon}</span>
                   <span className="font-medium flex-1 relative z-10">{item.name}</span>
-                  
+
                   {item.id === 'storefront' && (
                     <Badge className="ml-2 relative z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 animate-pulse">
                       ✨                     </Badge>
                   )}
-                  
+
                   {item.id === 'orders' && unreadOrderCount > 0 && (
                     <Badge className="ml-2 relative z-10 bg-gradient-to-r from-rose-500 to-pink-500 text-white border-0 animate-pulse">
                       {unreadOrderCount}
                     </Badge>
                   )}
-                  
+
                   {item.id === 'inventory' && alertCount > 0 && (
                     <Badge
                       variant={hasOutOfStock ? 'destructive' : 'default'}

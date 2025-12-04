@@ -4,6 +4,9 @@ import { Calendar, ChevronRight } from 'lucide-react'
 import { format, addDays, isToday, parseISO } from 'date-fns'
 import type { Order } from '../../types'
 import { ORDER_STATUSES } from '../../types'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 interface DashboardCalendarWidgetProps {
     orders: Order[]
@@ -18,6 +21,7 @@ export default function DashboardCalendarWidget({
     onViewAllClick,
     className = '',
 }: DashboardCalendarWidgetProps) {
+    const router = useRouter()
     // Generate next 7 days
     const next7Days = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i))
 
@@ -43,6 +47,11 @@ export default function DashboardCalendarWidget({
         return statusConfig ? colorMap[statusConfig.color as keyof typeof colorMap] : colorMap.blue
     }
 
+    const handleDateClick = (date: Date) => {
+        const dateStr = format(date, 'yyyy-MM-dd')
+        router.push(`/bakery-business-tool/orders?date=${dateStr}`)
+    }
+
     return (
         <div className={`dashboard-calendar-widget bg-white border-2 border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}>
             {/* Header */}
@@ -58,13 +67,12 @@ export default function DashboardCalendarWidget({
                 </div>
 
                 {onViewAllClick && (
-                    <button
-                        onClick={onViewAllClick}
-                        className="flex items-center gap-1 text-sm font-medium text-rose-600 hover:text-rose-700 transition-colors"
-                    >
-                        View Calendar
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <Link href="/bakery-business-tool/calendar">
+                        <Button variant="ghost" size="sm" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50">
+                            View Calendar
+                            <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                    </Link>
                 )}
             </div>
 
@@ -77,12 +85,12 @@ export default function DashboardCalendarWidget({
                     return (
                         <div
                             key={index}
-                            onClick={() => onDateClick?.(date)}
+                            onClick={() => handleDateClick(date)}
                             className={`calendar-day-row flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${isTodayDate
-                                    ? 'bg-rose-50 border-rose-300 hover:bg-rose-100'
-                                    : dateOrders.length > 0
-                                        ? 'bg-white border-gray-200 hover:bg-gray-50'
-                                        : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
+                                ? 'bg-rose-50 border-rose-300 hover:bg-rose-100'
+                                : dateOrders.length > 0
+                                    ? 'bg-white border-gray-200 hover:bg-gray-50'
+                                    : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
                                 }`}
                         >
                             {/* Date Info */}

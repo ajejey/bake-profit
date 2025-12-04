@@ -251,14 +251,14 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
       </div>
 
       {/* Calendar Widget - Upcoming Orders */}
-      {/* <DashboardCalendarWidget
+      <DashboardCalendarWidget
         orders={ordersDueThisWeek}
         onDateClick={(date) => {
           // Navigate to orders tab with date filter
           onNavigate('order-tracker')
         }}
         onViewAllClick={() => onNavigate('calendar')}
-      /> */}
+      />
 
       {/* Inventory Alerts */}
       {alerts.length > 0 && (

@@ -3,27 +3,27 @@
 import { useMemo, useCallback } from 'react'
 import { useSyncedBakeryData } from './useSyncedBakeryData'
 import { v4 as uuidv4 } from 'uuid'
-import type { Customer, Order } from '../types'
+import type { Customer } from '../types'
 
 /**
  * Custom hook for customer management
  * Provides clean API for working with customers
  */
 export function useCustomers() {
-  const { 
-    customers, 
-    addCustomer, 
+  const {
+    customers,
+    addCustomer,
     updateCustomer,
     deleteCustomer,
     getCustomerByName,
     getCustomerById,
-    orders 
+    orders
   } = useSyncedBakeryData()
 
   // Search customers by name
   const searchCustomers = useCallback((query: string) => {
     if (!query) return []
-    return customers.filter(c => 
+    return customers.filter(c =>
       c.name.toLowerCase().includes(query.toLowerCase())
     )
   }, [customers])
@@ -40,7 +40,7 @@ export function useCustomers() {
     const customer = getCustomerById(customerId)
     if (!customer) return null
 
-    const customerOrders = orders.filter(o => 
+    const customerOrders = orders.filter(o =>
       customer.orderHistory.includes(o.id)
     )
 
@@ -52,8 +52,8 @@ export function useCustomers() {
 
   // Save or update customer (smart upsert)
   const saveCustomer = useCallback((
-    name: string, 
-    phone: string | undefined, 
+    name: string,
+    phone: string | undefined,
     orderId: string,
     orderTotal: number
   ) => {
@@ -85,6 +85,27 @@ export function useCustomers() {
     }
   }, [getCustomerByName, addCustomer, updateCustomer])
 
+  // Remove order from customer (for when orders are deleted)
+  const removeOrderFromCustomer = useCallback((
+    customerName: string,
+    orderId: string,
+    orderTotal: number
+  ) => {
+    const customer = getCustomerByName(customerName)
+    if (!customer) return
+
+    // Remove orderId from orderHistory and update totals
+    const updatedOrderHistory = customer.orderHistory.filter(id => id !== orderId)
+    const newTotalOrders = Math.max(0, customer.totalOrders - 1)
+    const newTotalSpent = Math.max(0, customer.totalSpent - orderTotal)
+
+    updateCustomer(customer.id, {
+      orderHistory: updatedOrderHistory,
+      totalOrders: newTotalOrders,
+      totalSpent: newTotalSpent,
+    })
+  }, [getCustomerByName, updateCustomer])
+
   // Get repeat customers (more than 1 order)
   const repeatCustomers = useMemo(() => {
     return customers.filter(c => c.totalOrders > 1)
@@ -112,5 +133,6 @@ export function useCustomers() {
     getCustomerWithOrders,
     searchCustomers,
     saveCustomer,
+    removeOrderFromCustomer,
   }
 }

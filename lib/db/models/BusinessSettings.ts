@@ -3,25 +3,17 @@ import mongoose, { Schema, Model } from 'mongoose';
 export interface IBusinessSettings {
   _id: string;
   userId: string;
-  businessName?: string;
-  businessAddress?: string;
-  businessPhone?: string;
-  businessEmail?: string;
-  businessWebsite?: string;
-  taxId?: string;
-  logoUrl?: string;
-  primaryColor?: string;
-  accentColor?: string;
-  showLogo: boolean;
-  showBusinessInfo: boolean;
-  footerText?: string;
-  invoicePrefix: string;
-  defaultPaymentTerms: 'due-on-receipt' | 'net-7' | 'net-15' | 'net-30' | 'net-60' | 'custom';
-  defaultTaxRate: number;
-  defaultNotes?: string;
-  defaultTerms?: string;
-  laborCostPerHour: number;
-  overheadPercentage: number;
+  currency: string;
+  currencyPosition: 'before' | 'after';
+  defaultMarkup: string;
+  taxRate: string;
+  dateFormat: string;
+  timeFormat: string;
+  timezone: string;
+  weekStart: 0 | 1; // 0 = Sunday, 1 = Monday
+  weightSystem: string;
+  volumeSystem: string;
+  temperature: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -34,84 +26,51 @@ const BusinessSettingsSchema = new Schema<IBusinessSettings>(
       unique: true,
       index: true,
     },
-    businessName: {
+    currency: {
       type: String,
-      required: false,
+      default: 'USD',
     },
-    businessAddress: {
+    currencyPosition: {
       type: String,
-      required: false,
+      enum: ['before', 'after'],
+      default: 'before',
     },
-    businessPhone: {
+    defaultMarkup: {
       type: String,
-      required: false,
+      default: '150',
     },
-    businessEmail: {
+    taxRate: {
       type: String,
-      required: false,
-      lowercase: true,
-      trim: true,
+      default: '0',
     },
-    businessWebsite: {
+    dateFormat: {
       type: String,
-      required: false,
+      default: 'MM/DD/YYYY',
     },
-    taxId: {
+    timeFormat: {
       type: String,
-      required: false,
+      default: '12',
     },
-    logoUrl: {
+    timezone: {
       type: String,
-      required: false,
+      default: 'America/New_York',
     },
-    primaryColor: {
-      type: String,
-      required: false,
-    },
-    accentColor: {
-      type: String,
-      required: false,
-    },
-    showLogo: {
-      type: Boolean,
-      default: true,
-    },
-    showBusinessInfo: {
-      type: Boolean,
-      default: true,
-    },
-    footerText: {
-      type: String,
-      required: false,
-    },
-    invoicePrefix: {
-      type: String,
-      default: 'INV-',
-    },
-    defaultPaymentTerms: {
-      type: String,
-      enum: ['due-on-receipt', 'net-7', 'net-15', 'net-30', 'net-60', 'custom'],
-      default: 'due-on-receipt',
-    },
-    defaultTaxRate: {
+    weekStart: {
       type: Number,
-      default: 0,
+      enum: [0, 1],
+      default: 0, // Sunday
     },
-    defaultNotes: {
+    weightSystem: {
       type: String,
-      required: false,
+      default: 'imperial',
     },
-    defaultTerms: {
+    volumeSystem: {
       type: String,
-      required: false,
+      default: 'imperial',
     },
-    laborCostPerHour: {
-      type: Number,
-      default: 15,
-    },
-    overheadPercentage: {
-      type: Number,
-      default: 10,
+    temperature: {
+      type: String,
+      default: 'fahrenheit',
     },
   },
   {

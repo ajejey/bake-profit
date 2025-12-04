@@ -33,3 +33,5 @@ export {
   useFormattedTime,
   useDateFormat,
 } from './useSettings'
+export { useCalendarSettings } from './useCalendarSettings'
+export { useSyncedSettings, setBusinessSettingsSynced, setOrderSettingsSynced, setRecipeSettingsSynced, setAppearanceSettingsSynced, setNotificationSettingsSynced, setCalendarSettingsSynced, setPDFCustomizationSynced } from './useSyncedSettings'

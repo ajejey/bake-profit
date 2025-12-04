@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Palette } from 'lucide-react';
-import { getAppearanceSettings, setAppearanceSettings } from '@/app/bakery-business-tool/utils/settings';
+import { getAppearanceSettings } from '@/app/bakery-business-tool/utils/settings';
+import { useSyncedSettings } from '@/app/bakery-business-tool/hooks';
 
 export default function AppearanceSettings() {
   const { toast } = useToast();
+  const { setAppearanceSettings } = useSyncedSettings();
   const [theme, setTheme] = useState('light');
   const [displayDensity, setDisplayDensity] = useState('comfortable');
-  const [isLoading, setIsLoading] = useState(true);
 
   // Load settings on mount
   useEffect(() => {
@@ -24,17 +25,23 @@ export default function AppearanceSettings() {
         setDisplayDensity(settings.displayDensity);
       } catch (error) {
         console.error('Error loading appearance settings:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     loadSettings();
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      loadSettings();
+    };
+
+    window.addEventListener('data:changed', handleDataChanged);
+    return () => window.removeEventListener('data:changed', handleDataChanged);
   }, []);
 
   const handleSave = async () => {
     try {
-      await setAppearanceSettings({ 
+      await setAppearanceSettings({
         theme: theme as 'light' | 'dark' | 'auto',
         displayDensity: displayDensity as 'compact' | 'comfortable' | 'spacious'
       });

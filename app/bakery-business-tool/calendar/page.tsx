@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Filter, Download, Settings } from 'lucide-react'
+import { Filter, Settings } from 'lucide-react'
 import CalendarView from '../components/Calendar/CalendarView'
 import { useOrders } from '../hooks'
 import type { Order } from '../types'
@@ -65,22 +65,22 @@ export default function CalendarPage() {
         <AppLayout currentPage="calendar">
             <div className="calendar-page-container space-y-6">
                 {/* Page Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Calendar</h1>
-                        <p className="text-gray-600 mt-1">Manage your orders and production schedule</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Calendar</h1>
+                        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your orders and production schedule</p>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-colors ${showFilters ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 transition-colors text-sm sm:text-base ${showFilters ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
                             <Filter className="w-4 h-4" />
-                            Filters
+                            <span className="hidden xs:inline">Filters</span>
                             {(statusFilter !== 'all' || customerFilter) && (
-                                <span className="ml-1 px-2 py-0.5 bg-rose-600 text-white text-xs rounded-full">
+                                <span className="px-1.5 sm:px-2 py-0.5 bg-rose-600 text-white text-xs rounded-full">
                                     {(statusFilter !== 'all' ? 1 : 0) + (customerFilter ? 1 : 0)}
                                 </span>
                             )}
@@ -88,18 +88,10 @@ export default function CalendarPage() {
 
                         <button
                             onClick={() => router.push('/bakery-business-tool/settings')}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base"
                         >
                             <Settings className="w-4 h-4" />
-                            Settings
-                        </button>
-
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors"
-                            title="Export calendar (coming soon)"
-                        >
-                            <Download className="w-4 h-4" />
-                            Export
+                            <span className="hidden xs:inline">Settings</span>
                         </button>
                     </div>
                 </div>
@@ -151,8 +143,8 @@ export default function CalendarPage() {
                                 />
                             </div>
 
-                            {/* Date Range Filter - Could add later */}
-                            <div>
+                            {/* Date Range Filter - TODO: Implement later */}
+                            {/* <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Date Range
                                 </label>
@@ -162,7 +154,7 @@ export default function CalendarPage() {
                                 >
                                     <option>This Month (Coming Soon)</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Filter Results Summary */}
@@ -176,7 +168,7 @@ export default function CalendarPage() {
                 )}
 
                 {/* Calendar View */}
-                <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+                <div className="bg-white border-2 border-gray-200 rounded-xl p-3 sm:p-6">
                     <CalendarView
                         orders={filteredOrders}
                         onOrderClick={handleOrderClick}

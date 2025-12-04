@@ -8,15 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { DollarSign, Calendar, Ruler } from 'lucide-react';
+import { useSyncedSettings } from '@/app/bakery-business-tool/hooks';
 import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
 
 export default function BusinessSettings() {
   const { toast } = useToast();
+  const { setBusinessSettings } = useSyncedSettings();
   const [isLoading, setIsLoading] = useState(true);
 
   // Currency & Pricing
   const [currency, setCurrency] = useState('USD');
-  const [currencyPosition, setCurrencyPosition] = useState('before');
+  const [currencyPosition, setCurrencyPosition] = useState<'before' | 'after'>('before');
   const [defaultMarkup, setDefaultMarkup] = useState('150');
   const [taxRate, setTaxRate] = useState('0');
 
@@ -24,7 +26,7 @@ export default function BusinessSettings() {
   const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
   const [timeFormat, setTimeFormat] = useState('12');
   const [timezone, setTimezone] = useState('America/New_York');
-  const [weekStart, setWeekStart] = useState('sunday');
+  const [weekStart, setWeekStart] = useState<0 | 1>(0);
 
   // Units
   const [weightSystem, setWeightSystem] = useState('imperial');
@@ -46,7 +48,11 @@ export default function BusinessSettings() {
           setDateFormat(settings.dateFormat);
           setTimeFormat(settings.timeFormat);
           setTimezone(settings.timezone);
-          setWeekStart(settings.weekStart);
+          // Handle legacy string values during load
+          const weekStartValue = typeof settings.weekStart === 'string'
+            ? (settings.weekStart === 'monday' ? 1 : 0)
+            : settings.weekStart;
+          setWeekStart(weekStartValue as 0 | 1);
           setWeightSystem(settings.weightSystem);
           setVolumeSystem(settings.volumeSystem);
           setTemperature(settings.temperature);
@@ -59,6 +65,15 @@ export default function BusinessSettings() {
     };
 
     loadSettings();
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      console.log('Data changed event received, reloading settings...');
+      loadSettings();
+    };
+
+    window.addEventListener('data:changed', handleDataChanged);
+    return () => window.removeEventListener('data:changed', handleDataChanged);
   }, []);
 
   // Auto-save settings when any value changes (with debounce)
@@ -67,7 +82,7 @@ export default function BusinessSettings() {
     if (isLoading) return;
 
     const timeoutId = setTimeout(async () => {
-      await StorageAdapter.setItem('businessSettings', JSON.stringify({
+      await setBusinessSettings({
         currency,
         currencyPosition,
         defaultMarkup,
@@ -79,7 +94,7 @@ export default function BusinessSettings() {
         weightSystem,
         volumeSystem,
         temperature,
-      }));
+      });
 
       console.log('Settings auto-saved');
     }, 1000); // 1 second debounce
@@ -97,11 +112,12 @@ export default function BusinessSettings() {
     weightSystem,
     volumeSystem,
     temperature,
-    isLoading
+    isLoading,
+    setBusinessSettings
   ]);
 
   const handleSave = async () => {
-    await StorageAdapter.setItem('businessSettings', JSON.stringify({
+    await setBusinessSettings({
       currency,
       currencyPosition,
       defaultMarkup,
@@ -113,7 +129,7 @@ export default function BusinessSettings() {
       weightSystem,
       volumeSystem,
       temperature,
-    }));
+    });
 
     toast({
       title: 'Settings saved',
@@ -325,13 +341,13 @@ export default function BusinessSettings() {
 
             <div className="space-y-2">
               <Label htmlFor="weekStart">Week Starts On</Label>
-              <Select value={weekStart} onValueChange={setWeekStart}>
+              <Select value={String(weekStart)} onValueChange={(v) => setWeekStart(Number(v) as 0 | 1)}>
                 <SelectTrigger id="weekStart">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sunday">Sunday</SelectItem>
-                  <SelectItem value="monday">Monday</SelectItem>
+                  <SelectItem value="0">Sunday</SelectItem>
+                  <SelectItem value="1">Monday</SelectItem>
                 </SelectContent>
               </Select>
             </div>

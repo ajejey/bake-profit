@@ -7,14 +7,15 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Bell } from 'lucide-react';
-import { getNotificationSettings, setNotificationSettings } from '@/app/bakery-business-tool/utils/settings';
+import { getNotificationSettings } from '@/app/bakery-business-tool/utils/settings';
+import { useSyncedSettings } from '@/app/bakery-business-tool/hooks';
 
 export default function NotificationsSettings() {
   const { toast } = useToast();
+  const { setNotificationSettings } = useSyncedSettings();
   const [lowStockAlerts, setLowStockAlerts] = useState(true);
   const [upcomingDeliveries, setUpcomingDeliveries] = useState(true);
   const [usageLimitWarnings, setUsageLimitWarnings] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Load settings on mount
   useEffect(() => {
@@ -26,12 +27,18 @@ export default function NotificationsSettings() {
         setUsageLimitWarnings(settings.usageLimitWarnings);
       } catch (error) {
         console.error('Error loading notification settings:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     loadSettings();
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      loadSettings();
+    };
+
+    window.addEventListener('data:changed', handleDataChanged);
+    return () => window.removeEventListener('data:changed', handleDataChanged);
   }, []);
 
   const handleSave = async () => {
@@ -42,7 +49,7 @@ export default function NotificationsSettings() {
         usageLimitWarnings,
       });
       toast({ title: 'Settings saved', description: 'Notification preferences updated.' });
-    } catch (error) {
+    } catch {
       toast({ title: 'Error', description: 'Failed to save settings.', variant: 'destructive' });
     }
   };

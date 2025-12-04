@@ -10,12 +10,15 @@ import { SUBSCRIPTION_LIMITS } from '@/lib/subscription-limits';
 import { Crown, Check, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import UsageIndicator from '@/components/subscription/UsageIndicator';
+import { PayPalButton } from '@/components/pricing/PayPalButton';
+import { useState } from 'react';
 
 export default function SubscriptionSettings() {
   const { tier } = useSubscription();
   const { recipes, orders, customers, inventory } = useSyncedBakeryData();
   const limits = SUBSCRIPTION_LIMITS[tier];
   const isPro = tier === 'pro';
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   // Calculate actual usage from local data
   const usage = useMemo(() => {
@@ -96,7 +99,7 @@ export default function SubscriptionSettings() {
                 </Button>
               </>
             ) : (
-              <Link href="/upgrade" className="flex-1">
+              <Link href="#proPlan" className="flex-1">
                 <Button className="w-full bg-rose-500 hover:bg-rose-600">
                   <Crown className="h-4 w-4 mr-2" />
                   Upgrade to Pro
@@ -156,7 +159,7 @@ export default function SubscriptionSettings() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div  className="grid md:grid-cols-2 gap-6">
               {/* Free Plan */}
               <div className="border rounded-lg p-4">
                 <h3 className="font-bold text-lg mb-3">Free Plan</h3>
@@ -179,17 +182,13 @@ export default function SubscriptionSettings() {
                   </li>
                   <li className="flex items-start gap-2 text-gray-400">
                     <span className="text-lg">×</span>
-                    <span>No Google Drive sync</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <span className="text-lg">×</span>
                     <span>No email notifications</span>
                   </li>
                 </ul>
               </div>
 
               {/* Pro Plan */}
-              <div className="border-2 border-rose-500 rounded-lg p-4 bg-gradient-to-br from-rose-50 to-orange-50">
+              <div id="proPlan" className="border-2 border-rose-500 rounded-lg p-4 bg-gradient-to-br from-rose-50 to-orange-50">
                 <div className="flex items-center gap-2 mb-3">
                   <h3 className="font-bold text-lg">Pro Plan</h3>
                   <Badge className="bg-rose-500">Recommended</Badge>
@@ -213,10 +212,6 @@ export default function SubscriptionSettings() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-rose-500 mt-0.5" />
-                    <span className="font-medium">Google Drive sync</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-rose-500 mt-0.5" />
                     <span className="font-medium">Email notifications</span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -224,11 +219,42 @@ export default function SubscriptionSettings() {
                     <span className="font-medium">Priority support</span>
                   </li>
                 </ul>
-                <Link href="/upgrade">
-                  <Button className="w-full bg-rose-500 hover:bg-rose-600">
-                    Upgrade Now - $6.99/month
-                  </Button>
-                </Link>
+                {/* Billing Cycle Toggle */}
+                <div className="flex items-center justify-center bg-rose-100 rounded-lg p-1 mb-4">
+                  <button
+                    onClick={() => setBillingCycle('monthly')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-semibold transition-all ${
+                      billingCycle === 'monthly'
+                        ? 'bg-rose-600 text-white shadow-sm'
+                        : 'text-gray-700 hover:text-gray-900'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setBillingCycle('yearly')}
+                    className={`flex-1 px-4 py-2 rounded-md text-sm font-semibold transition-all ${
+                      billingCycle === 'yearly'
+                        ? 'bg-rose-600 text-white shadow-sm'
+                        : 'text-gray-700 hover:text-gray-900'
+                    }`}
+                  >
+                    Yearly
+                    <span className="ml-1 text-xs bg-green-600 text-white px-1.5 py-0.5 rounded-full">-17%</span>
+                  </button>
+                </div>
+                
+                <div className="text-center mb-4">
+                  <span className="text-2xl font-bold text-rose-600">
+                    ${billingCycle === 'monthly' ? '6.99' : '69'}
+                  </span>
+                  <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                  {billingCycle === 'yearly' && (
+                    <p className="text-xs text-green-600 font-medium mt-1">💰 Save $14/year</p>
+                  )}
+                </div>
+
+                <PayPalButton plan="pro" billingCycle={billingCycle} />
               </div>
             </div>
           </CardContent>

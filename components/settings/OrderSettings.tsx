@@ -10,9 +10,11 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, User } from 'lucide-react';
 import { StorageAdapter } from '@/app/bakery-business-tool/utils/indexedDBAdapter';
+import { useSyncedSettings } from '@/app/bakery-business-tool/hooks';
 
 export default function OrderSettings() {
   const { toast } = useToast();
+  const { setOrderSettings } = useSyncedSettings();
 
   const [defaultStatus, setDefaultStatus] = useState('new');
   const [autoIncrement, setAutoIncrement] = useState(true);
@@ -23,14 +25,14 @@ export default function OrderSettings() {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleSave = async () => {
-    await StorageAdapter.setItem('orderSettings', JSON.stringify({
-      defaultStatus,
+    await setOrderSettings({
+      defaultStatus: defaultStatus as any,
       autoIncrement,
       orderPrefix,
       leadTime,
       requirePhone,
       autoSaveCustomers,
-    }));
+    });
 
     toast({
       title: 'Settings saved',
@@ -61,6 +63,14 @@ export default function OrderSettings() {
     };
 
     loadSettings();
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      loadSettings();
+    };
+
+    window.addEventListener('data:changed', handleDataChanged);
+    return () => window.removeEventListener('data:changed', handleDataChanged);
   }, []);
 
   // Auto-save settings when any value changes (with debounce)
@@ -69,20 +79,20 @@ export default function OrderSettings() {
     if (isLoading) return;
 
     const timeoutId = setTimeout(async () => {
-      await StorageAdapter.setItem('orderSettings', JSON.stringify({
-        defaultStatus,
+      await setOrderSettings({
+        defaultStatus: defaultStatus as any,
         autoIncrement,
         orderPrefix,
         leadTime,
         requirePhone,
         autoSaveCustomers,
-      }));
+      });
 
       console.log('Order settings auto-saved');
     }, 1000); // 1 second debounce
 
     return () => clearTimeout(timeoutId);
-  }, [defaultStatus, autoIncrement, orderPrefix, leadTime, requirePhone, autoSaveCustomers, isLoading]);
+  }, [defaultStatus, autoIncrement, orderPrefix, leadTime, requirePhone, autoSaveCustomers, isLoading, setOrderSettings]);
 
   if (isLoading) {
     return (

@@ -12,10 +12,13 @@
 
 export interface SyncOperation {
   id: string; // Unique operation ID
-  entityType: 'recipe' | 'order' | 'customer' | 'ingredient' | 'inventory';
+  entityType: 'recipe' | 'order' | 'customer' | 'ingredient' | 'inventory' |
+  'businessSettings' | 'orderSettings' | 'recipeSettings' |
+  'appearanceSettings' | 'notificationSettings' | 'calendarSettings' |
+  'pdfCustomization';
   entityId: string; // ID of the entity being modified
   operation: 'create' | 'update' | 'delete';
-  data?: any; // Full entity data for create/update
+  data?: unknown; // Full entity data for create/update
   timestamp: number; // Client timestamp
   synced: boolean; // Whether this operation has been synced
 }
@@ -81,13 +84,13 @@ export class SyncEngine {
     entityType: SyncOperation['entityType'],
     entityId: string,
     operation: SyncOperation['operation'],
-    data?: any
+    data?: unknown
   ): void {
     const metadata = this.getMetadata();
-    
+
     // Generate unique operation ID
     const operationId = `${entityType}_${entityId}_${Date.now()}_${Math.random()}`;
-    
+
     const newOperation: SyncOperation = {
       id: operationId,
       entityType,
@@ -105,13 +108,13 @@ export class SyncEngine {
 
     if (existingIndex !== -1) {
       const existing = metadata.pendingOperations[existingIndex];
-      
+
       // Merge logic:
       // - create + update = create (with new data)
       // - create + delete = remove both (entity never existed on server)
       // - update + update = update (with latest data)
       // - update + delete = delete
-      
+
       if (existing.operation === 'create' && operation === 'update') {
         // Merge into single create with latest data
         metadata.pendingOperations[existingIndex] = {
@@ -166,11 +169,27 @@ export class SyncEngine {
         customer: [],
         ingredient: [],
         inventory: [],
+        // Settings types (singleton per user, use 'user' as entityId)
+        businessSettings: [],
+        orderSettings: [],
+        recipeSettings: [],
+        appearanceSettings: [],
+        notificationSettings: [],
+        calendarSettings: [],
+        pdfCustomization: [],
       };
 
       pendingOps.forEach(op => {
-        grouped[op.entityType].push(op);
+        if (grouped[op.entityType]) {
+          grouped[op.entityType].push(op);
+        }
       });
+
+      // Helper to get single settings data (last one wins)
+      const getSettingsData = (ops: SyncOperation[]) => {
+        if (ops.length === 0) return undefined;
+        return ops[ops.length - 1].data; // Latest operation's data
+      };
 
       // Convert to sync payload format
       const payload = {
@@ -201,6 +220,14 @@ export class SyncEngine {
           id: op.entityId,
           data: op.data,
         })),
+        // Settings are singleton objects, not arrays of changes
+        businessSettings: getSettingsData(grouped.businessSettings),
+        orderSettings: getSettingsData(grouped.orderSettings),
+        recipeSettings: getSettingsData(grouped.recipeSettings),
+        appearanceSettings: getSettingsData(grouped.appearanceSettings),
+        notificationSettings: getSettingsData(grouped.notificationSettings),
+        calendarSettings: getSettingsData(grouped.calendarSettings),
+        pdfCustomization: getSettingsData(grouped.pdfCustomization),
       };
 
       const response = await fetch('/api/sync', {
@@ -252,7 +279,7 @@ export class SyncEngine {
       }
 
       const result = await response.json();
-      
+
       const metadata = this.getMetadata();
       metadata.lastPullTimestamp = Date.now();
       this.saveMetadata(metadata);
@@ -270,7 +297,7 @@ export class SyncEngine {
   static async sync(token: string, userId: string): Promise<{ pushed: boolean; pulled: any | null }> {
     // First push local changes
     const pushed = await this.push(token, userId);
-    
+
     // Then pull server changes
     const pulled = await this.pull(token, userId);
 
@@ -282,11 +309,11 @@ export class SyncEngine {
    */
   static cleanup(): void {
     const metadata = this.getMetadata();
-    
+
     // Keep only last 100 synced operations for history
     const synced = metadata.pendingOperations.filter(op => op.synced);
     const unsynced = metadata.pendingOperations.filter(op => !op.synced);
-    
+
     metadata.pendingOperations = [
       ...unsynced,
       ...synced.slice(-100),

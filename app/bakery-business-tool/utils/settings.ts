@@ -9,10 +9,21 @@ export interface BusinessSettings {
   dateFormat: string;
   timeFormat: string;
   timezone: string;
-  weekStart: string;
+  weekStart: 0 | 1; // 0 = Sunday, 1 = Monday (matches date-fns weekStartsOn)
   weightSystem: string;
   volumeSystem: string;
   temperature: string;
+}
+
+// Week start conversion utilities
+export type WeekStartDay = 0 | 1;
+
+export function weekStartToString(weekStart: WeekStartDay): 'sunday' | 'monday' {
+  return weekStart === 0 ? 'sunday' : 'monday';
+}
+
+export function stringToWeekStart(str: string): WeekStartDay {
+  return str === 'monday' ? 1 : 0;
 }
 
 export interface OrderSettings {
@@ -52,6 +63,15 @@ export interface NotificationSettings {
   usageLimitWarnings: boolean;
 }
 
+export interface CalendarSettings {
+  weekStartsOn: 0 | 1; // 0 = Sunday, 1 = Monday
+  defaultProductionLeadTime: number; // Days before delivery to bake
+  dailyCapacityHours: number; // Maximum production hours per day
+  blockedDates: string[]; // ISO date strings of unavailable dates
+  showProductionDates: boolean; // Whether to show production dates in calendar
+  enableCapacityWarnings: boolean; // Show warnings when approaching capacity
+}
+
 
 // Get business settings
 export async function getBusinessSettings(): Promise<BusinessSettings> {
@@ -63,7 +83,12 @@ export async function getBusinessSettings(): Promise<BusinessSettings> {
   if (!stored) return getDefaultBusinessSettings();
 
   try {
-    return { ...getDefaultBusinessSettings(), ...JSON.parse(stored) };
+    const parsed = JSON.parse(stored);
+    // Migrate legacy string weekStart to numeric
+    if (typeof parsed.weekStart === 'string') {
+      parsed.weekStart = stringToWeekStart(parsed.weekStart);
+    }
+    return { ...getDefaultBusinessSettings(), ...parsed };
   } catch {
     return getDefaultBusinessSettings();
   }
@@ -158,6 +183,27 @@ export async function setNotificationSettings(settings: NotificationSettings): P
   await StorageAdapter.setItem('notificationSettings', JSON.stringify(settings));
 }
 
+// Get calendar settings
+export async function getCalendarSettings(): Promise<CalendarSettings> {
+  if (typeof window === 'undefined') {
+    return getDefaultCalendarSettings();
+  }
+
+  const stored = await StorageAdapter.getItem('calendarSettings');
+  if (!stored) return getDefaultCalendarSettings();
+
+  try {
+    return { ...getDefaultCalendarSettings(), ...JSON.parse(stored) };
+  } catch {
+    return getDefaultCalendarSettings();
+  }
+}
+
+// Set calendar settings
+export async function setCalendarSettings(settings: CalendarSettings): Promise<void> {
+  await StorageAdapter.setItem('calendarSettings', JSON.stringify(settings));
+}
+
 // Default settings
 function getDefaultBusinessSettings(): BusinessSettings {
   return {
@@ -168,7 +214,7 @@ function getDefaultBusinessSettings(): BusinessSettings {
     dateFormat: 'MM/DD/YYYY',
     timeFormat: '12',
     timezone: 'America/New_York',
-    weekStart: 'sunday',
+    weekStart: 0, // Sunday
     weightSystem: 'imperial',
     volumeSystem: 'imperial',
     temperature: 'fahrenheit',
@@ -207,6 +253,17 @@ function getDefaultNotificationSettings(): NotificationSettings {
     lowStockAlerts: true,
     upcomingDeliveries: true,
     usageLimitWarnings: true,
+  };
+}
+
+function getDefaultCalendarSettings(): CalendarSettings {
+  return {
+    weekStartsOn: 0, // Sunday
+    defaultProductionLeadTime: 1, // 1 day before delivery
+    dailyCapacityHours: 8, // 8 hours per day
+    blockedDates: [],
+    showProductionDates: true,
+    enableCapacityWarnings: true,
   };
 }
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { PDFCustomization } from '../types'
-
-const STORAGE_KEY = 'bakeprofit-pdf-customization'
+import { getPDFCustomization, setPDFCustomizationSynced } from './useSyncedSettings'
 
 const DEFAULT_CUSTOMIZATION: PDFCustomization = {
   businessName: 'BakeProfit Business',
@@ -22,9 +21,9 @@ export function usePDFCustomization() {
   useEffect(() => {
     const loadCustomization = async () => {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY)
+        const stored = await getPDFCustomization()
         if (stored) {
-          setCustomization(JSON.parse(stored))
+          setCustomization(stored)
         }
       } catch (error) {
         console.error('Error loading PDF customization:', error)
@@ -34,18 +33,30 @@ export function usePDFCustomization() {
     }
 
     loadCustomization()
+
+    // Listen for sync updates
+    const handleDataChanged = () => {
+      loadCustomization()
+    }
+
+    window.addEventListener('data:changed', handleDataChanged)
+    return () => window.removeEventListener('data:changed', handleDataChanged)
   }, [])
 
   // Save customization
-  const saveCustomization = (updates: Partial<PDFCustomization>) => {
+  const saveCustomization = async (updates: Partial<PDFCustomization>) => {
     try {
       const newCustomization = {
         ...customization,
         ...updates,
         updatedAt: new Date().toISOString()
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newCustomization))
+
+      // Update local state immediately for UI responsiveness
       setCustomization(newCustomization)
+
+      // Save to IndexedDB and queue for Sync
+      await setPDFCustomizationSynced(newCustomization)
     } catch (error) {
       console.error('Error saving PDF customization:', error)
       throw error
@@ -53,14 +64,15 @@ export function usePDFCustomization() {
   }
 
   // Reset to defaults
-  const resetCustomization = () => {
+  const resetCustomization = async () => {
     const newCustomization = {
       ...DEFAULT_CUSTOMIZATION,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newCustomization))
+
     setCustomization(newCustomization)
+    await setPDFCustomizationSynced(newCustomization)
   }
 
   return {

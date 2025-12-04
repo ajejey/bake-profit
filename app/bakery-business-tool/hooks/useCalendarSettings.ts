@@ -1,73 +1,65 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import type { CalendarSettings } from '../types'
-
-const DEFAULT_CALENDAR_SETTINGS: CalendarSettings = {
-    weekStartsOn: 0, // Sunday
-    defaultProductionLeadTime: 1, // 1 day before delivery
-    dailyCapacityHours: 8, // 8 hours per day
-    blockedDates: [],
-    showProductionDates: true,
-    enableCapacityWarnings: true,
-}
-
-const STORAGE_KEY = 'bakery-calendar-settings'
+import { useState, useEffect, useCallback } from 'react'
+import { getCalendarSettings, setCalendarSettings } from '../utils/settings'
+import type { CalendarSettings } from '../utils/settings'
 
 export function useCalendarSettings() {
-    const [settings, setSettings] = useState<CalendarSettings>(DEFAULT_CALENDAR_SETTINGS)
+    const [settings, setSettingsState] = useState<CalendarSettings>({
+        weekStartsOn: 0,
+        defaultProductionLeadTime: 1,
+        dailyCapacityHours: 8,
+        blockedDates: [],
+        showProductionDates: true,
+        enableCapacityWarnings: true,
+    })
     const [isLoading, setIsLoading] = useState(true)
 
-    // Load settings from localStorage on mount
+    // Load settings from IndexedDB on mount
     useEffect(() => {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY)
-            if (stored) {
-                const parsed = JSON.parse(stored) as CalendarSettings
-                setSettings({ ...DEFAULT_CALENDAR_SETTINGS, ...parsed })
-            }
-        } catch (error) {
-            console.error('Error loading calendar settings:', error)
-        } finally {
-            setIsLoading(false)
-        }
+        getCalendarSettings()
+            .then(setSettingsState)
+            .catch((error) => {
+                console.error('Error loading calendar settings:', error)
+            })
+            .finally(() => setIsLoading(false))
     }, [])
 
-    // Save settings to localStorage
-    const updateSettings = (newSettings: Partial<CalendarSettings>) => {
+    // Save settings to IndexedDB
+    const updateSettings = useCallback(async (newSettings: Partial<CalendarSettings>) => {
         const updated = { ...settings, ...newSettings }
-        setSettings(updated)
+        setSettingsState(updated)
 
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+            await setCalendarSettings(updated)
         } catch (error) {
             console.error('Error saving calendar settings:', error)
         }
-    }
+    }, [settings])
 
     // Helper to add a blocked date
-    const addBlockedDate = (date: string) => {
+    const addBlockedDate = useCallback(async (date: string) => {
         if (!settings.blockedDates.includes(date)) {
-            updateSettings({
+            await updateSettings({
                 blockedDates: [...settings.blockedDates, date],
             })
         }
-    }
+    }, [settings.blockedDates, updateSettings])
 
     // Helper to remove a blocked date
-    const removeBlockedDate = (date: string) => {
-        updateSettings({
+    const removeBlockedDate = useCallback(async (date: string) => {
+        await updateSettings({
             blockedDates: settings.blockedDates.filter(d => d !== date),
         })
-    }
+    }, [settings.blockedDates, updateSettings])
 
     // Helper to check if a date is blocked
-    const isDateBlocked = (date: string): boolean => {
+    const isDateBlocked = useCallback((date: string): boolean => {
         return settings.blockedDates.includes(date)
-    }
+    }, [settings.blockedDates])
 
     // Helper to block a date range
-    const blockDateRange = (startDate: string, endDate: string) => {
+    const blockDateRange = useCallback(async (startDate: string, endDate: string) => {
         const start = new Date(startDate)
         const end = new Date(endDate)
         const dates: string[] = []
@@ -82,21 +74,29 @@ export function useCalendarSettings() {
         }
 
         if (dates.length > 0) {
-            updateSettings({
+            await updateSettings({
                 blockedDates: [...settings.blockedDates, ...dates],
             })
         }
-    }
+    }, [settings.blockedDates, updateSettings])
 
     // Reset to defaults
-    const resetSettings = () => {
-        setSettings(DEFAULT_CALENDAR_SETTINGS)
+    const resetSettings = useCallback(async () => {
+        const defaults: CalendarSettings = {
+            weekStartsOn: 0,
+            defaultProductionLeadTime: 1,
+            dailyCapacityHours: 8,
+            blockedDates: [],
+            showProductionDates: true,
+            enableCapacityWarnings: true,
+        }
+        setSettingsState(defaults)
         try {
-            localStorage.removeItem(STORAGE_KEY)
+            await setCalendarSettings(defaults)
         } catch (error) {
             console.error('Error resetting calendar settings:', error)
         }
-    }
+    }, [])
 
     return {
         settings,
