@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'BakeProfit Pricing - Start Free, Upgrade When Ready',
     description: 'Simple, transparent pricing. Free plan forever or Pro at $6.99/month. All plans include 30-day money-back guarantee.',
-    url: 'https://bakeprofit.vercel.app/pricing',
+    url: 'https://bakeprofit.com/pricing',
     type: 'website',
   },
   twitter: {
@@ -45,7 +45,7 @@ export default function PricingPage() {
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
         description: 'Perfect for hobbyists and getting started',
-        url: 'https://bakeprofit.vercel.app/bakery-business-tool',
+        url: 'https://bakeprofit.com/bakery-business-tool',
       },
       {
         '@type': 'Offer',
@@ -54,7 +54,7 @@ export default function PricingPage() {
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
         description: 'For growing bakery businesses',
-        url: 'https://bakeprofit.vercel.app/bakery-business-tool',
+        url: 'https://bakeprofit.com/bakery-business-tool',
         billingDuration: 'P1M',
       },
     ],
@@ -123,13 +123,13 @@ export default function PricingPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://bakeprofit.vercel.app',
+        item: 'https://bakeprofit.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Pricing',
-        item: 'https://bakeprofit.vercel.app/pricing',
+        item: 'https://bakeprofit.com/pricing',
       },
     ],
   }

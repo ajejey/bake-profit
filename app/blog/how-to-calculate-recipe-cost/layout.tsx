@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'How to Calculate Recipe Cost: Complete Guide for Bakers (2025)',
     description: 'Learn the exact formula to calculate recipe costs. Includes free calculator and real examples.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/how-to-calculate-recipe-cost',
+    url: 'https://bakeprofit.com/blog/how-to-calculate-recipe-cost',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Learn the exact formula to calculate recipe costs with real examples.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/how-to-calculate-recipe-cost',
+    canonical: 'https://bakeprofit.com/blog/how-to-calculate-recipe-cost',
   },
 }
 
@@ -45,7 +45,7 @@ export default function RecipeCostBlogLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-28',

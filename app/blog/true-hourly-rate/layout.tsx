@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Most bakers overestimate their hourly rate by 96%. Learn how to calculate what you\'re REALLY making.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/true-hourly-rate',
+    canonical: 'https://bakeprofit.com/blog/true-hourly-rate',
   },
 }
 

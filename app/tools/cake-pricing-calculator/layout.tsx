@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Cake Pricing Calculator for Cake Decorators',
     description: 'Calculate cake prices including ingredients, labor, tiers, complexity, and delivery. Free tool for cake decorators.',
     type: 'website',
-    url: 'https://bakeprofit.vercel.app/tools/cake-pricing-calculator',
+    url: 'https://bakeprofit.com/tools/cake-pricing-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Calculate the perfect price for your cakes. Free tool for cake decorators and bakers.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/tools/cake-pricing-calculator',
+    canonical: 'https://bakeprofit.com/tools/cake-pricing-calculator',
   },
 }
 

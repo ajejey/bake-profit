@@ -29,7 +29,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bakeprofit.vercel.app'),
+  metadataBase: new URL('https://bakeprofit.com'),
   title: {
     default: "BakeProfit | Free Recipe Cost Calculator & Bakery Software for Home Bakers",
     template: "%s | BakeProfit - Bakery Management Software",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://bakeprofit.vercel.app',
+    url: 'https://bakeprofit.com',
     siteName: 'BakeProfit',
     title: 'BakeProfit | Free Recipe Cost Calculator & Bakery Software',
     description: 'Stop underpricing your baked goods! Free recipe cost calculator + complete bakery management. Calculate costs, price cakes correctly, track orders. Used by 10,000+ home bakers.',
@@ -128,17 +128,17 @@ export default function RootLayout({
           {JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            '@id': 'https://bakeprofit.vercel.app/#organization',
+            '@id': 'https://bakeprofit.com/#organization',
             name: 'BakeProfit',
             alternateName: 'Bake Profit',
-            url: 'https://bakeprofit.vercel.app',
+            url: 'https://bakeprofit.com',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://bakeprofit.vercel.app/logo.png',
+              url: 'https://bakeprofit.com/logo.png',
               width: 512,
               height: 512,
             },
-            image: 'https://bakeprofit.vercel.app/og-image.png',
+            image: 'https://bakeprofit.com/og-image.png',
             description: 'Free recipe cost calculator and bakery management software for home bakers. Calculate ingredient costs, price cakes correctly, track orders, and manage inventory.',
             foundingDate: '2024',
             slogan: 'Know Your Costs. Price With Confidence.',
@@ -168,19 +168,19 @@ export default function RootLayout({
           {JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebSite',
-            '@id': 'https://bakeprofit.vercel.app/#website',
+            '@id': 'https://bakeprofit.com/#website',
             name: 'BakeProfit',
             alternateName: 'Bake Profit',
-            url: 'https://bakeprofit.vercel.app',
+            url: 'https://bakeprofit.com',
             description: 'Free recipe cost calculator and bakery management software for home bakers',
             publisher: {
-              '@id': 'https://bakeprofit.vercel.app/#organization',
+              '@id': 'https://bakeprofit.com/#organization',
             },
             potentialAction: {
               '@type': 'SearchAction',
               target: {
                 '@type': 'EntryPoint',
-                urlTemplate: 'https://bakeprofit.vercel.app/blog?search={search_term_string}',
+                urlTemplate: 'https://bakeprofit.com/blog?search={search_term_string}',
               },
               'query-input': 'required name=search_term_string',
             },
@@ -198,42 +198,42 @@ export default function RootLayout({
                 position: 1,
                 name: 'Recipe Cost Calculator',
                 description: 'Free calculator to calculate recipe ingredient costs and profit margins',
-                url: 'https://bakeprofit.vercel.app/tools/recipe-cost-calculator',
+                url: 'https://bakeprofit.com/tools/recipe-cost-calculator',
               },
               {
                 '@type': 'SiteNavigationElement',
                 position: 2,
                 name: 'Cake Pricing Calculator',
                 description: 'Calculate the perfect price for your cakes including all costs',
-                url: 'https://bakeprofit.vercel.app/tools/cake-pricing-calculator',
+                url: 'https://bakeprofit.com/tools/cake-pricing-calculator',
               },
               {
                 '@type': 'SiteNavigationElement',
                 position: 3,
                 name: 'Free Baking Tools',
                 description: '6 free calculators for home bakers - no signup required',
-                url: 'https://bakeprofit.vercel.app/tools',
+                url: 'https://bakeprofit.com/tools',
               },
               {
                 '@type': 'SiteNavigationElement',
                 position: 4,
                 name: 'Pricing',
                 description: 'Free tier and Pro subscription pricing for BakeProfit',
-                url: 'https://bakeprofit.vercel.app/pricing',
+                url: 'https://bakeprofit.com/pricing',
               },
               {
                 '@type': 'SiteNavigationElement',
                 position: 5,
                 name: 'Blog',
                 description: 'Baking business tips, pricing guides, and home bakery advice',
-                url: 'https://bakeprofit.vercel.app/blog',
+                url: 'https://bakeprofit.com/blog',
               },
               {
                 '@type': 'SiteNavigationElement',
                 position: 6,
                 name: 'Bakery Management App',
                 description: 'Full bakery management software with order tracking and inventory',
-                url: 'https://bakeprofit.vercel.app/bakery-business-tool',
+                url: 'https://bakeprofit.com/bakery-business-tool',
               },
             ],
           })}
@@ -292,9 +292,9 @@ export default function RootLayout({
               'Profit Analytics',
               'Works Offline',
             ],
-            screenshot: 'https://bakeprofit.vercel.app/og-image.png',
+            screenshot: 'https://bakeprofit.com/og-image.png',
             author: {
-              '@id': 'https://bakeprofit.vercel.app/#organization',
+              '@id': 'https://bakeprofit.com/#organization',
             },
           })}
         </Script>

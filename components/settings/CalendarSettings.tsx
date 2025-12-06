@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast'
 import { getCalendarSettings, type CalendarSettings as CalendarSettingsType } from '@/app/bakery-business-tool/utils/settings'
 import { useSyncedSettings } from '@/app/bakery-business-tool/hooks'
 import { format, parseISO } from 'date-fns'
+import { GoogleCalendarSettings } from '@/app/bakery-business-tool/components/GoogleCalendarSettings'
 
 export default function CalendarSettings() {
     const { toast } = useToast()
@@ -137,6 +138,9 @@ export default function CalendarSettings() {
                     </Button>
                 </div>
             </div>
+
+            {/* Google Calendar Sync */}
+            <GoogleCalendarSettings />
 
             {/* Week Start */}
             <Card>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: '10 Best Recipe Cost Calculators for Home Bakers (2025)',
     description: 'Research-based review of 10 recipe cost calculators. Compare features, pricing, and find the best tool for your bakery.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/best-recipe-calculators',
+    url: 'https://bakeprofit.com/blog/best-recipe-calculators',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Comprehensive review of recipe cost calculators for home bakers. Real research, honest comparisons.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/best-recipe-calculators',
+    canonical: 'https://bakeprofit.com/blog/best-recipe-calculators',
   },
 }
 
@@ -45,7 +45,7 @@ export default function BestRecipeCalculatorsLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-22',
@@ -69,7 +69,7 @@ export default function BestRecipeCalculatorsLayout({
                 position: 1,
                 name: 'BakeProfit',
                 description: 'Free recipe cost calculator with complete bakery management features',
-                url: 'https://bakeprofit.vercel.app',
+                url: 'https://bakeprofit.com',
               },
               {
                 '@type': 'ListItem',

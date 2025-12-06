@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Complete, interactive business plan template for home bakers. Free download.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/business-plan-template',
+    canonical: 'https://bakeprofit.com/blog/business-plan-template',
   },
 }
 

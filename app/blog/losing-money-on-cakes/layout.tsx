@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Most home bakers lose money on every cake they sell. Discover the 7 hidden costs killing your profits.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/losing-money-on-cakes',
+    canonical: 'https://bakeprofit.com/blog/losing-money-on-cakes',
   },
 }
 

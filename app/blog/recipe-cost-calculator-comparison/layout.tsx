@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Recipe Cost Calculator: Excel vs Software (Which is Better?)',
     description: 'Compare Excel spreadsheets vs dedicated recipe cost calculator software for your bakery business.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/recipe-cost-calculator-comparison',
+    url: 'https://bakeprofit.com/blog/recipe-cost-calculator-comparison',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Excel vs dedicated software for recipe costing. Which is better for your bakery?',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/recipe-cost-calculator-comparison',
+    canonical: 'https://bakeprofit.com/blog/recipe-cost-calculator-comparison',
   },
 }
 
@@ -45,7 +45,7 @@ export default function RecipeCostCalculatorComparisonLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-20',

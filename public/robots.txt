@@ -19,7 +19,7 @@ Disallow: /api/
 Disallow: /bakery-business-tool/
 
 # Host
-Host: https://bakeprofit.vercel.app
+Host: https://bakeprofit.com
 
 # Sitemaps
-Sitemap: https://bakeprofit.vercel.app/sitemap.xml
+Sitemap: https://bakeprofit.com/sitemap.xml

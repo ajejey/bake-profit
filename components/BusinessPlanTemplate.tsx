@@ -142,7 +142,7 @@ export default function BusinessPlanTemplate() {
 
     content += '\n═══════════════════════════════════════════════════════\n'
     content += '  Created with BakeProfit Business Plan Template\n'
-    content += '  https://bakeprofit.vercel.app\n'
+    content += '  https://bakeprofit.com\n'
     content += '═══════════════════════════════════════════════════════\n'
 
     const blob = new Blob([content], { type: 'text/plain' })

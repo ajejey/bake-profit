@@ -145,7 +145,7 @@ export async function sendBakerOrderNotification(options: {
               ` : ''}
 
               <div style="text-align: center; margin-top: 30px;">
-                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://bakeprofit.vercel.app'}/bakery-business-tool/orders" 
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://bakeprofit.com'}/bakery-business-tool/orders" 
                    style="display: inline-block; background: #f43f5e; color: white; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: 600;">
                   View Order in Dashboard
                 </a>
@@ -168,7 +168,7 @@ export async function sendBakerOrderNotification(options: {
             to: bakerEmail,
             subject: `🧁 New Order ${orderNumber} from ${customerName}`,
             html: htmlContent,
-            text: `New Order Received!\n\nOrder: ${orderNumber}\nCustomer: ${customerName}\nDelivery: ${new Date(deliveryDate).toLocaleDateString()}\nTotal: $${totalAmount.toFixed(2)}\n\nView order in your dashboard at ${process.env.NEXT_PUBLIC_APP_URL || 'https://bakeprofit.vercel.app'}/bakery-business-tool/orders`,
+            text: `New Order Received!\n\nOrder: ${orderNumber}\nCustomer: ${customerName}\nDelivery: ${new Date(deliveryDate).toLocaleDateString()}\nTotal: $${totalAmount.toFixed(2)}\n\nView order in your dashboard at ${process.env.NEXT_PUBLIC_APP_URL || 'https://bakeprofit.com'}/bakery-business-tool/orders`,
         })
 
         return { success: true }

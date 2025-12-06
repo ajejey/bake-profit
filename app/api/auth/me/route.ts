@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserById, updateUser, findUserByEmail } from '@/lib/db/users';
+import { findUserById, updateUser, findUserByEmail, stripSensitiveFields } from '@/lib/db/users';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
 import bcrypt from 'bcryptjs';
@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
 
     if (!token) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: 'No authentication token provided' 
+        {
+          success: false,
+          error: 'No authentication token provided'
         },
         { status: 401 }
       );
@@ -24,9 +24,9 @@ export async function GET(request: NextRequest) {
     const payload = verifyToken(token);
     if (!payload) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: 'Invalid or expired token' 
+        {
+          success: false,
+          error: 'Invalid or expired token'
         },
         { status: 401 }
       );
@@ -36,22 +36,18 @@ export async function GET(request: NextRequest) {
     const user = await findUserById(payload.userId);
     if (!user) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: 'User not found' 
+        {
+          success: false,
+          error: 'User not found'
         },
         { status: 404 }
       );
     }
 
-    // Remove sensitive data (password_hash is not in User type, but just to be safe)
-    const userWithoutPassword = { ...user };
-    delete (userWithoutPassword as Record<string, unknown>).password_hash;
-
     return NextResponse.json<AuthResponse>(
       {
         success: true,
-        user: userWithoutPassword,
+        user: stripSensitiveFields(user),  // Strip OAuth tokens for security
       },
       { status: 200 }
     );
@@ -59,9 +55,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json<AuthResponse>(
-      { 
-        success: false, 
-        error: 'An error occurred while fetching user data' 
+      {
+        success: false,
+        error: 'An error occurred while fetching user data'
       },
       { status: 500 }
     );
@@ -100,7 +96,7 @@ export async function PUT(request: NextRequest) {
     });
 
     return NextResponse.json<AuthResponse>(
-      { success: true, user: updatedUser },
+      { success: true, user: stripSensitiveFields(updatedUser) },  // Strip OAuth tokens
       { status: 200 }
     );
   } catch (error) {

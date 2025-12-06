@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: 'What Customers Really Pay for Cakes: 2025 Price Survey',
     description: 'Real 2025 pricing data for wedding cakes, birthday cakes, cupcakes & more. Know what customers actually pay.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/cake-price-survey-2025',
+    url: 'https://bakeprofit.com/blog/cake-price-survey-2025',
     images: [
       {
-        url: 'https://bakeprofit.vercel.app/og-cake-price-survey.png',
+        url: 'https://bakeprofit.com/og-cake-price-survey.png',
         width: 1200,
         height: 630,
         alt: 'What Customers Really Pay for Cakes: 2025 Price Survey',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: 'Real 2025 pricing data for wedding cakes, birthday cakes, cupcakes & more. Know what customers actually pay.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/cake-price-survey-2025',
+    canonical: 'https://bakeprofit.com/blog/cake-price-survey-2025',
   },
 }
 
@@ -43,7 +43,7 @@ export default function CakePriceSurvey2025Layout({
             '@type': 'Article',
             headline: 'What Customers Really Pay for Cakes: 2025 Price Survey',
             description: 'Comprehensive 2025 cake pricing survey reveals what customers actually pay for wedding cakes, birthday cakes, cupcakes, and custom designs across the United States.',
-            image: 'https://bakeprofit.vercel.app/og-cake-price-survey.png',
+            image: 'https://bakeprofit.com/og-cake-price-survey.png',
             datePublished: '2025-02-06T00:00:00.000Z',
             dateModified: '2025-02-06T00:00:00.000Z',
             author: {
@@ -51,12 +51,12 @@ export default function CakePriceSurvey2025Layout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://bakeprofit.vercel.app/blog/cake-price-survey-2025',
+              '@id': 'https://bakeprofit.com/blog/cake-price-survey-2025',
             },
           }),
         }}

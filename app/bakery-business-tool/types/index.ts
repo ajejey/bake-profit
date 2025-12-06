@@ -83,7 +83,7 @@ export interface OrderItem {
   subtotalCost: number      // Cost × quantity
   subtotalRevenue: number   // Price × quantity
   profit: number           // Revenue - Cost
-  
+
   // Selling Unit (optional - for batch-based pricing)
   sellingUnitId?: string      // Links to SellingUnit in Recipe
   sellingUnitName?: string    // Cached name (e.g., "Quarter Pound")
@@ -114,6 +114,10 @@ export interface Order {
   deliveryAddress?: string
   paymentStatus?: 'unpaid' | 'partial' | 'paid'
   paymentMethod?: string
+
+  // Google Calendar sync
+  googleCalendarEventId?: string  // Event ID if exported to Google Calendar
+
   createdAt: string
   updatedAt: string
 }
@@ -422,34 +426,34 @@ export interface PublicMenu {
   id: string
   userId: string              // Owner
   slug: string                // URL slug (e.g., "sarahs-bakery")
-  
+
   // Branding
   branding: MenuBranding
-  
+
   // Template
   templateId: MenuTemplateId
-  
+
   // Products
   products: MenuProduct[]
   categories: string[]        // Product categories for grouping
-  
+
   // Contact
   contactInfo: MenuContactInfo
-  
+
   // Settings
   showPrices: boolean         // Toggle price visibility
   showContactInfo: boolean
   orderFormEnabled: boolean   // Enable order form
   acceptingOrders: boolean    // Currently accepting orders
   orderLeadDays?: number      // Minimum days notice for orders
-  
+
   // Status
   isPublished: boolean
   publishedAt?: string
-  
+
   // Analytics
   viewCount: number
-  
+
   // Metadata
   createdAt: string
   updatedAt: string

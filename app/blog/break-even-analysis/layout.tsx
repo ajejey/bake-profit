@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Learn how to calculate your break-even point and plan for profitable growth.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/break-even-analysis',
+    canonical: 'https://bakeprofit.com/blog/break-even-analysis',
   },
 }
 

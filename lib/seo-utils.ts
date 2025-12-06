@@ -14,7 +14,7 @@ interface BlogPost {
  * Generate comprehensive SEO metadata for blog posts
  */
 export function generateBlogPostMetadata(post: BlogPost): Metadata {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
     const blogUrl = `${siteUrl}/blog/${post.slug}`
 
     return {
@@ -77,7 +77,7 @@ export function generateBlogPostMetadata(post: BlogPost): Metadata {
  * Generate Article schema for blog posts
  */
 export function generateArticleSchema(post: BlogPost) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
 
     return {
         '@context': 'https://schema.org',
@@ -113,7 +113,7 @@ export function generateArticleSchema(post: BlogPost) {
  * Generate BreadcrumbList schema for blog posts
  */
 export function generateBreadcrumbSchema(post: BlogPost) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
 
     return {
         '@context': 'https://schema.org',
@@ -145,7 +145,7 @@ export function generateBreadcrumbSchema(post: BlogPost) {
  * Generate CollectionPage schema for blog index
  */
 export function generateBlogIndexSchema(posts: BlogPost[]) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
 
     return {
         '@context': 'https://schema.org',
@@ -177,7 +177,7 @@ export function generateBlogIndexSchema(posts: BlogPost[]) {
  * Generate Organization schema for the site
  */
 export function generateOrganizationSchema() {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
 
     return {
         '@context': 'https://schema.org',
@@ -204,7 +204,7 @@ export function generateOrganizationSchema() {
  * Generate WebSite schema with search action
  */
 export function generateWebsiteSchema() {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com'
 
     return {
         '@context': 'https://schema.org',

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'How to Price Cupcakes: Complete Pricing Guide for Bakers (2025)',
     description: 'Learn the exact formula to price cupcakes profitably with real examples and free calculator.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/how-to-price-cupcakes',
+    url: 'https://bakeprofit.com/blog/how-to-price-cupcakes',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Learn how to price cupcakes profitably with step-by-step formulas and real examples.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/how-to-price-cupcakes',
+    canonical: 'https://bakeprofit.com/blog/how-to-price-cupcakes',
   },
 }
 
@@ -45,7 +45,7 @@ export default function CupcakePricingBlogLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-15',

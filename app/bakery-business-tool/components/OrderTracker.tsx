@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Plus, Calendar as CalendarIcon, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check, Minus, Download, FileText, ChefHat, Truck, Settings, Info } from 'lucide-react'
+import { Plus, Calendar as CalendarIcon, DollarSign, Package, Phone, User, X, Edit2, Trash2, Check, Minus, Download, FileText, ChefHat, Truck, Settings, Info, CalendarPlus, CalendarCheck } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
 import { useOrders, useRecipes, useCustomers, useCurrencySymbol, useBatchSizes, useDefaultMarkup, useDateFormat } from '../hooks'
 import type { Order, OrderItem, Customer } from '../types'
@@ -20,9 +20,11 @@ import FilterChips, { type FilterOption } from './FilterChips'
 import SortDropdown, { type SortOption } from './SortDropdown'
 import { useSubscription } from '@/contexts/SubscriptionContext'
 import UsageIndicator from '@/components/subscription/UsageIndicator'
-import { getDefaultOrderStatus } from '../utils/settings'
+import { getCalendarSettings, getDefaultOrderStatus } from '../utils/settings'
 import { CustomerSelector } from './CustomerSelector'
 import { format } from 'date-fns'
+import { GoogleCalendarExportDialog } from './GoogleCalendarExportDialog'
+import { useGoogleCalendarSync } from '../hooks/useGoogleCalendarSync'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -55,12 +57,13 @@ export default function OrderTracker() {
   console.log("currencySymbol in OrderTracker", currencySymbol)
 
   // Use custom hooks for data access
-  const { orders, addOrder, updateOrderStatus, deleteOrder, getNextOrderNumber } = useOrders()
+  const { orders, addOrder, updateOrder, updateOrderStatus, deleteOrder, getNextOrderNumber } = useOrders()
   const { recipes } = useRecipes()
   const { saveCustomer, addCustomer, removeOrderFromCustomer } = useCustomers()
 
   // UI State
   const [isAddOrderOpen, setIsAddOrderOpen] = useState(false)
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null)  // Track order being edited
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'date' | 'total' | 'customer'>('date')
@@ -74,6 +77,11 @@ export default function OrderTracker() {
   const [quantity, setQuantity] = useState(1)
   const [sellingPrice, setSellingPrice] = useState(0)
   const [orderItems, setOrderItems] = useState<OrderItem[]>([])
+
+  // Google Calendar integration
+  const { isConnected: isGCalConnected, addOrderToCalendar, updateOrderInCalendar, deleteOrderFromCalendar } = useGoogleCalendarSync()
+  const [showCalendarDialog, setShowCalendarDialog] = useState(false)
+  const [pendingCalendarOrder, setPendingCalendarOrder] = useState<Order | null>(null)
 
   // Batch sizes hook
   const { getSellingUnitsWithPricing } = useBatchSizes()
@@ -161,6 +169,13 @@ export default function OrderTracker() {
       return;
     }
 
+    // Reset form for new order
+    setSelectedCustomer(null)
+    setDeliveryDate(undefined)
+    setOrderNotes('')
+    setOrderItems([])
+    setEditingOrder(null)
+
     setIsAddOrderOpen(true);
   };
 
@@ -238,8 +253,49 @@ export default function OrderTracker() {
     setOrderItems(orderItems.filter(item => item.id !== itemId))
   }
 
-  // Create new order
-  const handleCreateOrder = async () => {
+  // Edit existing order - pre-fill form with order data
+  const handleEditOrder = (order: Order) => {
+    // Pre-fill customer info
+    setSelectedCustomer({
+      id: '',  // May not have customer ID
+      name: order.customerName,
+      phone: order.customerPhone,
+      email: order.customerEmail,
+      orderHistory: [],
+      totalOrders: 0,
+      totalSpent: 0,
+      notes: '',
+      createdAt: '',
+    })
+
+    // Pre-fill delivery date
+    setDeliveryDate(new Date(order.deliveryDate))
+
+    // Pre-fill order items
+    setOrderItems(order.items)
+
+    // Pre-fill notes
+    setOrderNotes(order.notes || '')
+
+    // Set the order being edited
+    setEditingOrder(order)
+
+    // Open the dialog
+    setIsAddOrderOpen(true)
+  }
+
+  // Reset form and close dialog
+  const resetFormAndClose = () => {
+    setSelectedCustomer(null)
+    setDeliveryDate(undefined)
+    setOrderNotes('')
+    setOrderItems([])
+    setEditingOrder(null)
+    setIsAddOrderOpen(false)
+  }
+
+  // Save order (create or update)
+  const handleSaveOrder = async () => {
     if (!selectedCustomer) {
       toast({
         title: 'Customer required',
@@ -271,43 +327,90 @@ export default function OrderTracker() {
     const totalRevenue = orderItems.reduce((sum, item) => sum + item.subtotalRevenue, 0)
     const totalProfit = totalRevenue - totalCost
 
-    const orderId = uuidv4()
-    const orderNumber = getNextOrderNumber()
-    const defaultStatus = await getDefaultOrderStatus()
+    // Check if we're editing or creating
+    if (editingOrder) {
+      // UPDATE existing order
+      const updatedOrderData: Partial<Order> = {
+        customerName: selectedCustomer.name,
+        customerPhone: selectedCustomer.phone,
+        items: orderItems,
+        deliveryDate: format(deliveryDate!, 'yyyy-MM-dd'),
+        totalCost,
+        totalRevenue,
+        totalProfit,
+        notes: orderNotes,
+        updatedAt: new Date().toISOString(),
+      }
 
-    const newOrder: Order = {
-      id: orderId,
-      orderNumber,
-      customerName: selectedCustomer.name,
-      customerPhone: selectedCustomer.phone,
-      items: orderItems,
-      status: defaultStatus,
-      orderDate: new Date().toISOString(),
-      deliveryDate: format(deliveryDate!, 'yyyy-MM-dd'),
-      totalCost,
-      totalRevenue,
-      totalProfit,
-      notes: orderNotes,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updateOrder(editingOrder.id, updatedOrderData)
+
+      // Sync to Google Calendar if order has event ID
+      if (editingOrder.googleCalendarEventId && isGCalConnected) {
+        // Pass the full order with updates
+        const fullUpdatedOrder = { ...editingOrder, ...updatedOrderData }
+        await updateOrderInCalendar(fullUpdatedOrder, editingOrder.googleCalendarEventId)
+      }
+
+      resetFormAndClose()
+
+      toast({
+        title: 'Order updated',
+        description: `Order ${editingOrder.orderNumber} has been updated`,
+      })
+    } else {
+      // CREATE new order
+      const orderId = uuidv4()
+      const orderNumber = getNextOrderNumber()
+      const defaultStatus = await getDefaultOrderStatus()
+
+      const newOrder: Order = {
+        id: orderId,
+        orderNumber,
+        customerName: selectedCustomer.name,
+        customerPhone: selectedCustomer.phone,
+        items: orderItems,
+        status: defaultStatus,
+        orderDate: new Date().toISOString(),
+        deliveryDate: format(deliveryDate!, 'yyyy-MM-dd'),
+        totalCost,
+        totalRevenue,
+        totalProfit,
+        notes: orderNotes,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      addOrder(newOrder)
+
+      // Update customer with new order
+      saveCustomer(selectedCustomer.name, selectedCustomer.phone, orderId, totalRevenue)
+
+      resetFormAndClose()
+
+      toast({
+        title: 'Order created',
+        description: `Order ${orderNumber} has been created successfully`,
+      })
+
+      // Handle Google Calendar export based on user preference
+      if (isGCalConnected) {
+        const settings = await getCalendarSettings()
+        const autoExport = settings.googleCalendarAutoExport || 'ask'
+
+        if (autoExport === 'always') {
+          // Auto-export without asking
+          const eventId = await addOrderToCalendar(newOrder)
+          if (eventId) {
+            updateOrder(orderId, { googleCalendarEventId: eventId })
+          }
+        } else if (autoExport === 'ask') {
+          // Show dialog to ask user
+          setPendingCalendarOrder(newOrder)
+          setShowCalendarDialog(true)
+        }
+        // If 'never', do nothing
+      }
     }
-
-    addOrder(newOrder)
-
-    // Update customer with new order
-    saveCustomer(selectedCustomer.name, selectedCustomer.phone, orderId, totalRevenue)
-
-    // Reset form
-    setSelectedCustomer(null)
-    setDeliveryDate(undefined)
-    setOrderNotes('')
-    setOrderItems([])
-    setIsAddOrderOpen(false)
-
-    toast({
-      title: 'Order created',
-      description: `Order ${orderNumber} has been created successfully`,
-    })
   }
 
   // Update order status
@@ -321,9 +424,14 @@ export default function OrderTracker() {
   }
 
   // Delete order
-  const handleDeleteOrder = (orderId: string) => {
+  const handleDeleteOrder = async (orderId: string) => {
     // Find the order to get customer info before deleting
     const orderToDelete = orders.find(o => o.id === orderId)
+
+    // Delete from Google Calendar if synced
+    if (orderToDelete?.googleCalendarEventId && isGCalConnected) {
+      await deleteOrderFromCalendar(orderToDelete.googleCalendarEventId)
+    }
 
     // Delete the order
     deleteOrder(orderId)
@@ -445,9 +553,9 @@ export default function OrderTracker() {
             <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <DialogTitle>Create New Order</DialogTitle>
+                  <DialogTitle>{editingOrder ? 'Edit Order' : 'Create New Order'}</DialogTitle>
                   <DialogDescription>
-                    Add a new customer order with delivery details
+                    {editingOrder ? 'Update existing order details' : 'Add a new customer order with delivery details'}
                   </DialogDescription>
                 </div>
                 <Link href="/bakery-business-tool/settings">
@@ -774,8 +882,8 @@ export default function OrderTracker() {
                 />
               </div>
 
-              <Button onClick={handleCreateOrder} className="w-full" size="lg">
-                Create Order
+              <Button onClick={handleSaveOrder} className="w-full" size="lg">
+                {editingOrder ? 'Update Order' : 'Create Order'}
               </Button>
             </div>
           </DialogContent>
@@ -864,8 +972,31 @@ export default function OrderTracker() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Export as PDF</DropdownMenuLabel>
+                        {/* Google Calendar Export */}
+                        {isGCalConnected && (
+                          <>
+                            <DropdownMenuLabel>Calendar</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => {
+                              setPendingCalendarOrder(order)
+                              setShowCalendarDialog(true)
+                            }}>
+                              {order.googleCalendarEventId ? (
+                                <>
+                                  <CalendarCheck className="h-4 w-4 mr-2 text-green-600" />
+                                  <span className="text-green-700">Synced</span>
+                                  <span className="text-gray-400 text-xs ml-1">(Update)</span>
+                                </>
+                              ) : (
+                                <>
+                                  <CalendarPlus className="h-4 w-4 mr-2" />
+                                  Add to Google Calendar
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                          </>
+                        )}
                         <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Export as PDF</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => handleExportPDF(order, 'confirmation')}>
                           <FileText className="h-4 w-4 mr-2" />
                           Order Confirmation
@@ -882,12 +1013,23 @@ export default function OrderTracker() {
                           <Package className="h-4 w-4 mr-2" />
                           Packing Slip
                         </DropdownMenuItem>
+
+
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <Button
                       variant="ghost"
                       size="icon"
+                      onClick={() => handleEditOrder(order)}
+                      title="Edit order"
+                    >
+                      <Edit2 className="h-4 w-4 text-blue-500" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => handleDeleteOrder(order.id)}
+                      title="Delete order"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
@@ -952,6 +1094,24 @@ export default function OrderTracker() {
           ))
         )}
       </div>
+
+      {/* Google Calendar Export Dialog */}
+      <GoogleCalendarExportDialog
+        order={pendingCalendarOrder}
+        open={showCalendarDialog}
+        onOpenChange={(open) => {
+          setShowCalendarDialog(open)
+          if (!open) setPendingCalendarOrder(null)
+        }}
+        onExported={(eventId) => {
+          // Save the event ID to the order
+          if (pendingCalendarOrder) {
+            updateOrder(pendingCalendarOrder.id, {
+              googleCalendarEventId: eventId,
+            })
+          }
+        }}
+      />
     </div>
   )
 }

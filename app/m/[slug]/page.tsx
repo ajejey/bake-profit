@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       type: 'website',
-      url: `https://bakeprofit.vercel.app/m/${menu.slug}`,
+      url: `https://bakeprofit.com/m/${menu.slug}`,
       siteName: 'BakeProfit',
       images: menu.branding?.logo ? [
         {

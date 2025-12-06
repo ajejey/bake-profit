@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Everything you need to launch a profitable home bakery on a budget.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/start-home-bakery-budget',
+    canonical: 'https://bakeprofit.com/blog/start-home-bakery-budget',
   },
 }
 

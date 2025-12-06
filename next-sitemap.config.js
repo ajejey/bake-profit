@@ -4,7 +4,7 @@
 const blogPosts = require('./app/blog/blogPostList.ts').default;
 
 module.exports = {
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.vercel.app',
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://bakeprofit.com',
     generateRobotsTxt: true,
     generateIndexSitemap: false,
     exclude: [
@@ -101,7 +101,7 @@ module.exports = {
         ],
         additionalSitemaps: [
             // Add this if you later create dynamic sitemaps
-            // 'https://bakeprofit.vercel.app/server-sitemap.xml',
+            // 'https://bakeprofit.com/server-sitemap.xml',
         ],
     },
 };

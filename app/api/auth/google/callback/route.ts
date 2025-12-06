@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OAuth2Client } from 'google-auth-library';
-import { findUserByEmail, findUserByGoogleId, createUser, updateUser } from '@/lib/db/users';
+import { findUserByEmail, findUserByGoogleId, createUser, updateUser, stripSensitiveFields } from '@/lib/db/users';
 import { generateTokenPair } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
 
@@ -94,16 +94,11 @@ export async function POST(request: NextRequest) {
             tier: user.subscription_tier,
         });
 
-        // Remove sensitive data
-        const userWithoutPassword = { ...user };
-        delete (userWithoutPassword as Record<string, unknown>).password_hash;
-        delete (userWithoutPassword as Record<string, unknown>).google_refresh_token;
-
         // Set refresh token as httpOnly cookie
         const response = NextResponse.json<GoogleAuthResponse>(
             {
                 success: true,
-                user: userWithoutPassword,
+                user: stripSensitiveFields(user),  // Strip OAuth tokens for security
                 token: accessToken,
                 message: 'Google login successful',
                 isNewUser,

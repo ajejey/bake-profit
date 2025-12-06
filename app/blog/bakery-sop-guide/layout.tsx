@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: 'Creating Standard Operating Procedures for Your Bakery | Free Templates',
     description: 'Step-by-step guide to creating bakery SOPs with free downloadable templates for consistency and quality.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/bakery-sop-guide',
+    url: 'https://bakeprofit.com/blog/bakery-sop-guide',
     images: [
       {
-        url: 'https://bakeprofit.vercel.app/og-bakery-sop.png',
+        url: 'https://bakeprofit.com/og-bakery-sop.png',
         width: 1200,
         height: 630,
         alt: 'Creating Standard Operating Procedures for Your Bakery',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: 'Step-by-step guide to creating bakery SOPs with free downloadable templates for consistency and quality.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/bakery-sop-guide',
+    canonical: 'https://bakeprofit.com/blog/bakery-sop-guide',
   },
 }
 
@@ -43,7 +43,7 @@ export default function BakerySOPGuideLayout({
             '@type': 'Article',
             headline: 'Creating Standard Operating Procedures for Your Bakery: Complete Guide with Free Templates',
             description: 'Comprehensive guide to creating bakery standard operating procedures (SOPs) including why they matter, step-by-step creation process, training strategies, and free downloadable templates for consistency and quality control.',
-            image: 'https://bakeprofit.vercel.app/og-bakery-sop.png',
+            image: 'https://bakeprofit.com/og-bakery-sop.png',
             datePublished: '2025-02-06T00:00:00.000Z',
             dateModified: '2025-02-06T00:00:00.000Z',
             author: {
@@ -51,12 +51,12 @@ export default function BakerySOPGuideLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://bakeprofit.vercel.app/blog/bakery-sop-guide',
+              '@id': 'https://bakeprofit.com/blog/bakery-sop-guide',
             },
           }),
         }}

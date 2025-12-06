@@ -347,7 +347,7 @@ export default function BentoGridTemplate({ menu, isPreview = false }: TemplateP
             <p className="text-xs text-gray-400">
               Made with{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-rose-500 transition-colors font-medium"

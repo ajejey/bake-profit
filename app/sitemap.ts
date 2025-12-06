@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import blogPostList from './blog/blogPostList'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://bakeprofit.vercel.app'
+  const baseUrl = 'https://bakeprofit.com'
   
   const blogSlugs = blogPostList.map((post) => post.slug)
 

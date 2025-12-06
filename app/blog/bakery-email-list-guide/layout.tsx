@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Build an email list for your bakery with free tools, lead magnets, and proven strategies.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/bakery-email-list-guide',
+    canonical: 'https://bakeprofit.com/blog/bakery-email-list-guide',
   },
 }
 
@@ -37,7 +37,7 @@ export default function BakeryEmailListLayout({
             '@type': 'Article',
             headline: 'How to Create a Bakery Email List (And What to Send) - Complete Guide',
             description: 'Learn how to build an email list for your bakery business from scratch. Includes free tools, lead magnet ideas, email templates, and proven strategies to get repeat customers.',
-            image: 'https://bakeprofit.vercel.app/og-bakery-email-list.png',
+            image: 'https://bakeprofit.com/og-bakery-email-list.png',
             datePublished: '2025-02-06T00:00:00.000Z',
             dateModified: '2025-02-06T00:00:00.000Z',
             author: {
@@ -49,12 +49,12 @@ export default function BakeryEmailListLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://bakeprofit.vercel.app/blog/bakery-email-list-guide',
+              '@id': 'https://bakeprofit.com/blog/bakery-email-list-guide',
             },
           }),
         }}

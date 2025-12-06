@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Create a professional bakery brand for under $100. DIY logo, packaging, social media & more.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/bakery-branding-on-budget',
+    canonical: 'https://bakeprofit.com/blog/bakery-branding-on-budget',
   },
 }
 
@@ -37,7 +37,7 @@ export default function BakeryBrandingBudgetLayout({
             '@type': 'Article',
             headline: 'Bakery Branding on a Budget: Complete DIY Guide (2025)',
             description: 'Create a professional bakery brand without breaking the bank. Learn DIY logo design, social media branding, packaging ideas, and free tools to build your bakery identity for under $100.',
-            image: 'https://bakeprofit.vercel.app/og-bakery-branding-budget.png',
+            image: 'https://bakeprofit.com/og-bakery-branding-budget.png',
             datePublished: '2025-02-05T00:00:00.000Z',
             dateModified: '2025-02-05T00:00:00.000Z',
             author: {
@@ -49,12 +49,12 @@ export default function BakeryBrandingBudgetLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://bakeprofit.vercel.app/blog/bakery-branding-on-budget',
+              '@id': 'https://bakeprofit.com/blog/bakery-branding-on-budget',
             },
           }),
         }}

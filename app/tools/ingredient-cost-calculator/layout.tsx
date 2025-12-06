@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Ingredient Cost Calculator',
     description: 'Calculate cost per unit for any ingredient with automatic conversions. Free tool for bakers.',
     type: 'website',
-    url: 'https://bakeprofit.vercel.app/tools/ingredient-cost-calculator',
+    url: 'https://bakeprofit.com/tools/ingredient-cost-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Calculate ingredient costs with automatic unit conversions.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/tools/ingredient-cost-calculator',
+    canonical: 'https://bakeprofit.com/tools/ingredient-cost-calculator',
   },
 }
 

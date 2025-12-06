@@ -8,15 +8,22 @@ export interface IUser {
   business_name?: string;
   phone?: string;
   avatar_url?: string;
-  
+
   email_verified: boolean;
   verification_token?: string;
   reset_token?: string;
   reset_token_expires?: Date;
-  
+
   google_id?: string;
   google_refresh_token?: string;
-  
+
+  // Google Calendar (can be different Google account than login)
+  google_calendar_email?: string;           // Which Google account is connected for Calendar
+  google_calendar_access_token?: string;    // Access token (short-lived)
+  google_calendar_refresh_token?: string;   // Refresh token (long-lived)
+  google_calendar_token_expiry?: Date;      // When access token expires
+  google_calendar_connected_at?: Date;      // When Calendar was connected
+
   subscription_tier: 'free' | 'pro';
   subscription_status: 'active' | 'canceled' | 'past_due';
   stripe_customer_id?: string;
@@ -24,13 +31,13 @@ export interface IUser {
   paypal_subscription_id?: string;
   paypal_payer_id?: string;
   subscription_ends_at?: Date;
-  
+
   // Questionnaire data
   questionnaire_looking_for?: string;
   questionnaire_help_with?: string;
   questionnaire_interested_features?: string[];
   questionnaire_answered_at?: Date;
-  
+
   created_at: Date;
   updated_at: Date;
   last_login_at?: Date;
@@ -66,7 +73,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: false,
     },
-    
+
     // Email verification
     email_verified: {
       type: Boolean,
@@ -86,7 +93,7 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       required: false,
     },
-    
+
     // OAuth
     google_id: {
       type: String,
@@ -99,7 +106,29 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: false,
     },
-    
+
+    // Google Calendar (can be different Google account than login)
+    google_calendar_email: {
+      type: String,
+      required: false,
+    },
+    google_calendar_access_token: {
+      type: String,
+      required: false,
+    },
+    google_calendar_refresh_token: {
+      type: String,
+      required: false,
+    },
+    google_calendar_token_expiry: {
+      type: Date,
+      required: false,
+    },
+    google_calendar_connected_at: {
+      type: Date,
+      required: false,
+    },
+
     // Subscription
     subscription_tier: {
       type: String,
@@ -133,7 +162,7 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       required: false,
     },
-    
+
     // Questionnaire data
     questionnaire_looking_for: {
       type: String,
@@ -152,7 +181,7 @@ const UserSchema = new Schema<IUser>(
       type: Date,
       required: false,
     },
-    
+
     // Timestamps
     last_login_at: {
       type: Date,

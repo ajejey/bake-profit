@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createUser, findUserByEmail } from '@/lib/db/users';
+import { createUser, findUserByEmail, stripSensitiveFields } from '@/lib/db/users';
 import { hashPassword, validatePassword } from '@/lib/auth/password';
 import { generateTokenPair } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
@@ -15,14 +15,14 @@ const signupSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate input
     const validation = signupSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: validation.error.issues[0].message 
+        {
+          success: false,
+          error: validation.error.issues[0].message
         },
         { status: 400 }
       );
@@ -34,9 +34,9 @@ export async function POST(request: NextRequest) {
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: passwordValidation.message 
+        {
+          success: false,
+          error: passwordValidation.message
         },
         { status: 400 }
       );
@@ -46,9 +46,9 @@ export async function POST(request: NextRequest) {
     const existingUser = await findUserByEmail(email.toLowerCase());
     if (existingUser) {
       return NextResponse.json<AuthResponse>(
-        { 
-          success: false, 
-          error: 'An account with this email already exists' 
+        {
+          success: false,
+          error: 'An account with this email already exists'
         },
         { status: 409 }
       );
@@ -73,15 +73,11 @@ export async function POST(request: NextRequest) {
       tier: user.subscription_tier,
     });
 
-    // Remove sensitive data (password_hash is not in User type, but just to be safe)
-    const userWithoutPassword = { ...user };
-    delete (userWithoutPassword as Record<string, unknown>).password_hash;
-
     // Create response
     const response = NextResponse.json<AuthResponse>(
       {
         success: true,
-        user: userWithoutPassword,
+        user: stripSensitiveFields(user),  // Strip sensitive fields (password_hash, etc.)
         token: accessToken,
         message: 'Account created successfully',
       },
@@ -102,9 +98,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json<AuthResponse>(
-      { 
-        success: false, 
-        error: 'An error occurred during signup. Please try again.' 
+      {
+        success: false,
+        error: 'An error occurred during signup. Please try again.'
       },
       { status: 500 }
     );

@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: 'Home Bakery Success Rates: What Makes Businesses Thrive',
     description: 'Real data on bakery success rates and the proven factors that separate thriving bakeries from those that fail.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/home-bakery-success-rates',
+    url: 'https://bakeprofit.com/blog/home-bakery-success-rates',
     images: [
       {
-        url: 'https://bakeprofit.vercel.app/og-bakery-success-rates.png',
+        url: 'https://bakeprofit.com/og-bakery-success-rates.png',
         width: 1200,
         height: 630,
         alt: 'Home Bakery Success Rates: What Makes Businesses Thrive',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: 'Real data on bakery success rates and the proven factors that separate thriving bakeries from those that fail.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/home-bakery-success-rates',
+    canonical: 'https://bakeprofit.com/blog/home-bakery-success-rates',
   },
 }
 
@@ -43,7 +43,7 @@ export default function HomeBakerySuccessRatesLayout({
             '@type': 'Article',
             headline: 'Home Bakery Success Rates: What Makes Businesses Thrive',
             description: 'Comprehensive analysis of home bakery success and failure rates, including statistics, success factors, common pitfalls, and best practices for building a thriving bakery business.',
-            image: 'https://bakeprofit.vercel.app/og-bakery-success-rates.png',
+            image: 'https://bakeprofit.com/og-bakery-success-rates.png',
             datePublished: '2025-02-06T00:00:00.000Z',
             dateModified: '2025-02-06T00:00:00.000Z',
             author: {
@@ -51,12 +51,12 @@ export default function HomeBakerySuccessRatesLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': 'https://bakeprofit.vercel.app/blog/home-bakery-success-rates',
+              '@id': 'https://bakeprofit.com/blog/home-bakery-success-rates',
             },
           }),
         }}

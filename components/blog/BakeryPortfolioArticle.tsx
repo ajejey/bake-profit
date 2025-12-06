@@ -1,4 +1,4 @@
-ï»¿'use client'
+'use client'
 
 import Link from 'next/link'
 import { Camera, Instagram, CheckCircle, AlertTriangle, Star, Eye, Image as ImageIcon, Smartphone, TrendingUp, Users, MapPin, XCircle, DollarSign, Calculator } from 'lucide-react'
@@ -16,7 +16,7 @@ export default function BakeryPortfolioArticle() {
       {/* Article */}
       <article className="max-w-4xl mx-auto px-4 py-12">
         <nav className="text-sm text-gray-600 mb-6">
-          <Link href="/">Home</Link> â†’ <Link href="/blog">Blog</Link> â†’ Creating a Bakery Portfolio That Attracts Orders
+          <Link href="/">Home</Link> ? <Link href="/blog">Blog</Link> ? Creating a Bakery Portfolio That Attracts Orders
         </nav>
 
         <h1 className="text-4xl sm:text-5xl font-bold mb-6">
@@ -24,21 +24,21 @@ export default function BakeryPortfolioArticle() {
         </h1>
 
         <div className="flex gap-4 text-gray-600 mb-8 pb-8 border-b">
-          <span>Feb 7, 2025</span> â€¢ <span>16 min read</span> â€¢ <span className="text-rose-600 font-semibold">Marketing</span>
+          <span>Feb 7, 2025</span> • <span>16 min read</span> • <span className="text-rose-600 font-semibold">Marketing</span>
         </div>
 
         <div className="prose prose-lg max-w-none space-y-8">
           {/* Introduction */}
           <p className="text-xl text-gray-700">
-            You&apos;re scrolling through Instagram and see three bakeries selling cupcakes. One charges $2, another $5, and a third $8 per cupcake. They all look beautiful. So what&apos;s the difference? And more importantlyâ€”which price point is right for YOUR bakery?
+            You&apos;re scrolling through Instagram and see three bakeries selling cupcakes. One charges $2, another $5, and a third $8 per cupcake. They all look beautiful. So what&apos;s the difference? And more importantly—which price point is right for YOUR bakery?
           </p>
 
           <p className="text-xl text-gray-700">
-            Here&apos;s the truth: <strong>There&apos;s no single &quot;correct&quot; cupcake price.</strong> The right price depends on your costs, your market, your positioning, and your business goals. A $2 cupcake can be just as profitable as an $8 oneâ€”if you understand the strategy behind it.
+            Here&apos;s the truth: <strong>There&apos;s no single &quot;correct&quot; cupcake price.</strong> The right price depends on your costs, your market, your positioning, and your business goals. A $2 cupcake can be just as profitable as an $8 one—if you understand the strategy behind it.
           </p>
 
           <p className="text-lg text-gray-700">
-            In this guide, I&apos;ll break down the three main cupcake pricing tiers, show you the real costs and profit margins at each level, and help you figure out which strategy fits your bakery. By the end, you&apos;ll know exactly where you belong in the marketâ€”and how to price profitably.
+            In this guide, I&apos;ll break down the three main cupcake pricing tiers, show you the real costs and profit margins at each level, and help you figure out which strategy fits your bakery. By the end, you&apos;ll know exactly where you belong in the market—and how to price profitably.
           </p>
 
           {/* CTA Card */}
@@ -50,7 +50,7 @@ export default function BakeryPortfolioArticle() {
                   <h3 className="text-xl font-bold mb-2">Calculate Your Cupcake Costs</h3>
                   <p className="mb-4">Use our free calculator to find out your true cost per cupcake and what you should charge for each pricing tier. Takes 2 minutes.</p>
                   <Link href="/tools/recipe-cost-calculator">
-                    <Button className="bg-rose-500 hover:bg-rose-600">Calculate Your Price â†’</Button>
+                    <Button className="bg-rose-500 hover:bg-rose-600">Calculate Your Price ?</Button>
                   </Link>
                 </div>
               </div>
@@ -90,11 +90,11 @@ export default function BakeryPortfolioArticle() {
                 <p className="text-3xl font-bold text-blue-600 mb-2">$2-3</p>
                 <p className="text-gray-700 text-sm mb-3">per cupcake</p>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>â€¢ High volume sales</li>
-                  <li>â€¢ Simple designs</li>
-                  <li>â€¢ Standard ingredients</li>
-                  <li>â€¢ Price-conscious customers</li>
-                  <li>â€¢ Grocery store competition</li>
+                  <li>• High volume sales</li>
+                  <li>• Simple designs</li>
+                  <li>• Standard ingredients</li>
+                  <li>• Price-conscious customers</li>
+                  <li>• Grocery store competition</li>
                 </ul>
               </div>
 
@@ -106,11 +106,11 @@ export default function BakeryPortfolioArticle() {
                 <p className="text-3xl font-bold text-green-600 mb-2">$4-6</p>
                 <p className="text-gray-700 text-sm mb-3">per cupcake</p>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>â€¢ Balanced volume & margin</li>
-                  <li>â€¢ Custom designs available</li>
-                  <li>â€¢ Quality ingredients</li>
-                  <li>â€¢ Value-seeking customers</li>
-                  <li>â€¢ Sweet spot for home bakers</li>
+                  <li>• Balanced volume & margin</li>
+                  <li>• Custom designs available</li>
+                  <li>• Quality ingredients</li>
+                  <li>• Value-seeking customers</li>
+                  <li>• Sweet spot for home bakers</li>
                 </ul>
               </div>
 
@@ -122,19 +122,19 @@ export default function BakeryPortfolioArticle() {
                 <p className="text-3xl font-bold text-purple-600 mb-2">$7-10</p>
                 <p className="text-gray-700 text-sm mb-3">per cupcake</p>
                 <ul className="text-sm text-gray-700 space-y-1">
-                  <li>â€¢ Low volume, high margin</li>
-                  <li>â€¢ Intricate custom designs</li>
-                  <li>â€¢ Premium/organic ingredients</li>
-                  <li>â€¢ Luxury-seeking customers</li>
-                  <li>â€¢ Artisan positioning</li>
+                  <li>• Low volume, high margin</li>
+                  <li>• Intricate custom designs</li>
+                  <li>• Premium/organic ingredients</li>
+                  <li>• Luxury-seeking customers</li>
+                  <li>• Artisan positioning</li>
                 </ul>
               </div>
             </div>
 
             <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded">
-              <p className="text-gray-800 font-semibold mb-2">ðŸ’¡ Key Insight:</p>
+              <p className="text-gray-800 font-semibold mb-2">?? Key Insight:</p>
               <p className="text-gray-700">
-                Your pricing tier isn&apos;t just about the numberâ€”it&apos;s about your entire business model. A budget baker needs to make 100 cupcakes to earn what a premium baker makes from 25. Both can be profitable, but they require completely different strategies.
+                Your pricing tier isn&apos;t just about the number—it&apos;s about your entire business model. A budget baker needs to make 100 cupcakes to earn what a premium baker makes from 25. Both can be profitable, but they require completely different strategies.
               </p>
             </div>
           </section>
@@ -144,16 +144,16 @@ export default function BakeryPortfolioArticle() {
             <h2 className="text-3xl font-bold mb-4">Budget Tier ($2-3): High Volume, Low Margin Strategy</h2>
             
             <p className="text-lg text-gray-700 mb-4">
-              The budget tier is all about volume. You&apos;re competing with grocery stores and big-box bakeries, so your advantage is freshness, customization, and local charmâ€”not premium ingredients or intricate designs.
+              The budget tier is all about volume. You&apos;re competing with grocery stores and big-box bakeries, so your advantage is freshness, customization, and local charm—not premium ingredients or intricate designs.
             </p>
 
             <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
             <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>â€¢ Bakers in price-sensitive markets (small towns, lower-income areas)</li>
-              <li>â€¢ Those who can produce cupcakes very efficiently (under 15 minutes per dozen)</li>
-              <li>â€¢ Bakers with access to wholesale ingredient pricing</li>
-              <li>â€¢ Those selling at farmers markets, school events, or bulk orders</li>
-              <li>â€¢ Bakers who enjoy high-volume production</li>
+              <li>• Bakers in price-sensitive markets (small towns, lower-income areas)</li>
+              <li>• Those who can produce cupcakes very efficiently (under 15 minutes per dozen)</li>
+              <li>• Bakers with access to wholesale ingredient pricing</li>
+              <li>• Those selling at farmers markets, school events, or bulk orders</li>
+              <li>• Bakers who enjoy high-volume production</li>
             </ul>
 
             <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
@@ -196,9 +196,9 @@ export default function BakeryPortfolioArticle() {
                 Let&apos;s say you sell cupcakes at $2.50 each with a $1.35 profit per cupcake:
               </p>
               <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>â€¢ To make $500/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
-                <li>â€¢ To make $1,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
-                <li>â€¢ To make $2,000/month: Need to sell <strong>1,482 cupcakes</strong> (124 dozen)</li>
+                <li>• To make $500/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
+                <li>• To make $1,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
+                <li>• To make $2,000/month: Need to sell <strong>1,482 cupcakes</strong> (124 dozen)</li>
               </ul>
               <p className="text-gray-700 font-semibold">
                 At 1 minute per cupcake, making $2,000/month requires <strong>24.7 hours of labor</strong>. That&apos;s doable, but you need consistent high-volume orders.
@@ -213,10 +213,10 @@ export default function BakeryPortfolioArticle() {
                   Pros
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ Large customer base (everyone loves a deal)</li>
-                  <li>â€¢ Easier to get bulk orders</li>
-                  <li>â€¢ Less pressure for perfection</li>
-                  <li>â€¢ Can scale with systems</li>
+                  <li>• Large customer base (everyone loves a deal)</li>
+                  <li>• Easier to get bulk orders</li>
+                  <li>• Less pressure for perfection</li>
+                  <li>• Can scale with systems</li>
                 </ul>
               </div>
               <div className="bg-red-50 p-4 rounded">
@@ -225,10 +225,10 @@ export default function BakeryPortfolioArticle() {
                   Cons
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ Need very high volume to profit</li>
-                  <li>â€¢ Thin margins = no room for error</li>
-                  <li>â€¢ Competing with grocery stores</li>
-                  <li>â€¢ Can&apos;t afford premium ingredients</li>
+                  <li>• Need very high volume to profit</li>
+                  <li>• Thin margins = no room for error</li>
+                  <li>• Competing with grocery stores</li>
+                  <li>• Can&apos;t afford premium ingredients</li>
                 </ul>
               </div>
             </div>
@@ -244,11 +244,11 @@ export default function BakeryPortfolioArticle() {
 
             <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
             <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>â€¢ Home bakers in suburban or mid-sized city markets</li>
-              <li>â€¢ Those who want to balance quality and profitability</li>
-              <li>â€¢ Bakers offering custom designs and flavors</li>
-              <li>â€¢ Those targeting birthdays, celebrations, and events</li>
-              <li>â€¢ Bakers who value work-life balance (moderate volume)</li>
+              <li>• Home bakers in suburban or mid-sized city markets</li>
+              <li>• Those who want to balance quality and profitability</li>
+              <li>• Bakers offering custom designs and flavors</li>
+              <li>• Those targeting birthdays, celebrations, and events</li>
+              <li>• Bakers who value work-life balance (moderate volume)</li>
             </ul>
 
             <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
@@ -291,9 +291,9 @@ export default function BakeryPortfolioArticle() {
                 At $5 per cupcake with $2.70 profit per cupcake:
               </p>
               <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>â€¢ To make $500/month: Need to sell <strong>185 cupcakes</strong> (15 dozen)</li>
-                <li>â€¢ To make $1,000/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
-                <li>â€¢ To make $2,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
+                <li>• To make $500/month: Need to sell <strong>185 cupcakes</strong> (15 dozen)</li>
+                <li>• To make $1,000/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
+                <li>• To make $2,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
               </ul>
               <p className="text-gray-700 font-semibold">
                 At 2 minutes per cupcake, making $2,000/month requires <strong>24.7 hours of labor</strong>. Same hours as budget tier, but you make TWICE the profit per cupcake.
@@ -303,11 +303,11 @@ export default function BakeryPortfolioArticle() {
             <h3 className="text-xl font-bold text-gray-900 mb-3">Why This is the Sweet Spot</h3>
             <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6 mb-6">
               <ul className="text-gray-700 space-y-3">
-                <li>â€¢ <strong>Better margins:</strong> You make $2.70 per cupcake vs $1.35 at budget tierâ€”double the profit for similar effort</li>
-                <li>â€¢ <strong>Manageable volume:</strong> You don&apos;t need to sell 1,500 cupcakes/month to make decent money</li>
-                <li>â€¢ <strong>Room for quality:</strong> You can afford real butter, quality vanilla, and better ingredients</li>
-                <li>â€¢ <strong>Custom work pays off:</strong> Customers expect and pay for personalization</li>
-                <li>â€¢ <strong>Less competition:</strong> You&apos;re not competing with Walmart anymore</li>
+                <li>• <strong>Better margins:</strong> You make $2.70 per cupcake vs $1.35 at budget tier—double the profit for similar effort</li>
+                <li>• <strong>Manageable volume:</strong> You don&apos;t need to sell 1,500 cupcakes/month to make decent money</li>
+                <li>• <strong>Room for quality:</strong> You can afford real butter, quality vanilla, and better ingredients</li>
+                <li>• <strong>Custom work pays off:</strong> Customers expect and pay for personalization</li>
+                <li>• <strong>Less competition:</strong> You&apos;re not competing with Walmart anymore</li>
               </ul>
             </div>
 
@@ -319,11 +319,11 @@ export default function BakeryPortfolioArticle() {
                   Pros
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ Best profit-to-effort ratio</li>
-                  <li>â€¢ Sustainable workload</li>
-                  <li>â€¢ Can use quality ingredients</li>
-                  <li>â€¢ Customers value your work</li>
-                  <li>â€¢ Room for creativity</li>
+                  <li>• Best profit-to-effort ratio</li>
+                  <li>• Sustainable workload</li>
+                  <li>• Can use quality ingredients</li>
+                  <li>• Customers value your work</li>
+                  <li>• Room for creativity</li>
                 </ul>
               </div>
               <div className="bg-red-50 p-4 rounded">
@@ -332,10 +332,10 @@ export default function BakeryPortfolioArticle() {
                   Cons
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ More competition at this tier</li>
-                  <li>â€¢ Need to justify higher prices</li>
-                  <li>â€¢ Customers expect consistency</li>
-                  <li>â€¢ Still need decent volume</li>
+                  <li>• More competition at this tier</li>
+                  <li>• Need to justify higher prices</li>
+                  <li>• Customers expect consistency</li>
+                  <li>• Still need decent volume</li>
                 </ul>
               </div>
             </div>
@@ -346,16 +346,16 @@ export default function BakeryPortfolioArticle() {
             <h2 className="text-3xl font-bold mb-4">Premium Tier ($7-10): Luxury Positioning Strategy</h2>
             
             <p className="text-lg text-gray-700 mb-4">
-              Premium pricing is about exclusivity, artistry, and premium ingredients. You&apos;re not selling cupcakesâ€”you&apos;re selling edible art. Your customers aren&apos;t price-shopping; they&apos;re looking for the best.
+              Premium pricing is about exclusivity, artistry, and premium ingredients. You&apos;re not selling cupcakes—you&apos;re selling edible art. Your customers aren&apos;t price-shopping; they&apos;re looking for the best.
             </p>
 
             <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
             <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>â€¢ Bakers in affluent areas (major cities, wealthy suburbs)</li>
-              <li>â€¢ Those with advanced decorating skills (sugar flowers, hand-painting, intricate designs)</li>
-              <li>â€¢ Bakers using premium/organic/specialty ingredients</li>
-              <li>â€¢ Those targeting weddings, corporate events, luxury celebrations</li>
-              <li>â€¢ Bakers who want low volume, high profit</li>
+              <li>• Bakers in affluent areas (major cities, wealthy suburbs)</li>
+              <li>• Those with advanced decorating skills (sugar flowers, hand-painting, intricate designs)</li>
+              <li>• Bakers using premium/organic/specialty ingredients</li>
+              <li>• Those targeting weddings, corporate events, luxury celebrations</li>
+              <li>• Bakers who want low volume, high profit</li>
             </ul>
 
             <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
@@ -398,9 +398,9 @@ export default function BakeryPortfolioArticle() {
                 At $8.50 per cupcake with $3 profit per cupcake:
               </p>
               <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>â€¢ To make $500/month: Need to sell <strong>167 cupcakes</strong> (14 dozen)</li>
-                <li>â€¢ To make $1,000/month: Need to sell <strong>334 cupcakes</strong> (28 dozen)</li>
-                <li>â€¢ To make $2,000/month: Need to sell <strong>667 cupcakes</strong> (56 dozen)</li>
+                <li>• To make $500/month: Need to sell <strong>167 cupcakes</strong> (14 dozen)</li>
+                <li>• To make $1,000/month: Need to sell <strong>334 cupcakes</strong> (28 dozen)</li>
+                <li>• To make $2,000/month: Need to sell <strong>667 cupcakes</strong> (56 dozen)</li>
               </ul>
               <p className="text-gray-700 font-semibold">
                 At 5 minutes per cupcake, making $2,000/month requires <strong>55.6 hours of labor</strong>. More time per cupcake, but you need HALF the volume of budget tier to make the same profit.
@@ -410,11 +410,11 @@ export default function BakeryPortfolioArticle() {
             <h3 className="text-xl font-bold text-gray-900 mb-3">What Justifies Premium Pricing?</h3>
             <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-6 mb-6">
               <ul className="text-gray-700 space-y-3">
-                <li>â€¢ <strong>Ingredients:</strong> Organic flour, European butter, Madagascar vanilla, Belgian chocolate</li>
-                <li>â€¢ <strong>Skill:</strong> Hand-painted designs, sugar flowers, intricate piping, custom flavors</li>
-                <li>â€¢ <strong>Presentation:</strong> Luxury packaging, custom boxes, ribbons, branded materials</li>
-                <li>â€¢ <strong>Service:</strong> Consultations, tastings, delivery, setup, personalized experience</li>
-                <li>â€¢ <strong>Brand:</strong> Professional website, stunning photography, social proof, exclusivity</li>
+                <li>• <strong>Ingredients:</strong> Organic flour, European butter, Madagascar vanilla, Belgian chocolate</li>
+                <li>• <strong>Skill:</strong> Hand-painted designs, sugar flowers, intricate piping, custom flavors</li>
+                <li>• <strong>Presentation:</strong> Luxury packaging, custom boxes, ribbons, branded materials</li>
+                <li>• <strong>Service:</strong> Consultations, tastings, delivery, setup, personalized experience</li>
+                <li>• <strong>Brand:</strong> Professional website, stunning photography, social proof, exclusivity</li>
               </ul>
             </div>
 
@@ -426,11 +426,11 @@ export default function BakeryPortfolioArticle() {
                   Pros
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ Highest profit per cupcake</li>
-                  <li>â€¢ Lower volume needed</li>
-                  <li>â€¢ Creative freedom</li>
-                  <li>â€¢ Premium ingredients</li>
-                  <li>â€¢ Prestigious positioning</li>
+                  <li>• Highest profit per cupcake</li>
+                  <li>• Lower volume needed</li>
+                  <li>• Creative freedom</li>
+                  <li>• Premium ingredients</li>
+                  <li>• Prestigious positioning</li>
                 </ul>
               </div>
               <div className="bg-red-50 p-4 rounded">
@@ -439,11 +439,11 @@ export default function BakeryPortfolioArticle() {
                   Cons
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>â€¢ Smaller customer base</li>
-                  <li>â€¢ High expectations</li>
-                  <li>â€¢ More time per cupcake</li>
-                  <li>â€¢ Need affluent market</li>
-                  <li>â€¢ Requires advanced skills</li>
+                  <li>• Smaller customer base</li>
+                  <li>• High expectations</li>
+                  <li>• More time per cupcake</li>
+                  <li>• Need affluent market</li>
+                  <li>• Requires advanced skills</li>
                 </ul>
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function BakeryPortfolioArticle() {
                   <h3 className="text-xl font-bold mb-2">Find Your Perfect Price Point</h3>
                   <p className="mb-4">Use BakeProfit to calculate your costs for each tier and see which pricing strategy works best for your bakery. Free to start.</p>
                   <Link href="/bakery-business-tool">
-                    <Button className="bg-rose-500 hover:bg-rose-600">Start Calculating Free â†’</Button>
+                    <Button className="bg-rose-500 hover:bg-rose-600">Start Calculating Free ?</Button>
                   </Link>
                 </div>
               </div>
@@ -543,9 +543,9 @@ export default function BakeryPortfolioArticle() {
             </div>
 
             <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mt-6">
-              <p className="text-gray-800 font-semibold mb-2">ðŸ’¡ Key Takeaway:</p>
+              <p className="text-gray-800 font-semibold mb-2">?? Key Takeaway:</p>
               <p className="text-gray-700">
-                Budget and mid-tier require similar hours to make $2,000/month, but mid-tier gives you DOUBLE the profit per cupcake. Premium tier requires more time per cupcake but needs lower volume. Choose based on your market, skills, and preferencesâ€”not just the price.
+                Budget and mid-tier require similar hours to make $2,000/month, but mid-tier gives you DOUBLE the profit per cupcake. Premium tier requires more time per cupcake but needs lower volume. Choose based on your market, skills, and preferences—not just the price.
               </p>
             </div>
           </section>
@@ -565,9 +565,9 @@ export default function BakeryPortfolioArticle() {
                   <div>
                     <h3 className="font-bold text-gray-900 mb-2 text-lg">1. What&apos;s Your Market?</h3>
                     <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>â€¢ <strong>Small town, lower-income area:</strong> Budget tier</li>
-                      <li>â€¢ <strong>Suburban, middle-class area:</strong> Mid-tier</li>
-                      <li>â€¢ <strong>Major city, affluent suburb:</strong> Premium tier</li>
+                      <li>• <strong>Small town, lower-income area:</strong> Budget tier</li>
+                      <li>• <strong>Suburban, middle-class area:</strong> Mid-tier</li>
+                      <li>• <strong>Major city, affluent suburb:</strong> Premium tier</li>
                     </ul>
                   </div>
                 </div>
@@ -579,9 +579,9 @@ export default function BakeryPortfolioArticle() {
                   <div>
                     <h3 className="font-bold text-gray-900 mb-2 text-lg">2. What&apos;s Your Skill Level?</h3>
                     <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>â€¢ <strong>Beginner (simple designs):</strong> Budget tier</li>
-                      <li>â€¢ <strong>Intermediate (custom designs):</strong> Mid-tier</li>
-                      <li>â€¢ <strong>Advanced (intricate artistry):</strong> Premium tier</li>
+                      <li>• <strong>Beginner (simple designs):</strong> Budget tier</li>
+                      <li>• <strong>Intermediate (custom designs):</strong> Mid-tier</li>
+                      <li>• <strong>Advanced (intricate artistry):</strong> Premium tier</li>
                     </ul>
                   </div>
                 </div>
@@ -593,9 +593,9 @@ export default function BakeryPortfolioArticle() {
                   <div>
                     <h3 className="font-bold text-gray-900 mb-2 text-lg">3. What&apos;s Your Volume Preference?</h3>
                     <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>â€¢ <strong>Love high-volume production:</strong> Budget tier</li>
-                      <li>â€¢ <strong>Prefer balanced workload:</strong> Mid-tier</li>
-                      <li>â€¢ <strong>Want low volume, high quality:</strong> Premium tier</li>
+                      <li>• <strong>Love high-volume production:</strong> Budget tier</li>
+                      <li>• <strong>Prefer balanced workload:</strong> Mid-tier</li>
+                      <li>• <strong>Want low volume, high quality:</strong> Premium tier</li>
                     </ul>
                   </div>
                 </div>
@@ -608,11 +608,11 @@ export default function BakeryPortfolioArticle() {
                 <strong>Start at mid-tier ($4-6).</strong> Here&apos;s why:
               </p>
               <ul className="text-gray-700 space-y-2 ml-6">
-                <li>â€¢ Best profit-to-effort ratio for home bakers</li>
-                <li>â€¢ Sustainable workload (you won&apos;t burn out)</li>
-                <li>â€¢ Room to use quality ingredients</li>
-                <li>â€¢ Can move up or down based on demand</li>
-                <li>â€¢ Customers perceive good value</li>
+                <li>• Best profit-to-effort ratio for home bakers</li>
+                <li>• Sustainable workload (you won&apos;t burn out)</li>
+                <li>• Room to use quality ingredients</li>
+                <li>• Can move up or down based on demand</li>
+                <li>• Customers perceive good value</li>
               </ul>
               <p className="text-gray-700 mt-4">
                 Once you&apos;re established, you can adjust. If you&apos;re getting too many orders, raise prices toward premium. If you&apos;re struggling to get orders, consider if you need to improve quality or lower prices slightly.
@@ -632,33 +632,33 @@ export default function BakeryPortfolioArticle() {
               <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
                 <h3 className="font-bold text-gray-900 mb-3 text-xl">Budget Tier Positioning</h3>
                 <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>â€¢ <strong>Messaging:</strong> &quot;Fresh, homemade cupcakes at prices everyone can afford&quot;</li>
-                  <li>â€¢ <strong>Branding:</strong> Simple, friendly, approachable</li>
-                  <li>â€¢ <strong>Marketing:</strong> Bulk orders, school events, farmers markets, Facebook groups</li>
-                  <li>â€¢ <strong>Photos:</strong> Simple, clean, show quantity and freshness</li>
-                  <li>â€¢ <strong>Packaging:</strong> Basic but cleanâ€”clear boxes, simple liners</li>
+                  <li>• <strong>Messaging:</strong> &quot;Fresh, homemade cupcakes at prices everyone can afford&quot;</li>
+                  <li>• <strong>Branding:</strong> Simple, friendly, approachable</li>
+                  <li>• <strong>Marketing:</strong> Bulk orders, school events, farmers markets, Facebook groups</li>
+                  <li>• <strong>Photos:</strong> Simple, clean, show quantity and freshness</li>
+                  <li>• <strong>Packaging:</strong> Basic but clean—clear boxes, simple liners</li>
                 </ul>
               </div>
 
               <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
                 <h3 className="font-bold text-gray-900 mb-3 text-xl">Mid-Tier Positioning</h3>
                 <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>â€¢ <strong>Messaging:</strong> &quot;Custom cupcakes made with quality ingredients and care&quot;</li>
-                  <li>â€¢ <strong>Branding:</strong> Professional, warm, personal</li>
-                  <li>â€¢ <strong>Marketing:</strong> Instagram, local events, word-of-mouth, Google Business</li>
-                  <li>â€¢ <strong>Photos:</strong> Well-lit, styled, show customization options</li>
-                  <li>â€¢ <strong>Packaging:</strong> Branded boxes, nice liners, business cards</li>
+                  <li>• <strong>Messaging:</strong> &quot;Custom cupcakes made with quality ingredients and care&quot;</li>
+                  <li>• <strong>Branding:</strong> Professional, warm, personal</li>
+                  <li>• <strong>Marketing:</strong> Instagram, local events, word-of-mouth, Google Business</li>
+                  <li>• <strong>Photos:</strong> Well-lit, styled, show customization options</li>
+                  <li>• <strong>Packaging:</strong> Branded boxes, nice liners, business cards</li>
                 </ul>
               </div>
 
               <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-6">
                 <h3 className="font-bold text-gray-900 mb-3 text-xl">Premium Tier Positioning</h3>
                 <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>â€¢ <strong>Messaging:</strong> &quot;Artisan cupcakes crafted with premium ingredients and exquisite detail&quot;</li>
-                  <li>â€¢ <strong>Branding:</strong> Elegant, sophisticated, exclusive</li>
-                  <li>â€¢ <strong>Marketing:</strong> Professional website, styled photoshoots, wedding shows, corporate clients</li>
-                  <li>â€¢ <strong>Photos:</strong> Professional photography, editorial style, close-ups of details</li>
-                  <li>â€¢ <strong>Packaging:</strong> Luxury boxes, custom ribbons, branded tissue, thank-you notes</li>
+                  <li>• <strong>Messaging:</strong> &quot;Artisan cupcakes crafted with premium ingredients and exquisite detail&quot;</li>
+                  <li>• <strong>Branding:</strong> Elegant, sophisticated, exclusive</li>
+                  <li>• <strong>Marketing:</strong> Professional website, styled photoshoots, wedding shows, corporate clients</li>
+                  <li>• <strong>Photos:</strong> Professional photography, editorial style, close-ups of details</li>
+                  <li>• <strong>Packaging:</strong> Luxury boxes, custom ribbons, branded tissue, thank-you notes</li>
                 </ul>
               </div>
             </div>
@@ -777,12 +777,12 @@ export default function BakeryPortfolioArticle() {
               </Link>
               <Link href="/bakery-business-tool">
                 <Button className="bg-rose-500 hover:bg-rose-600 px-8 py-6 text-lg">
-                  Start Free Account â†’
+                  Start Free Account ?
                 </Button>
               </Link>
             </div>
             <p className="text-center text-gray-600 mt-4 text-sm">
-              No credit card required â€¢ 5 recipes free forever â€¢ Upgrade anytime
+              No credit card required • 5 recipes free forever • Upgrade anytime
             </p>
           </div>
 

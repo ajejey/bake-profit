@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserById } from '@/lib/db/users';
+import { findUserById, stripSensitiveFields } from '@/lib/db/users';
 import { generateAccessToken, verifyRefreshToken } from '@/lib/auth/jwt';
 import { AuthResponse } from '@/types/auth';
 
@@ -40,14 +40,10 @@ export async function POST(request: NextRequest) {
       tier: user.subscription_tier,
     });
 
-    // Remove sensitive data
-    const userWithoutPassword = { ...user };
-    delete (userWithoutPassword as Record<string, unknown>).password_hash;
-
     return NextResponse.json<AuthResponse>(
       {
         success: true,
-        user: userWithoutPassword,
+        user: stripSensitiveFields(user),  // Strip OAuth tokens for security
         token: newAccessToken,
         message: 'Token refreshed',
       },

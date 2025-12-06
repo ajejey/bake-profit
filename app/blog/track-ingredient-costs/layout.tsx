@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'How to Track Ingredient Costs for Your Home Bakery (2025 Guide)',
     description: 'Learn how to track ingredient costs, handle price fluctuations, and boost profits with proper cost tracking.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/track-ingredient-costs',
+    url: 'https://bakeprofit.com/blog/track-ingredient-costs',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Complete guide to tracking ingredient costs and boosting bakery profits.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/track-ingredient-costs',
+    canonical: 'https://bakeprofit.com/blog/track-ingredient-costs',
   },
 }
 
@@ -45,7 +45,7 @@ export default function IngredientTrackingLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-28',

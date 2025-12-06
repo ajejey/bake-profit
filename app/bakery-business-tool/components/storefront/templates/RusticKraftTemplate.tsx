@@ -322,7 +322,7 @@ export default function RusticKraftTemplate({ menu, isPreview = false }: Templat
             <p className="text-xs" style={{ color: '#BCAAA4' }}>
               Powered by{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-[#5D4037] transition-colors"

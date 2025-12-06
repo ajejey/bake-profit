@@ -27,19 +27,19 @@ export default function Home() {
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    '@id': 'https://bakeprofit.vercel.app/#webpage',
-    url: 'https://bakeprofit.vercel.app',
+    '@id': 'https://bakeprofit.com/#webpage',
+    url: 'https://bakeprofit.com',
     name: 'BakeProfit | Free Recipe Cost Calculator, Menu Builder & Bakery Software for Home Bakers',
     description: 'Stop underpricing your baked goods! Free recipe cost calculator + bakery management software. Calculate costs, price cakes correctly, create beautiful online menus, track orders & inventory.',
     isPartOf: {
-      '@id': 'https://bakeprofit.vercel.app/#website',
+      '@id': 'https://bakeprofit.com/#website',
     },
     about: {
-      '@id': 'https://bakeprofit.vercel.app/#organization',
+      '@id': 'https://bakeprofit.com/#organization',
     },
     primaryImageOfPage: {
       '@type': 'ImageObject',
-      url: 'https://bakeprofit.vercel.app/og-image.png',
+      url: 'https://bakeprofit.com/og-image.png',
     },
     mainEntity: {
       '@type': 'SoftwareApplication',
@@ -65,7 +65,7 @@ export default function Home() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: 'https://bakeprofit.vercel.app',
+          item: 'https://bakeprofit.com',
         },
       ],
     },

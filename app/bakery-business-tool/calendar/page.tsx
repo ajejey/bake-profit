@@ -2,20 +2,31 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Filter, Settings } from 'lucide-react'
+import { Filter, Settings, CalendarCheck, Loader2 } from 'lucide-react'
 import CalendarView from '../components/Calendar/CalendarView'
 import { useOrders } from '../hooks'
 import type { Order } from '../types'
 import { ORDER_STATUSES } from '../types'
 import AppLayout from '../components/AppLayout'
+import { useGoogleCalendarSync } from '../hooks/useGoogleCalendarSync'
+import { useToast } from '@/hooks/use-toast'
 
 export default function CalendarPage() {
     const router = useRouter()
+    const { toast } = useToast()
     const { orders } = useOrders()
     const [filteredOrders, setFilteredOrders] = useState<Order[]>(orders)
     const [statusFilter, setStatusFilter] = useState<Order['status'] | 'all'>('all')
     const [customerFilter, setCustomerFilter] = useState('')
     const [showFilters, setShowFilters] = useState(false)
+    const [isBulkExporting, setIsBulkExporting] = useState(false)
+
+    // Google Calendar hook
+    const {
+        isConnected: isGCalConnected,
+        addOrderToCalendar,
+        connectGoogleCalendar,
+    } = useGoogleCalendarSync()
 
     // Update filtered orders when filters change
     const applyFilters = () => {
@@ -58,6 +69,42 @@ export default function CalendarPage() {
         setCustomerFilter('')
     }
 
+    // Bulk export orders to Google Calendar
+    const handleBulkExportToCalendar = async () => {
+        if (!isGCalConnected) {
+            connectGoogleCalendar()
+            return
+        }
+
+        // Get orders that are not yet completed/cancelled
+        const ordersToExport = filteredOrders.filter(
+            o => o.status !== 'delivered' && o.status !== 'cancelled'
+        )
+
+        if (ordersToExport.length === 0) {
+            toast({
+                title: 'No orders to export',
+                description: 'All visible orders are already delivered or cancelled.',
+            })
+            return
+        }
+
+        setIsBulkExporting(true)
+        let exported = 0
+
+        for (const order of ordersToExport) {
+            const eventId = await addOrderToCalendar(order)
+            if (eventId) exported++
+        }
+
+        setIsBulkExporting(false)
+
+        toast({
+            title: '📅 Export Complete',
+            description: `${exported} of ${ordersToExport.length} orders added to Google Calendar`,
+        })
+    }
+
     // Get unique customers for filter dropdown
     const uniqueCustomers = Array.from(new Set(orders.map(o => o.customerName))).sort()
 
@@ -72,6 +119,26 @@ export default function CalendarPage() {
                     </div>
 
                     <div className="flex gap-2 sm:gap-3">
+                        {/* Google Calendar Sync Button */}
+                        <button
+                            onClick={handleBulkExportToCalendar}
+                            disabled={isBulkExporting}
+                            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 transition-colors text-sm sm:text-base ${isGCalConnected
+                                    ? 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100'
+                                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                                }`}
+                            title={isGCalConnected ? 'Export visible orders to Google Calendar' : 'Connect Google Calendar'}
+                        >
+                            {isBulkExporting ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                <CalendarCheck className="w-4 h-4" />
+                            )}
+                            <span className="hidden sm:inline">
+                                {isGCalConnected ? 'Sync to Calendar' : 'Connect Calendar'}
+                            </span>
+                        </button>
+
                         <button
                             onClick={() => setShowFilters(!showFilters)}
                             className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 transition-colors text-sm sm:text-base ${showFilters ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'

@@ -309,7 +309,7 @@ export default function PlayfulPastelTemplate({ menu, isPreview = false }: Templ
             <p className="text-xs text-gray-400">
               Made with 💖 using{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="font-medium hover:text-[#EC4899] transition-colors"

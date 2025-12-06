@@ -485,7 +485,7 @@ export default function ParisianNoirTemplate({ menu, isPreview = false }: Templa
             <p className="text-xs tracking-[0.15em]" style={{ color: '#555555' }}>
               Crafted with{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-[#C9A962] transition-colors"

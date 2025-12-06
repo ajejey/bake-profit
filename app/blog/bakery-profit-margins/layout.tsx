@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Bakery Profit Margins: What\'s Normal and How to Improve Yours (2025)',
     description: 'Industry benchmarks, calculation guide, and 10 strategies to boost your bakery profit margins.',
     type: 'article',
-    url: 'https://bakeprofit.vercel.app/blog/bakery-profit-margins',
+    url: 'https://bakeprofit.com/blog/bakery-profit-margins',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Learn what profit margins are normal for bakeries and how to improve yours.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/bakery-profit-margins',
+    canonical: 'https://bakeprofit.com/blog/bakery-profit-margins',
   },
 }
 
@@ -45,7 +45,7 @@ export default function BakeryProfitMarginsLayout({
               name: 'BakeProfit',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://bakeprofit.vercel.app/logo.png',
+                url: 'https://bakeprofit.com/logo.png',
               },
             },
             datePublished: '2025-01-28',

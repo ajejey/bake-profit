@@ -298,7 +298,7 @@ export default function ElegantFloralTemplate({ menu, isPreview = false }: Templ
             <p className="text-xs" style={{ color: '#B8B8B8' }}>
               Powered by{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-[#8B4557] transition-colors"

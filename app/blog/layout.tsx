@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         title: 'Bakery Business Blog - BakeProfit',
         description: 'Expert guides, pricing strategies, and proven tactics to grow your bakery profitably.',
         type: 'website',
-        url: 'https://bakeprofit.vercel.app/blog',
+        url: 'https://bakeprofit.com/blog',
         siteName: 'BakeProfit',
         images: [
             {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         creator: '@bakeprofit',
     },
     alternates: {
-        canonical: 'https://bakeprofit.vercel.app/blog',
+        canonical: 'https://bakeprofit.com/blog',
     },
 }
 

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/bakery-business-tool/settings'],
     },
-    sitemap: 'https://bakeprofit.vercel.app/sitemap.xml',
+    sitemap: 'https://bakeprofit.com/sitemap.xml',
   }
 }

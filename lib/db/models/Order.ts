@@ -33,6 +33,7 @@ export interface IOrder {
   paymentStatus?: 'unpaid' | 'partial' | 'paid';
   paymentMethod?: string;
   source?: 'manual' | 'menu' | 'api'; // Track where the order came from
+  googleCalendarEventId?: string; // Google Calendar event ID if synced
   created_at: Date;
   updated_at: Date;
 }
@@ -167,6 +168,10 @@ const OrderSchema = new Schema<IOrder>(
       type: String,
       enum: ['manual', 'menu', 'api'],
       default: 'manual',
+    },
+    googleCalendarEventId: {
+      type: String,
+      required: false,
     },
   },
   {

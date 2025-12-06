@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Compare budget, mid-tier, and premium cupcake pricing strategies with real cost breakdowns.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/cupcake-pricing-guide',
+    canonical: 'https://bakeprofit.com/blog/cupcake-pricing-guide',
   },
 }
 

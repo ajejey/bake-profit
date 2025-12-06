@@ -70,6 +70,10 @@ export interface CalendarSettings {
   blockedDates: string[]; // ISO date strings of unavailable dates
   showProductionDates: boolean; // Whether to show production dates in calendar
   enableCapacityWarnings: boolean; // Show warnings when approaching capacity
+
+  // Google Calendar sync preferences
+  googleCalendarAutoExport?: 'ask' | 'always' | 'never'; // Auto-export behavior
+  googleCalendarSyncBlockedDates?: boolean; // Sync blocked dates to calendar
 }
 
 
@@ -264,6 +268,8 @@ function getDefaultCalendarSettings(): CalendarSettings {
     blockedDates: [],
     showProductionDates: true,
     enableCapacityWarnings: true,
+    googleCalendarAutoExport: 'ask', // Ask user on each order
+    googleCalendarSyncBlockedDates: true, // Sync blocked dates
   };
 }
 

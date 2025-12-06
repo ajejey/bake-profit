@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Complete guide to creating a profitable bakery menu that drives sales.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/bakery-menu-guide',
+    canonical: 'https://bakeprofit.com/blog/bakery-menu-guide',
   },
 }
 

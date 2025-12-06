@@ -340,7 +340,7 @@ export default function MenuBuilder() {
             // Display mode
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-4 py-3 border">
-                <span className="text-gray-500 text-sm">bakeprofit.vercel.app/m/</span>
+                <span className="text-gray-500 text-sm">bakeprofit.com/m/</span>
                 <span className="font-medium text-gray-900">{localMenu.slug}</span>
               </div>
               <Button variant="outline" onClick={handleStartEditUrl} className="shrink-0">
@@ -353,7 +353,7 @@ export default function MenuBuilder() {
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 flex items-center bg-white rounded-lg border-2 border-rose-200 focus-within:border-rose-400 transition-colors">
-                  <span className="text-gray-500 text-sm pl-4 shrink-0">bakeprofit.vercel.app/m/</span>
+                  <span className="text-gray-500 text-sm pl-4 shrink-0">bakeprofit.com/m/</span>
                   <Input
                     value={editedSlug}
                     onChange={(e) => handleSlugChange(e.target.value)}
@@ -561,7 +561,7 @@ export default function MenuBuilder() {
           <DialogHeader><DialogTitle>QR Code</DialogTitle><DialogDescription>Scan to view your menu</DialogDescription></DialogHeader>
           <div className="flex flex-col items-center py-4">
             <img src={getQRCodeUrl()} alt="QR Code" className="w-64 h-64" />
-            <p className="text-sm text-gray-500 mt-4">bakeprofit.vercel.app/m/{localMenu.slug}</p>
+            <p className="text-sm text-gray-500 mt-4">bakeprofit.com/m/{localMenu.slug}</p>
           </div>
           <DialogFooter><Button onClick={() => { const a = document.createElement('a'); a.href = getQRCodeUrl(); a.download = `${localMenu.slug}-qr.png`; a.click() }}>Download QR</Button></DialogFooter>
         </DialogContent>

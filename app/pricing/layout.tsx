@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'BakeProfit Pricing - Start Free, Upgrade When Ready',
     description: 'Free tier: 5 recipes, 15 orders/month. Pro: $6.99/mo for unlimited. No credit card needed.',
     type: 'website',
-    url: 'https://bakeprofit.vercel.app/pricing',
+    url: 'https://bakeprofit.com/pricing',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Start free forever. Pro just $6.99/mo for unlimited recipes, orders.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/pricing',
+    canonical: 'https://bakeprofit.com/pricing',
   },
 }
 

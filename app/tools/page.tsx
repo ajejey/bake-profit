@@ -86,12 +86,12 @@ export default function ToolsPage() {
     '@type': 'WebPage',
     name: 'Free Baking Calculators & Tools for Home Bakers',
     description: 'Free calculators for bakers: recipe cost calculator, cake pricing calculator, recipe scaling calculator, and more. No signup required.',
-    url: 'https://bakeprofit.vercel.app/tools',
+    url: 'https://bakeprofit.com/tools',
     inLanguage: 'en-US',
     isPartOf: {
       '@type': 'WebSite',
       name: 'BakeProfit',
-      url: 'https://bakeprofit.vercel.app',
+      url: 'https://bakeprofit.com',
     },
   }
 
@@ -164,7 +164,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Recipe Cost Calculator',
           description: 'Calculate ingredient costs, labor, overhead, and profit margins for any recipe.',
-          url: 'https://bakeprofit.vercel.app/tools/recipe-cost-calculator',
+          url: 'https://bakeprofit.com/tools/recipe-cost-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -181,7 +181,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Cake Pricing Calculator',
           description: 'Determine the perfect price for your cakes including all costs and desired profit.',
-          url: 'https://bakeprofit.vercel.app/tools/cake-pricing-calculator',
+          url: 'https://bakeprofit.com/tools/cake-pricing-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -198,7 +198,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Recipe Scaling Calculator',
           description: 'Scale recipes up or down. Adjust servings and batch sizes automatically.',
-          url: 'https://bakeprofit.vercel.app/tools/recipe-scaling-calculator',
+          url: 'https://bakeprofit.com/tools/recipe-scaling-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -215,7 +215,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Bakery Profit Calculator',
           description: 'Calculate profit margins and compare to industry benchmarks.',
-          url: 'https://bakeprofit.vercel.app/tools/bakery-profit-calculator',
+          url: 'https://bakeprofit.com/tools/bakery-profit-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -232,7 +232,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Ingredient Cost Calculator',
           description: 'Calculate cost per unit for any ingredient with automatic conversions.',
-          url: 'https://bakeprofit.vercel.app/tools/ingredient-cost-calculator',
+          url: 'https://bakeprofit.com/tools/ingredient-cost-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -249,7 +249,7 @@ export default function ToolsPage() {
           '@type': 'SoftwareApplication',
           name: 'Batch Cost Calculator',
           description: 'Calculate total costs and profit for multiple batches.',
-          url: 'https://bakeprofit.vercel.app/tools/batch-cost-calculator',
+          url: 'https://bakeprofit.com/tools/batch-cost-calculator',
           applicationCategory: 'BusinessApplication',
           operatingSystem: 'Web Browser',
           offers: {
@@ -270,13 +270,13 @@ export default function ToolsPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://bakeprofit.vercel.app',
+        item: 'https://bakeprofit.com',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Tools',
-        item: 'https://bakeprofit.vercel.app/tools',
+        item: 'https://bakeprofit.com/tools',
       },
     ],
   }
@@ -285,8 +285,8 @@ export default function ToolsPage() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'BakeProfit',
-    url: 'https://bakeprofit.vercel.app',
-    logo: 'https://bakeprofit.vercel.app/logo.png',
+    url: 'https://bakeprofit.com',
+    logo: 'https://bakeprofit.com/logo.png',
     description: 'Professional bakery management software and free calculators for home bakers and small bakeries.',
     sameAs: [
       'https://facebook.com/bakeprofit',

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: 'Free Batch Cost Calculator for Bakeries',
     description: 'Calculate costs and profit for multiple batches. Plan production and optimize profitability.',
     type: 'website',
-    url: 'https://bakeprofit.vercel.app/tools/batch-cost-calculator',
+    url: 'https://bakeprofit.com/tools/batch-cost-calculator',
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Calculate production costs and profit for multiple batches.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/tools/batch-cost-calculator',
+    canonical: 'https://bakeprofit.com/tools/batch-cost-calculator',
   },
 }
 

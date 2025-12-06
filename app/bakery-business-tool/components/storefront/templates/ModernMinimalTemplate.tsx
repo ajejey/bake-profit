@@ -253,7 +253,7 @@ export default function ModernMinimalTemplate({ menu, isPreview = false }: Templ
             <p className="text-xs text-gray-400">
               Powered by{' '}
               <a 
-                href="https://bakeprofit.vercel.app" 
+                href="https://bakeprofit.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-[#F43F5E] transition-colors font-medium"

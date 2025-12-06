@@ -148,9 +148,9 @@ export function getResetPasswordEmailTemplate(
           <div class="footer">
             <p>© ${new Date().getFullYear()} BakeProfit. All rights reserved.</p>
             <div class="footer-links">
-              <a href="https://bakeprofit.vercel.app">Website</a>
-              <a href="https://bakeprofit.vercel.app/contact">Support</a>
-              <a href="https://bakeprofit.vercel.app/privacy">Privacy Policy</a>
+              <a href="https://bakeprofit.com">Website</a>
+              <a href="https://bakeprofit.com/contact">Support</a>
+              <a href="https://bakeprofit.com/privacy">Privacy Policy</a>
             </div>
           </div>
         </div>
@@ -988,7 +988,7 @@ export function getWelcomeEmailTemplate(userName: string): string {
               <p style="margin: 10px 0; color: #881337; font-size: 14px;">
                 Jump into your dashboard and add your first ingredient in under 2 minutes
               </p>
-              <a href="https://bakeprofit.vercel.app/bakery-business-tool" class="cta-button">
+              <a href="https://bakeprofit.com/bakery-business-tool" class="cta-button">
                 Go to Dashboard
               </a>
             </div>
@@ -1010,9 +1010,9 @@ export function getWelcomeEmailTemplate(userName: string): string {
               <h3>Need Help Getting Started?</h3>
               <p>We're here to support you every step of the way</p>
               <div class="help-links">
-                <a href="https://bakeprofit.vercel.app/blog">Read Guides</a>
-                <a href="https://bakeprofit.vercel.app/tools">Free Calculators</a>
-                <a href="https://bakeprofit.vercel.app/contact">Contact Support</a>
+                <a href="https://bakeprofit.com/blog">Read Guides</a>
+                <a href="https://bakeprofit.com/tools">Free Calculators</a>
+                <a href="https://bakeprofit.com/contact">Contact Support</a>
               </div>
               <p style="margin-top: 10px; font-size: 13px; color: #6b7280;">or reply to this email</p>
             </div>
@@ -1030,9 +1030,9 @@ export function getWelcomeEmailTemplate(userName: string): string {
           <div class="footer">
             <p>© ${new Date().getFullYear()} BakeProfit. All rights reserved.</p>
             <div class="footer-links">
-              <a href="https://bakeprofit.vercel.app">Website</a>
-              <a href="https://bakeprofit.vercel.app/pricing">Pricing</a>
-              <a href="https://bakeprofit.vercel.app/privacy">Privacy</a>
+              <a href="https://bakeprofit.com">Website</a>
+              <a href="https://bakeprofit.com/pricing">Pricing</a>
+              <a href="https://bakeprofit.com/privacy">Privacy</a>
             </div>
             <p style="margin-top: 15px;">
               You're receiving this email because you signed up for BakeProfit.

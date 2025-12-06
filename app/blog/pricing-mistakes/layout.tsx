@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'Stop losing money on every cake. Discover the 3 critical pricing mistakes and how to fix them today.',
   },
   alternates: {
-    canonical: 'https://bakeprofit.vercel.app/blog/pricing-mistakes',
+    canonical: 'https://bakeprofit.com/blog/pricing-mistakes',
   },
 }
 
