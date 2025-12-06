@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   verification: {
-    google: "7nItEeuNSAIFL_unU4Ai5p-SGizDDaJU8XRYEKdtOgk",
+    google: ["7nItEeuNSAIFL_unU4Ai5p-SGizDDaJU8XRYEKdtOgk", "5Zp8hieHQSzS7Vy-ZO57FVSLVmRIfRFV1rPmxtMd5PM"],
   },
   openGraph: {
     type: 'website',
