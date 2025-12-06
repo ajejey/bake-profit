@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Camera, Instagram, CheckCircle, AlertTriangle, Star, Eye, Image as ImageIcon, Smartphone, TrendingUp, Users, MapPin, XCircle, DollarSign, Calculator } from 'lucide-react'
+import { Camera, Image, Sparkles, CheckCircle, Star, Eye, Share2, Smartphone, Lightbulb } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Header } from '@/components/layout/Header'
@@ -16,7 +16,7 @@ export default function BakeryPortfolioArticle() {
       {/* Article */}
       <article className="max-w-4xl mx-auto px-4 py-12">
         <nav className="text-sm text-gray-600 mb-6">
-          <Link href="/">Home</Link> ? <Link href="/blog">Blog</Link> ? Creating a Bakery Portfolio That Attracts Orders
+          <Link href="/">Home</Link> ‚Üí <Link href="/blog">Blog</Link> ‚Üí Bakery Portfolio Guide
         </nav>
 
         <h1 className="text-4xl sm:text-5xl font-bold mb-6">
@@ -24,33 +24,29 @@ export default function BakeryPortfolioArticle() {
         </h1>
 
         <div className="flex gap-4 text-gray-600 mb-8 pb-8 border-b">
-          <span>Feb 7, 2025</span> ï <span>16 min read</span> ï <span className="text-rose-600 font-semibold">Marketing</span>
+          <span>Feb 7, 2025</span> ‚Ä¢ <span>15 min read</span> ‚Ä¢ <span className="text-rose-600 font-semibold">Marketing</span>
         </div>
 
         <div className="prose prose-lg max-w-none space-y-8">
           {/* Introduction */}
           <p className="text-xl text-gray-700">
-            You&apos;re scrolling through Instagram and see three bakeries selling cupcakes. One charges $2, another $5, and a third $8 per cupcake. They all look beautiful. So what&apos;s the difference? And more importantlyówhich price point is right for YOUR bakery?
+            Your baked goods are delicious, but if potential customers can&apos;t see them, they can&apos;t order them. A stunning bakery portfolio is your 24/7 salesperson‚Äîshowcasing your best work and converting browsers into buyers.
           </p>
 
           <p className="text-xl text-gray-700">
-            Here&apos;s the truth: <strong>There&apos;s no single &quot;correct&quot; cupcake price.</strong> The right price depends on your costs, your market, your positioning, and your business goals. A $2 cupcake can be just as profitable as an $8 oneóif you understand the strategy behind it.
-          </p>
-
-          <p className="text-lg text-gray-700">
-            In this guide, I&apos;ll break down the three main cupcake pricing tiers, show you the real costs and profit margins at each level, and help you figure out which strategy fits your bakery. By the end, you&apos;ll know exactly where you belong in the marketóand how to price profitably.
+            Whether you&apos;re building a website, Instagram feed, or digital menu, this guide will show you exactly how to create a portfolio that makes customers say, &quot;I need to order from them!&quot;
           </p>
 
           {/* CTA Card */}
           <Card className="bg-rose-50 border-rose-200">
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <Calculator className="h-8 w-8 text-rose-600 flex-shrink-0" />
+                <Sparkles className="h-8 w-8 text-rose-600 flex-shrink-0" />
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Calculate Your Cupcake Costs</h3>
-                  <p className="mb-4">Use our free calculator to find out your true cost per cupcake and what you should charge for each pricing tier. Takes 2 minutes.</p>
-                  <Link href="/tools/recipe-cost-calculator">
-                    <Button className="bg-rose-500 hover:bg-rose-600">Calculate Your Price ?</Button>
+                  <h3 className="text-xl font-bold mb-2">Build Your Digital Storefront with BakeProfit</h3>
+                  <p className="mb-4">Create a beautiful online menu and portfolio in minutes. Share your products, accept orders, and grow your bakery business.</p>
+                  <Link href="/bakery-business-tool">
+                    <Button className="bg-rose-500 hover:bg-rose-600">Start Free ‚Üí</Button>
                   </Link>
                 </div>
               </div>
@@ -61,750 +57,424 @@ export default function BakeryPortfolioArticle() {
           <div className="bg-gray-50 border rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-4">Table of Contents</h2>
             <ol className="space-y-2 list-decimal list-inside">
-              <li><a href="#three-tiers" className="hover:text-rose-600">The Three Cupcake Pricing Tiers Explained</a></li>
-              <li><a href="#budget-tier" className="hover:text-rose-600">Budget Tier ($2-3): High Volume, Low Margin Strategy</a></li>
-              <li><a href="#mid-tier" className="hover:text-rose-600">Mid-Tier ($4-6): The Sweet Spot for Most Home Bakers</a></li>
-              <li><a href="#premium-tier" className="hover:text-rose-600">Premium Tier ($7-10): Luxury Positioning Strategy</a></li>
-              <li><a href="#cost-breakdown" className="hover:text-rose-600">Real Cost Breakdown: What Each Tier Actually Costs</a></li>
-              <li><a href="#which-tier" className="hover:text-rose-600">Which Tier is Right for Your Bakery?</a></li>
-              <li><a href="#positioning" className="hover:text-rose-600">How to Position Yourself in Your Chosen Tier</a></li>
-              <li><a href="#mistakes" className="hover:text-rose-600">5 Pricing Mistakes That Kill Cupcake Profits</a></li>
+              <li><a href="#why-portfolio" className="hover:text-rose-600">Why Your Portfolio Matters More Than You Think</a></li>
+              <li><a href="#photography-basics" className="hover:text-rose-600">Photography Basics: Take Stunning Photos with Your Phone</a></li>
+              <li><a href="#what-to-include" className="hover:text-rose-600">What to Include in Your Portfolio</a></li>
+              <li><a href="#organizing" className="hover:text-rose-600">Organizing Your Portfolio for Maximum Impact</a></li>
+              <li><a href="#platforms" className="hover:text-rose-600">Best Platforms for Your Bakery Portfolio</a></li>
+              <li><a href="#descriptions" className="hover:text-rose-600">Writing Descriptions That Sell</a></li>
+              <li><a href="#mistakes" className="hover:text-rose-600">Common Portfolio Mistakes to Avoid</a></li>
               <li><a href="#faq" className="hover:text-rose-600">Frequently Asked Questions</a></li>
             </ol>
           </div>
 
-          {/* Section 1: Three Tiers Overview */}
-          <section id="three-tiers">
-            <h2 className="text-3xl font-bold mb-4">The Three Cupcake Pricing Tiers Explained</h2>
+          {/* Section 1: Why Portfolio Matters */}
+          <section id="why-portfolio">
+            <h2 className="text-3xl font-bold mb-4">Why Your Portfolio Matters More Than You Think</h2>
             
-            <p className="text-lg text-gray-700 mb-6">
-              Before we dive deep into each tier, let&apos;s understand the landscape. Cupcake pricing generally falls into three distinct categories, each with its own strategy, target customer, and profit model.
+            <p className="text-lg text-gray-700 mb-4">
+              In the bakery business, customers eat with their eyes first. Before they taste your red velvet cake, they see it. Before they bite into your croissant, they imagine it. Your portfolio is where that first impression happens.
             </p>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <DollarSign className="h-6 w-6 text-blue-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Budget Tier</h3>
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-6">
+              <h3 className="font-bold text-gray-900 mb-3 text-lg">The Numbers Don&apos;t Lie</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li>‚Ä¢ <strong>93%</strong> of consumers consider visual appearance the key deciding factor in purchases</li>
+                <li>‚Ä¢ Bakeries with professional photos get <strong>3x more inquiries</strong> than those without</li>
+                <li>‚Ä¢ A well-organized portfolio can increase order values by <strong>25-40%</strong></li>
+              </ul>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="bg-green-50 p-4 rounded">
+                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Builds Trust Instantly
+                </p>
+                <p className="text-sm text-gray-700">
+                  High-quality photos show you take your craft seriously. Customers trust professionals.
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded">
+                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Justifies Your Prices
+                </p>
+                <p className="text-sm text-gray-700">
+                  When customers see the quality of your work, they understand why you charge what you do.
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded">
+                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Saves Time on Inquiries
+                </p>
+                <p className="text-sm text-gray-700">
+                  A comprehensive portfolio answers questions before customers ask, reducing back-and-forth.
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded">
+                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Enables Word-of-Mouth
+                </p>
+                <p className="text-sm text-gray-700">
+                  Easy-to-share portfolios make it simple for happy customers to recommend you.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 2: Photography Basics */}
+          <section id="photography-basics">
+            <h2 className="text-3xl font-bold mb-4">Photography Basics: Take Stunning Photos with Your Phone</h2>
+            
+            <p className="text-lg text-gray-700 mb-4">
+              You don&apos;t need expensive camera equipment. Modern smartphones take incredible photos‚Äîyou just need to know a few tricks.
+            </p>
+
+            <h3 className="text-xl font-bold text-gray-900 mb-3">The 5 Rules of Bakery Photography</h3>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-white border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-rose-100 rounded-full p-2">
+                    <Lightbulb className="h-5 w-5 text-rose-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">1. Natural Light is Everything</h4>
+                    <p className="text-gray-700 text-sm">Shoot near a window during the day. Avoid direct sunlight (causes harsh shadows) and overhead kitchen lights (creates yellow tones). The best time is morning or late afternoon.</p>
+                  </div>
                 </div>
-                <p className="text-3xl font-bold text-blue-600 mb-2">$2-3</p>
-                <p className="text-gray-700 text-sm mb-3">per cupcake</p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>ï High volume sales</li>
-                  <li>ï Simple designs</li>
-                  <li>ï Standard ingredients</li>
-                  <li>ï Price-conscious customers</li>
-                  <li>ï Grocery store competition</li>
-                </ul>
               </div>
 
-              <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <DollarSign className="h-6 w-6 text-green-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Mid-Tier</h3>
+              <div className="bg-white border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-rose-100 rounded-full p-2">
+                    <Camera className="h-5 w-5 text-rose-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">2. Clean Your Lens</h4>
+                    <p className="text-gray-700 text-sm">This sounds obvious, but a smudged phone lens is the #1 reason for blurry photos. Wipe it with a soft cloth before every shoot.</p>
+                  </div>
                 </div>
-                <p className="text-3xl font-bold text-green-600 mb-2">$4-6</p>
-                <p className="text-gray-700 text-sm mb-3">per cupcake</p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>ï Balanced volume & margin</li>
-                  <li>ï Custom designs available</li>
-                  <li>ï Quality ingredients</li>
-                  <li>ï Value-seeking customers</li>
-                  <li>ï Sweet spot for home bakers</li>
-                </ul>
               </div>
 
-              <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <DollarSign className="h-6 w-6 text-purple-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Premium Tier</h3>
+              <div className="bg-white border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-rose-100 rounded-full p-2">
+                    <Image className="h-5 w-5 text-rose-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">3. Use Simple Backgrounds</h4>
+                    <p className="text-gray-700 text-sm">A clean marble surface, wooden cutting board, or plain white backdrop lets your baked goods shine. Avoid busy patterns or cluttered backgrounds.</p>
+                  </div>
                 </div>
-                <p className="text-3xl font-bold text-purple-600 mb-2">$7-10</p>
-                <p className="text-gray-700 text-sm mb-3">per cupcake</p>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>ï Low volume, high margin</li>
-                  <li>ï Intricate custom designs</li>
-                  <li>ï Premium/organic ingredients</li>
-                  <li>ï Luxury-seeking customers</li>
-                  <li>ï Artisan positioning</li>
-                </ul>
+              </div>
+
+              <div className="bg-white border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-rose-100 rounded-full p-2">
+                    <Eye className="h-5 w-5 text-rose-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">4. Shoot at Eye Level or Slightly Above</h4>
+                    <p className="text-gray-700 text-sm">For most baked goods, a 45-degree angle works best. Flat lays (directly above) work great for cookies and decorated cakes.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-rose-100 rounded-full p-2">
+                    <Smartphone className="h-5 w-5 text-rose-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">5. Take Multiple Shots</h4>
+                    <p className="text-gray-700 text-sm">Professional photographers take hundreds of photos to get one perfect shot. Take at least 10-20 photos of each item from different angles.</p>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded">
-              <p className="text-gray-800 font-semibold mb-2">?? Key Insight:</p>
+              <p className="text-gray-800 font-semibold mb-2">üì± Pro Tip: Phone Settings</p>
               <p className="text-gray-700">
-                Your pricing tier isn&apos;t just about the numberóit&apos;s about your entire business model. A budget baker needs to make 100 cupcakes to earn what a premium baker makes from 25. Both can be profitable, but they require completely different strategies.
+                Turn on gridlines in your camera app to help with composition. Use portrait mode for close-ups of individual items. Avoid using the flash‚Äîit creates unflattering shadows.
               </p>
             </div>
           </section>
 
-          {/* Section 2: Budget Tier */}
-          <section id="budget-tier">
-            <h2 className="text-3xl font-bold mb-4">Budget Tier ($2-3): High Volume, Low Margin Strategy</h2>
+          {/* Section 3: What to Include */}
+          <section id="what-to-include">
+            <h2 className="text-3xl font-bold mb-4">What to Include in Your Portfolio</h2>
             
             <p className="text-lg text-gray-700 mb-4">
-              The budget tier is all about volume. You&apos;re competing with grocery stores and big-box bakeries, so your advantage is freshness, customization, and local charmónot premium ingredients or intricate designs.
+              A great portfolio isn&apos;t just a random collection of photos. It&apos;s strategically curated to show your range, quality, and personality.
             </p>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
-            <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>ï Bakers in price-sensitive markets (small towns, lower-income areas)</li>
-              <li>ï Those who can produce cupcakes very efficiently (under 15 minutes per dozen)</li>
-              <li>ï Bakers with access to wholesale ingredient pricing</li>
-              <li>ï Those selling at farmers markets, school events, or bulk orders</li>
-              <li>ï Bakers who enjoy high-volume production</li>
-            </ul>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Essential Portfolio Elements</h3>
 
-            <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
-              <h3 className="font-bold text-gray-900 mb-4 text-xl">Budget Tier Cost Breakdown (per cupcake)</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Ingredients (standard):</span>
-                  <span className="font-semibold text-gray-900">$0.40-0.60</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Packaging (liner, basic box):</span>
-                  <span className="font-semibold text-gray-900">$0.15-0.25</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Labor (1 min @ $20/hr):</span>
-                  <span className="font-semibold text-gray-900">$0.33</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Overhead (utilities, etc.):</span>
-                  <span className="font-semibold text-gray-900">$0.10-0.15</span>
-                </div>
-                <div className="flex justify-between pb-3 border-b-2 border-gray-400">
-                  <span className="font-bold text-gray-900">Total Cost:</span>
-                  <span className="font-bold text-gray-900">$0.98-1.33</span>
-                </div>
-                <div className="flex justify-between pt-2">
-                  <span className="text-gray-700">Selling at $2.50:</span>
-                  <span className="font-semibold text-green-600">$1.17-1.52 profit</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-bold text-gray-900">Profit Margin:</span>
-                  <span className="font-bold text-green-600">47-61%</span>
-                </div>
+            <div className="space-y-4 mb-6">
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">1. Hero Shots (Your Best Work)</h4>
+                <p className="text-gray-700">Select 3-5 of your absolute best pieces. These should be front and center‚Äîthe first thing visitors see. Make them count.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">2. Category Samples</h4>
+                <p className="text-gray-700">Show variety within each category you offer. If you make cakes, show birthday cakes, wedding cakes, and custom designs. If you make cookies, show decorated, drop, and specialty varieties.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">3. Detail Shots</h4>
+                <p className="text-gray-700">Close-ups of intricate decorations, textures, and finishes. These show the quality and care you put into your work.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">4. Process Photos</h4>
+                <p className="text-gray-700">Behind-the-scenes shots of you working, ingredients being prepared, or items coming out of the oven. These build connection and trust.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">5. Customer Photos (With Permission)</h4>
+                <p className="text-gray-700">Real photos from real customers at real events. These provide social proof and show your products in context.</p>
               </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-6">
-              <h3 className="font-bold text-gray-900 mb-3 text-lg">The Math: Can You Actually Make Money?</h3>
-              <p className="text-gray-700 mb-3">
-                Let&apos;s say you sell cupcakes at $2.50 each with a $1.35 profit per cupcake:
-              </p>
-              <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>ï To make $500/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
-                <li>ï To make $1,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
-                <li>ï To make $2,000/month: Need to sell <strong>1,482 cupcakes</strong> (124 dozen)</li>
-              </ul>
-              <p className="text-gray-700 font-semibold">
-                At 1 minute per cupcake, making $2,000/month requires <strong>24.7 hours of labor</strong>. That&apos;s doable, but you need consistent high-volume orders.
-              </p>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Pros & Cons</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-green-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  Pros
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï Large customer base (everyone loves a deal)</li>
-                  <li>ï Easier to get bulk orders</li>
-                  <li>ï Less pressure for perfection</li>
-                  <li>ï Can scale with systems</li>
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                  Cons
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï Need very high volume to profit</li>
-                  <li>ï Thin margins = no room for error</li>
-                  <li>ï Competing with grocery stores</li>
-                  <li>ï Can&apos;t afford premium ingredients</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 3: Mid-Tier */}
-          <section id="mid-tier">
-            <h2 className="text-3xl font-bold mb-4">Mid-Tier ($4-6): The Sweet Spot for Most Home Bakers</h2>
-            
-            <p className="text-lg text-gray-700 mb-4">
-              This is where most successful home bakers land. You&apos;re not the cheapest option, but you&apos;re not luxury either. You offer quality, customization, and personal service at a price that feels fair to customers.
-            </p>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
-            <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>ï Home bakers in suburban or mid-sized city markets</li>
-              <li>ï Those who want to balance quality and profitability</li>
-              <li>ï Bakers offering custom designs and flavors</li>
-              <li>ï Those targeting birthdays, celebrations, and events</li>
-              <li>ï Bakers who value work-life balance (moderate volume)</li>
-            </ul>
-
-            <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
-              <h3 className="font-bold text-gray-900 mb-4 text-xl">Mid-Tier Cost Breakdown (per cupcake)</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Ingredients (quality):</span>
-                  <span className="font-semibold text-gray-900">$0.75-1.00</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Packaging (branded box, liner):</span>
-                  <span className="font-semibold text-gray-900">$0.30-0.40</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Labor (2 min @ $25/hr):</span>
-                  <span className="font-semibold text-gray-900">$0.83</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Overhead:</span>
-                  <span className="font-semibold text-gray-900">$0.20-0.30</span>
-                </div>
-                <div className="flex justify-between pb-3 border-b-2 border-gray-400">
-                  <span className="font-bold text-gray-900">Total Cost:</span>
-                  <span className="font-bold text-gray-900">$2.08-2.53</span>
-                </div>
-                <div className="flex justify-between pt-2">
-                  <span className="text-gray-700">Selling at $5.00:</span>
-                  <span className="font-semibold text-green-600">$2.47-2.92 profit</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-bold text-gray-900">Profit Margin:</span>
-                  <span className="font-bold text-green-600">49-58%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-6">
-              <h3 className="font-bold text-gray-900 mb-3 text-lg">The Math: Sustainable Income</h3>
-              <p className="text-gray-700 mb-3">
-                At $5 per cupcake with $2.70 profit per cupcake:
-              </p>
-              <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>ï To make $500/month: Need to sell <strong>185 cupcakes</strong> (15 dozen)</li>
-                <li>ï To make $1,000/month: Need to sell <strong>370 cupcakes</strong> (31 dozen)</li>
-                <li>ï To make $2,000/month: Need to sell <strong>741 cupcakes</strong> (62 dozen)</li>
-              </ul>
-              <p className="text-gray-700 font-semibold">
-                At 2 minutes per cupcake, making $2,000/month requires <strong>24.7 hours of labor</strong>. Same hours as budget tier, but you make TWICE the profit per cupcake.
-              </p>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Why This is the Sweet Spot</h3>
-            <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6 mb-6">
-              <ul className="text-gray-700 space-y-3">
-                <li>ï <strong>Better margins:</strong> You make $2.70 per cupcake vs $1.35 at budget tieródouble the profit for similar effort</li>
-                <li>ï <strong>Manageable volume:</strong> You don&apos;t need to sell 1,500 cupcakes/month to make decent money</li>
-                <li>ï <strong>Room for quality:</strong> You can afford real butter, quality vanilla, and better ingredients</li>
-                <li>ï <strong>Custom work pays off:</strong> Customers expect and pay for personalization</li>
-                <li>ï <strong>Less competition:</strong> You&apos;re not competing with Walmart anymore</li>
-              </ul>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Pros & Cons</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-green-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  Pros
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï Best profit-to-effort ratio</li>
-                  <li>ï Sustainable workload</li>
-                  <li>ï Can use quality ingredients</li>
-                  <li>ï Customers value your work</li>
-                  <li>ï Room for creativity</li>
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                  Cons
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï More competition at this tier</li>
-                  <li>ï Need to justify higher prices</li>
-                  <li>ï Customers expect consistency</li>
-                  <li>ï Still need decent volume</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 4: Premium Tier */}
-          <section id="premium-tier">
-            <h2 className="text-3xl font-bold mb-4">Premium Tier ($7-10): Luxury Positioning Strategy</h2>
-            
-            <p className="text-lg text-gray-700 mb-4">
-              Premium pricing is about exclusivity, artistry, and premium ingredients. You&apos;re not selling cupcakesóyou&apos;re selling edible art. Your customers aren&apos;t price-shopping; they&apos;re looking for the best.
-            </p>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Who This Works For</h3>
-            <ul className="text-gray-700 space-y-2 ml-6 mb-6">
-              <li>ï Bakers in affluent areas (major cities, wealthy suburbs)</li>
-              <li>ï Those with advanced decorating skills (sugar flowers, hand-painting, intricate designs)</li>
-              <li>ï Bakers using premium/organic/specialty ingredients</li>
-              <li>ï Those targeting weddings, corporate events, luxury celebrations</li>
-              <li>ï Bakers who want low volume, high profit</li>
-            </ul>
-
-            <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
-              <h3 className="font-bold text-gray-900 mb-4 text-xl">Premium Tier Cost Breakdown (per cupcake)</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Ingredients (premium/organic):</span>
-                  <span className="font-semibold text-gray-900">$1.25-1.75</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Packaging (luxury box, custom):</span>
-                  <span className="font-semibold text-gray-900">$0.50-0.75</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Labor (5 min @ $35/hr):</span>
-                  <span className="font-semibold text-gray-900">$2.92</span>
-                </div>
-                <div className="flex justify-between pb-2 border-b">
-                  <span className="text-gray-700">Overhead:</span>
-                  <span className="font-semibold text-gray-900">$0.40-0.50</span>
-                </div>
-                <div className="flex justify-between pb-3 border-b-2 border-gray-400">
-                  <span className="font-bold text-gray-900">Total Cost:</span>
-                  <span className="font-bold text-gray-900">$5.07-5.92</span>
-                </div>
-                <div className="flex justify-between pt-2">
-                  <span className="text-gray-700">Selling at $8.50:</span>
-                  <span className="font-semibold text-green-600">$2.58-3.43 profit</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-bold text-gray-900">Profit Margin:</span>
-                  <span className="font-bold text-green-600">30-40%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mb-6">
-              <h3 className="font-bold text-gray-900 mb-3 text-lg">The Math: Low Volume, High Profit</h3>
-              <p className="text-gray-700 mb-3">
-                At $8.50 per cupcake with $3 profit per cupcake:
-              </p>
-              <ul className="text-gray-700 space-y-2 ml-6 mb-3">
-                <li>ï To make $500/month: Need to sell <strong>167 cupcakes</strong> (14 dozen)</li>
-                <li>ï To make $1,000/month: Need to sell <strong>334 cupcakes</strong> (28 dozen)</li>
-                <li>ï To make $2,000/month: Need to sell <strong>667 cupcakes</strong> (56 dozen)</li>
-              </ul>
-              <p className="text-gray-700 font-semibold">
-                At 5 minutes per cupcake, making $2,000/month requires <strong>55.6 hours of labor</strong>. More time per cupcake, but you need HALF the volume of budget tier to make the same profit.
-              </p>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">What Justifies Premium Pricing?</h3>
-            <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-6 mb-6">
-              <ul className="text-gray-700 space-y-3">
-                <li>ï <strong>Ingredients:</strong> Organic flour, European butter, Madagascar vanilla, Belgian chocolate</li>
-                <li>ï <strong>Skill:</strong> Hand-painted designs, sugar flowers, intricate piping, custom flavors</li>
-                <li>ï <strong>Presentation:</strong> Luxury packaging, custom boxes, ribbons, branded materials</li>
-                <li>ï <strong>Service:</strong> Consultations, tastings, delivery, setup, personalized experience</li>
-                <li>ï <strong>Brand:</strong> Professional website, stunning photography, social proof, exclusivity</li>
-              </ul>
-            </div>
-
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Pros & Cons</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-green-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  Pros
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï Highest profit per cupcake</li>
-                  <li>ï Lower volume needed</li>
-                  <li>ï Creative freedom</li>
-                  <li>ï Premium ingredients</li>
-                  <li>ï Prestigious positioning</li>
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                  Cons
-                </p>
-                <ul className="text-sm text-gray-700 space-y-1 ml-6">
-                  <li>ï Smaller customer base</li>
-                  <li>ï High expectations</li>
-                  <li>ï More time per cupcake</li>
-                  <li>ï Need affluent market</li>
-                  <li>ï Requires advanced skills</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* CTA Card */}
-          <Card className="bg-rose-50 border-rose-200 my-8">
-            <CardContent className="pt-6">
-              <div className="flex gap-4">
-                <TrendingUp className="h-6 w-6 text-rose-600 flex-shrink-0" />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Find Your Perfect Price Point</h3>
-                  <p className="mb-4">Use BakeProfit to calculate your costs for each tier and see which pricing strategy works best for your bakery. Free to start.</p>
-                  <Link href="/bakery-business-tool">
-                    <Button className="bg-rose-500 hover:bg-rose-600">Start Calculating Free ?</Button>
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Section 5: Cost Breakdown Comparison */}
-          <section id="cost-breakdown">
-            <h2 className="text-3xl font-bold mb-4">Real Cost Breakdown: Side-by-Side Comparison</h2>
-            
-            <p className="text-lg text-gray-700 mb-6">
-              Let&apos;s put all three tiers side by side so you can see exactly how they compare:
-            </p>
-
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse bg-white">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border p-3 text-left font-bold">Cost Factor</th>
-                    <th className="border p-3 text-center font-bold text-blue-600">Budget ($2.50)</th>
-                    <th className="border p-3 text-center font-bold text-green-600">Mid-Tier ($5.00)</th>
-                    <th className="border p-3 text-center font-bold text-purple-600">Premium ($8.50)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border p-3 font-semibold">Ingredients</td>
-                    <td className="border p-3 text-center">$0.50</td>
-                    <td className="border p-3 text-center">$0.88</td>
-                    <td className="border p-3 text-center">$1.50</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border p-3 font-semibold">Packaging</td>
-                    <td className="border p-3 text-center">$0.20</td>
-                    <td className="border p-3 text-center">$0.35</td>
-                    <td className="border p-3 text-center">$0.63</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-3 font-semibold">Labor</td>
-                    <td className="border p-3 text-center">$0.33</td>
-                    <td className="border p-3 text-center">$0.83</td>
-                    <td className="border p-3 text-center">$2.92</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border p-3 font-semibold">Overhead</td>
-                    <td className="border p-3 text-center">$0.13</td>
-                    <td className="border p-3 text-center">$0.25</td>
-                    <td className="border p-3 text-center">$0.45</td>
-                  </tr>
-                  <tr className="font-bold bg-yellow-50">
-                    <td className="border p-3">Total Cost</td>
-                    <td className="border p-3 text-center">$1.16</td>
-                    <td className="border p-3 text-center">$2.31</td>
-                    <td className="border p-3 text-center">$5.50</td>
-                  </tr>
-                  <tr className="font-bold bg-green-50">
-                    <td className="border p-3">Profit per Cupcake</td>
-                    <td className="border p-3 text-center text-blue-600">$1.34</td>
-                    <td className="border p-3 text-center text-green-600">$2.69</td>
-                    <td className="border p-3 text-center text-purple-600">$3.00</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-3 font-semibold">Profit Margin</td>
-                    <td className="border p-3 text-center">54%</td>
-                    <td className="border p-3 text-center">54%</td>
-                    <td className="border p-3 text-center">35%</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border p-3 font-semibold">To Make $2,000/mo</td>
-                    <td className="border p-3 text-center">1,493 cupcakes</td>
-                    <td className="border p-3 text-center">744 cupcakes</td>
-                    <td className="border p-3 text-center">667 cupcakes</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-3 font-semibold">Hours Required</td>
-                    <td className="border p-3 text-center">24.9 hrs</td>
-                    <td className="border p-3 text-center">24.8 hrs</td>
-                    <td className="border p-3 text-center">55.6 hrs</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded mt-6">
-              <p className="text-gray-800 font-semibold mb-2">?? Key Takeaway:</p>
+            <div className="bg-rose-50 border-l-4 border-rose-500 p-6 rounded">
+              <p className="text-gray-800 font-semibold mb-2">Quality Over Quantity</p>
               <p className="text-gray-700">
-                Budget and mid-tier require similar hours to make $2,000/month, but mid-tier gives you DOUBLE the profit per cupcake. Premium tier requires more time per cupcake but needs lower volume. Choose based on your market, skills, and preferencesónot just the price.
+                It&apos;s better to have 20 stunning photos than 100 mediocre ones. Curate ruthlessly. If a photo doesn&apos;t make you proud, don&apos;t include it.
               </p>
             </div>
           </section>
 
-          {/* Section 6: Which Tier */}
-          <section id="which-tier">
-            <h2 className="text-3xl font-bold mb-4">Which Tier is Right for Your Bakery?</h2>
+          {/* Section 4: Organizing */}
+          <section id="organizing">
+            <h2 className="text-3xl font-bold mb-4">Organizing Your Portfolio for Maximum Impact</h2>
             
-            <p className="text-lg text-gray-700 mb-6">
-              Still not sure? Answer these questions to find your ideal tier:
+            <p className="text-lg text-gray-700 mb-4">
+              How you organize your portfolio is just as important as what&apos;s in it. Make it easy for customers to find what they&apos;re looking for.
             </p>
 
-            <div className="space-y-6">
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <div className="flex items-start gap-3 mb-3">
-                  <MapPin className="h-6 w-6 text-rose-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">1. What&apos;s Your Market?</h3>
-                    <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>ï <strong>Small town, lower-income area:</strong> Budget tier</li>
-                      <li>ï <strong>Suburban, middle-class area:</strong> Mid-tier</li>
-                      <li>ï <strong>Major city, affluent suburb:</strong> Premium tier</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Recommended Categories</h3>
 
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <div className="flex items-start gap-3 mb-3">
-                  <Users className="h-6 w-6 text-rose-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">2. What&apos;s Your Skill Level?</h3>
-                    <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>ï <strong>Beginner (simple designs):</strong> Budget tier</li>
-                      <li>ï <strong>Intermediate (custom designs):</strong> Mid-tier</li>
-                      <li>ï <strong>Advanced (intricate artistry):</strong> Premium tier</li>
-                    </ul>
-                  </div>
-                </div>
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="bg-gray-50 p-4 rounded">
+                <h4 className="font-bold text-gray-900 mb-2">By Product Type</h4>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>‚Ä¢ Cakes</li>
+                  <li>‚Ä¢ Cupcakes</li>
+                  <li>‚Ä¢ Cookies</li>
+                  <li>‚Ä¢ Pastries</li>
+                  <li>‚Ä¢ Bread</li>
+                  <li>‚Ä¢ Specialty Items</li>
+                </ul>
               </div>
-
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                <div className="flex items-start gap-3 mb-3">
-                  <TrendingUp className="h-6 w-6 text-rose-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">3. What&apos;s Your Volume Preference?</h3>
-                    <ul className="text-gray-700 space-y-2 ml-6">
-                      <li>ï <strong>Love high-volume production:</strong> Budget tier</li>
-                      <li>ï <strong>Prefer balanced workload:</strong> Mid-tier</li>
-                      <li>ï <strong>Want low volume, high quality:</strong> Premium tier</li>
-                    </ul>
-                  </div>
-                </div>
+              <div className="bg-gray-50 p-4 rounded">
+                <h4 className="font-bold text-gray-900 mb-2">By Occasion</h4>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>‚Ä¢ Weddings</li>
+                  <li>‚Ä¢ Birthdays</li>
+                  <li>‚Ä¢ Baby Showers</li>
+                  <li>‚Ä¢ Holidays</li>
+                  <li>‚Ä¢ Corporate Events</li>
+                  <li>‚Ä¢ Everyday Treats</li>
+                </ul>
               </div>
             </div>
 
-            <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6 mt-6">
-              <h3 className="font-bold text-gray-900 mb-3 text-xl">My Recommendation for Most Home Bakers</h3>
-              <p className="text-gray-700 mb-3">
-                <strong>Start at mid-tier ($4-6).</strong> Here&apos;s why:
-              </p>
-              <ul className="text-gray-700 space-y-2 ml-6">
-                <li>ï Best profit-to-effort ratio for home bakers</li>
-                <li>ï Sustainable workload (you won&apos;t burn out)</li>
-                <li>ï Room to use quality ingredients</li>
-                <li>ï Can move up or down based on demand</li>
-                <li>ï Customers perceive good value</li>
-              </ul>
-              <p className="text-gray-700 mt-4">
-                Once you&apos;re established, you can adjust. If you&apos;re getting too many orders, raise prices toward premium. If you&apos;re struggling to get orders, consider if you need to improve quality or lower prices slightly.
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
+              <p className="text-gray-800 font-semibold mb-2">üí° Navigation Tip</p>
+              <p className="text-gray-700">
+                Put your most popular or profitable items first. Most visitors won&apos;t scroll through your entire portfolio‚Äîmake sure they see your best work immediately.
               </p>
             </div>
           </section>
 
-          {/* Section 7: Positioning */}
-          <section id="positioning">
-            <h2 className="text-3xl font-bold mb-4">How to Position Yourself in Your Chosen Tier</h2>
+          {/* Section 5: Platforms */}
+          <section id="platforms">
+            <h2 className="text-3xl font-bold mb-4">Best Platforms for Your Bakery Portfolio</h2>
             
-            <p className="text-lg text-gray-700 mb-6">
-              Once you&apos;ve chosen your tier, you need to position yourself correctly. Your pricing, branding, and messaging must all align.
+            <div className="space-y-4 mb-6">
+              <div className="border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  <h4 className="font-bold text-gray-900">Instagram</h4>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Best for Discovery</span>
+                </div>
+                <p className="text-gray-700 text-sm">Perfect for visual content. Use hashtags to get discovered. Great for building a following and showcasing your personality.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  <h4 className="font-bold text-gray-900">Digital Menu/Storefront</h4>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Best for Orders</span>
+                </div>
+                <p className="text-gray-700 text-sm">A dedicated menu page with prices and ordering capability. BakeProfit offers free digital storefronts that you can share with customers.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  <h4 className="font-bold text-gray-900">Facebook Page</h4>
+                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Best for Local</span>
+                </div>
+                <p className="text-gray-700 text-sm">Great for local customers and community groups. Easy to share and get reviews. Older demographic tends to prefer Facebook.</p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  <h4 className="font-bold text-gray-900">Personal Website</h4>
+                  <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">Best for Credibility</span>
+                </div>
+                <p className="text-gray-700 text-sm">Most professional option. Full control over design and content. Can be expensive and time-consuming to maintain.</p>
+              </div>
+            </div>
+
+            <Card className="bg-rose-50 border-rose-200">
+              <CardContent className="pt-6">
+                <div className="flex gap-4">
+                  <Share2 className="h-8 w-8 text-rose-600 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Create Your Free Digital Storefront</h3>
+                    <p className="mb-4">BakeProfit lets you create a beautiful, shareable menu page in minutes. Add your products, set prices, and share a single link with customers.</p>
+                    <Link href="/bakery-business-tool">
+                      <Button className="bg-rose-500 hover:bg-rose-600">Build Your Menu ‚Üí</Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* Section 6: Descriptions */}
+          <section id="descriptions">
+            <h2 className="text-3xl font-bold mb-4">Writing Descriptions That Sell</h2>
+            
+            <p className="text-lg text-gray-700 mb-4">
+              Great photos get attention, but great descriptions close the sale. Here&apos;s how to write descriptions that make mouths water.
             </p>
 
-            <div className="space-y-6">
-              <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-xl">Budget Tier Positioning</h3>
-                <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>ï <strong>Messaging:</strong> &quot;Fresh, homemade cupcakes at prices everyone can afford&quot;</li>
-                  <li>ï <strong>Branding:</strong> Simple, friendly, approachable</li>
-                  <li>ï <strong>Marketing:</strong> Bulk orders, school events, farmers markets, Facebook groups</li>
-                  <li>ï <strong>Photos:</strong> Simple, clean, show quantity and freshness</li>
-                  <li>ï <strong>Packaging:</strong> Basic but cleanóclear boxes, simple liners</li>
-                </ul>
-              </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">The Formula for Irresistible Descriptions</h3>
 
-              <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-xl">Mid-Tier Positioning</h3>
-                <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>ï <strong>Messaging:</strong> &quot;Custom cupcakes made with quality ingredients and care&quot;</li>
-                  <li>ï <strong>Branding:</strong> Professional, warm, personal</li>
-                  <li>ï <strong>Marketing:</strong> Instagram, local events, word-of-mouth, Google Business</li>
-                  <li>ï <strong>Photos:</strong> Well-lit, styled, show customization options</li>
-                  <li>ï <strong>Packaging:</strong> Branded boxes, nice liners, business cards</li>
-                </ul>
+            <div className="bg-gray-50 p-6 rounded-lg mb-6">
+              <p className="font-mono text-sm mb-4">[Sensory Word] + [Key Ingredient/Flavor] + [Texture/Experience] + [Unique Selling Point]</p>
+              <div className="space-y-3">
+                <div className="bg-white p-3 rounded border">
+                  <p className="text-gray-500 text-xs mb-1">Example 1:</p>
+                  <p className="text-gray-900">&quot;Rich, velvety chocolate ganache layered between moist devil&apos;s food cake, finished with hand-piped rosettes. Serves 12-15.&quot;</p>
+                </div>
+                <div className="bg-white p-3 rounded border">
+                  <p className="text-gray-500 text-xs mb-1">Example 2:</p>
+                  <p className="text-gray-900">&quot;Buttery, flaky croissants made with 72-hour fermented dough. Best enjoyed warm with your morning coffee.&quot;</p>
+                </div>
               </div>
+            </div>
 
-              <div className="bg-purple-50 border-2 border-purple-400 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-xl">Premium Tier Positioning</h3>
-                <ul className="text-gray-700 space-y-2 ml-6">
-                  <li>ï <strong>Messaging:</strong> &quot;Artisan cupcakes crafted with premium ingredients and exquisite detail&quot;</li>
-                  <li>ï <strong>Branding:</strong> Elegant, sophisticated, exclusive</li>
-                  <li>ï <strong>Marketing:</strong> Professional website, styled photoshoots, wedding shows, corporate clients</li>
-                  <li>ï <strong>Photos:</strong> Professional photography, editorial style, close-ups of details</li>
-                  <li>ï <strong>Packaging:</strong> Luxury boxes, custom ribbons, branded tissue, thank-you notes</li>
-                </ul>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Words That Sell</h3>
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-green-50 p-4 rounded">
+                <h4 className="font-bold text-gray-900 mb-2">Texture Words</h4>
+                <p className="text-sm text-gray-700">Moist, fluffy, crispy, creamy, velvety, tender, flaky, chewy, crunchy</p>
+              </div>
+              <div className="bg-blue-50 p-4 rounded">
+                <h4 className="font-bold text-gray-900 mb-2">Flavor Words</h4>
+                <p className="text-sm text-gray-700">Rich, decadent, tangy, zesty, sweet, buttery, aromatic, bold, subtle</p>
+              </div>
+              <div className="bg-purple-50 p-4 rounded">
+                <h4 className="font-bold text-gray-900 mb-2">Quality Words</h4>
+                <p className="text-sm text-gray-700">Handcrafted, artisan, homemade, fresh-baked, premium, signature, classic</p>
               </div>
             </div>
           </section>
 
-          {/* Section 8: Mistakes */}
+          {/* Section 7: Mistakes */}
           <section id="mistakes">
-            <h2 className="text-3xl font-bold mb-4">5 Pricing Mistakes That Kill Cupcake Profits</h2>
+            <h2 className="text-3xl font-bold mb-4">Common Portfolio Mistakes to Avoid</h2>
             
-            <div className="space-y-6">
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Mistake #1: Pricing Too Low to &quot;Get Customers&quot;</h3>
-                <p className="text-gray-700 mb-2">
-                  Charging $2 when your costs are $1.80 leaves you with $0.20 profit. You need to sell 10,000 cupcakes to make $2,000. That&apos;s not sustainable.
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  <strong>Fix:</strong> Calculate your true costs and add a healthy profit margin (40-50%). Attract customers with quality, not low prices.
-                </p>
+            <div className="space-y-4 mb-6">
+              <div className="bg-red-50 p-4 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-gray-900 mb-2">‚ùå Using Low-Quality or Blurry Photos</h4>
+                <p className="text-gray-700 text-sm">One bad photo can undo the impression of ten good ones. Delete anything that doesn&apos;t represent your best work.</p>
               </div>
 
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Mistake #2: Charging the Same for All Cupcakes</h3>
-                <p className="text-gray-700 mb-2">
-                  A simple vanilla cupcake costs $1.50 to make. An intricate fondant design costs $4.00. If you charge $5 for both, you&apos;re losing money on the fancy ones.
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  <strong>Fix:</strong> Have tiered pricing: Basic ($4), Custom ($6), Premium ($8). Charge for complexity.
-                </p>
+              <div className="bg-red-50 p-4 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-gray-900 mb-2">‚ùå Inconsistent Editing Style</h4>
+                <p className="text-gray-700 text-sm">Stick to one filter or editing style. Mixing warm and cool tones, or bright and dark photos, looks unprofessional.</p>
               </div>
 
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Mistake #3: Not Charging for Delivery</h3>
-                <p className="text-gray-700 mb-2">
-                  Gas, time, and vehicle wear cost money. If you drive 30 minutes round-trip and don&apos;t charge, you&apos;re losing $10-15 per delivery.
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  <strong>Fix:</strong> Charge $10-20 for delivery or set a minimum order amount for free delivery.
-                </p>
+              <div className="bg-red-50 p-4 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-gray-900 mb-2">‚ùå No Prices or Ordering Information</h4>
+                <p className="text-gray-700 text-sm">Don&apos;t make customers hunt for how to order. Include clear pricing and a simple way to contact you or place an order.</p>
               </div>
 
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Mistake #4: Pricing Per Dozen Instead of Per Cupcake</h3>
-                <p className="text-gray-700 mb-2">
-                  When you price per dozen ($30/dozen), customers expect discounts for larger orders. When you price per cupcake ($3 each), they understand the value per unit.
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  <strong>Fix:</strong> Price per cupcake. Offer volume discounts only for orders of 5+ dozen.
-                </p>
+              <div className="bg-red-50 p-4 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-gray-900 mb-2">‚ùå Outdated Content</h4>
+                <p className="text-gray-700 text-sm">If your last post was 6 months ago, customers wonder if you&apos;re still in business. Update regularly, even if it&apos;s just once a week.</p>
               </div>
 
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Mistake #5: Not Raising Prices When Costs Increase</h3>
-                <p className="text-gray-700 mb-2">
-                  Butter went from $4/lb to $7/lb. If you don&apos;t adjust prices, your profit margin just shrunk by 30-40%.
-                </p>
-                <p className="text-gray-700 font-semibold">
-                  <strong>Fix:</strong> Review costs quarterly. When ingredient costs rise 10%+, adjust prices immediately.
-                </p>
+              <div className="bg-red-50 p-4 rounded border-l-4 border-red-500">
+                <h4 className="font-bold text-gray-900 mb-2">‚ùå Showing Products You No Longer Offer</h4>
+                <p className="text-gray-700 text-sm">Nothing frustrates customers more than falling in love with something you don&apos;t make anymore. Keep your portfolio current.</p>
               </div>
             </div>
           </section>
 
-          {/* Section 9: FAQ */}
+          {/* FAQ Section */}
           <section id="faq">
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
             
-            <div className="space-y-6">
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Q: Can I charge different prices for different flavors?</h3>
-                <p className="text-gray-700">
-                  <strong>A:</strong> Absolutely. If red velvet costs more than vanilla, charge more. If chocolate ganache filling costs more than buttercream, charge more. Price based on your actual costs, not arbitrary flavor preferences.
-                </p>
+            <div className="space-y-4">
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">How many photos should I have in my portfolio?</h4>
+                <p className="text-gray-700">Quality over quantity. Aim for 20-50 high-quality photos that represent your range. It&apos;s better to have fewer stunning photos than many mediocre ones.</p>
               </div>
 
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Q: Should I offer discounts for bulk orders?</h3>
-                <p className="text-gray-700">
-                  <strong>A:</strong> Only if it makes financial sense. Bulk orders save you time (less packaging, one delivery), so a 10-15% discount for 5+ dozen is reasonable. But don&apos;t discount so much that you lose money. Calculate the numbers first.
-                </p>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">Do I need a professional photographer?</h4>
+                <p className="text-gray-700">Not necessarily. With good natural lighting and the tips in this guide, you can take professional-looking photos with your smartphone. However, for special occasions like a website launch, a professional shoot can be worth the investment.</p>
               </div>
 
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Q: What if customers say my prices are too high?</h3>
-                <p className="text-gray-700">
-                  <strong>A:</strong> That&apos;s okay. Not everyone is your customer. Explain your value: &quot;My cupcakes are made with real butter, quality vanilla, and custom designs. They&apos;re priced to reflect that quality.&quot; If they still balk, let them go. You&apos;re not Walmart.
-                </p>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">How often should I update my portfolio?</h4>
+                <p className="text-gray-700">Add new work at least monthly. Remove outdated items immediately. Your portfolio should always reflect what you currently offer and your current skill level.</p>
               </div>
 
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Q: How do I transition from one tier to another?</h3>
-                <p className="text-gray-700">
-                  <strong>A:</strong> Gradually. If you&apos;re moving from budget ($2.50) to mid-tier ($5), increase by $0.50-1.00 every few months. Improve your quality, branding, and photos as you go. Announce changes to existing customers and grandfather them for 30-60 days.
-                </p>
-              </div>
-
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3 text-lg">Q: Should I price mini cupcakes differently?</h3>
-                <p className="text-gray-700">
-                  <strong>A:</strong> Yes, but not proportionally. If regular cupcakes are $5, minis shouldn&apos;t be $2.50. They take almost as much time to make and decorate. Price minis at 60-70% of regular size: $3-3.50 each.
-                </p>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-bold text-gray-900 mb-2">Should I include prices in my portfolio?</h4>
+                <p className="text-gray-700">Yes! Customers appreciate transparency. Including prices saves time for both you and potential customers by filtering out those who can&apos;t afford your products.</p>
               </div>
             </div>
           </section>
 
           {/* Final CTA */}
-          <div className="bg-gradient-to-r from-rose-50 to-pink-50 border-2 border-rose-300 rounded-lg p-8 my-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">Ready to Price Your Cupcakes Profitably?</h2>
-            <p className="text-lg text-gray-700 mb-6 text-center max-w-2xl mx-auto">
-              Stop guessing and start knowing. BakeProfit calculates your exact costs for each tier and shows you the right price for YOUR bakery.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/tools/recipe-cost-calculator">
-                <Button className="bg-white text-rose-600 hover:bg-gray-50 border-2 border-rose-600 px-8 py-6 text-lg">
-                  Try Free Calculator
-                </Button>
-              </Link>
+          <Card className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
+            <CardContent className="pt-6 text-center">
+              <h3 className="text-2xl font-bold mb-4">Ready to Showcase Your Baked Goods?</h3>
+              <p className="mb-6 text-rose-100">Create a beautiful digital storefront with BakeProfit. Add your products, set prices, and share a single link with customers. It&apos;s free to start.</p>
               <Link href="/bakery-business-tool">
-                <Button className="bg-rose-500 hover:bg-rose-600 px-8 py-6 text-lg">
-                  Start Free Account ?
+                <Button className="bg-white text-rose-600 hover:bg-rose-50 font-bold px-8 py-3">
+                  Create Your Portfolio ‚Üí
                 </Button>
               </Link>
-            </div>
-            <p className="text-center text-gray-600 mt-4 text-sm">
-              No credit card required ï 5 recipes free forever ï Upgrade anytime
-            </p>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Related Articles */}
-          <div className="bg-gray-50 rounded-lg p-8 my-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Link href="/blog/pricing-mistakes" className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-rose-300 transition-colors">
-                <h4 className="font-bold text-gray-900 mb-2">The 3 Biggest Pricing Mistakes Home Bakers Make</h4>
-                <p className="text-gray-600 text-sm">Discover the 3 critical pricing mistakes costing home bakers thousands every year.</p>
+          <div className="border-t pt-8 mt-8">
+            <h3 className="text-xl font-bold mb-4">Related Articles</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Link href="/blog/bakery-branding-on-budget" className="block p-4 border rounded-lg hover:border-rose-300 transition-colors">
+                <h4 className="font-bold text-gray-900 mb-1">Bakery Branding on a Budget</h4>
+                <p className="text-sm text-gray-600">Create a professional brand for under $100</p>
               </Link>
-              <Link href="/blog/losing-money-on-cakes" className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-rose-300 transition-colors">
-                <h4 className="font-bold text-gray-900 mb-2">Why You&apos;re Losing Money on Every Cake</h4>
-                <p className="text-gray-600 text-sm">Discover the 7 hidden costs killing your profits and learn how to fix your pricing.</p>
-              </Link>
-              <Link href="/blog/how-to-calculate-recipe-cost" className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-rose-300 transition-colors">
-                <h4 className="font-bold text-gray-900 mb-2">How to Calculate Recipe Cost</h4>
-                <p className="text-gray-600 text-sm">Learn the exact formula to calculate recipe costs including ingredients, labor, and overhead.</p>
-              </Link>
-              <Link href="/blog/how-to-price-cupcakes" className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-rose-300 transition-colors">
-                <h4 className="font-bold text-gray-900 mb-2">How to Price Cupcakes: Complete Guide</h4>
-                <p className="text-gray-600 text-sm">Step-by-step guide to pricing cupcakes profitably with real examples and free calculator.</p>
+              <Link href="/blog/how-to-price-cakes" className="block p-4 border rounded-lg hover:border-rose-300 transition-colors">
+                <h4 className="font-bold text-gray-900 mb-1">How to Price Cakes for Profit</h4>
+                <p className="text-sm text-gray-600">Stop undercharging for your beautiful creations</p>
               </Link>
             </div>
           </div>
